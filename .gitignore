@@ -16,6 +16,9 @@
 *.xsx
 Thumbs.db
 
+!3rdparty/**/*.dll
+!3rdparty/**/*.pdb
+
 _ReSharper.*
 _vti_cnf
 _vti_pvt

@@ -4,12 +4,12 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
+using Microsoft.Practices.ServiceLocation;
+
 using Rhino.Mocks;
 
 using Xunit;
 using Xunit.Extensions;
-
-using Nrws.IncludeCombiner;
 
 namespace Nrws.IncludeCombiner.Unit.Tests
 {
@@ -22,6 +22,8 @@ namespace Nrws.IncludeCombiner.Unit.Tests
 		public HtmlExtensionsFacts()
 		{
 			mocks = new MockRepository();
+
+			ServiceLocator.SetLocatorProvider(() => new QnDServiceLocator());
 
 			var cc = mocks.DynamicMock<ControllerContext>(
 				mocks.DynamicMock<HttpContextBase>(),
@@ -41,6 +43,15 @@ namespace Nrws.IncludeCombiner.Unit.Tests
 
 			html = new HtmlHelper(mockViewContext, mockViewDataContainer);
 			mocks.ReplayAll();
+		}
+
+		public static IEnumerable<object[]> Rendering
+		{
+			get
+			{
+				yield return new object[] { IncludeType.Css, new[] { "/foo.css", "/bar.css" }, string.Format("<link rel='stylesheet' type='text/css' href='/foo.css'/>{0}<link rel='stylesheet' type='text/css' href='/bar.css'/>{0}", Environment.NewLine) };
+				yield return new object[] { IncludeType.Script, new[] { "/foo.js", "/bar.js" }, string.Format("<script type='text/javascript' src='/foo.js'></script>{0}<script type='text/javascript' src='/bar.js'></script>{0}", Environment.NewLine) };
+			}
 		}
 
 		[Fact]
@@ -100,15 +111,6 @@ namespace Nrws.IncludeCombiner.Unit.Tests
 			Assert.Equal("foo.css", cssSet[0]);
 		}
 
-		public static IEnumerable<object[]> Rendering
-		{
-			get
-			{
-				yield return new object[] { IncludeType.Css, new[] { "/foo.css", "/bar.css" }, string.Format("<link rel='stylesheet' type='text/css' href='/foo.css' />{0}<link rel='stylesheet' type='text/css' href='/bar.css' />{0}", Environment.NewLine) };
-				yield return new object[] { IncludeType.Script, new[] { "/foo.js", "/bar.js" }, string.Format("<script type='text/javascript' src='/foo.js'></script>{0}<script type='text/javascript' src='/bar.js'></script>{0}", Environment.NewLine) };
-			}
-		}
-
 		[Theory]
 		[PropertyData("Rendering")]
 		public void Render_ShouldWriteOutEachIncludeSeparately(IncludeType type, IList<string> includes, string expected)
@@ -123,12 +125,12 @@ namespace Nrws.IncludeCombiner.Unit.Tests
 		{
 			html.IncludeCss("/foo.css");
 			var before = viewData[getViewDataKey(IncludeType.Css)] as IList<string>;
-            Assert.Equal(1, before.Count);
+			Assert.Equal(1, before.Count);
 
 			html.RenderCss();
-			
+
 			var after = viewData[getViewDataKey(IncludeType.Css)] as IList<string>;
-            Assert.Equal(0, after.Count);
+			Assert.Equal(0, after.Count);
 		}
 
 		private static string getViewDataKey(IncludeType type)

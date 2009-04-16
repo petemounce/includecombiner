@@ -1,35 +1,19 @@
 using System.Collections.Generic;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
+
+using Microsoft.Practices.ServiceLocation;
 
 namespace Nrws.IncludeCombiner
 {
 	public static class HtmlExtensions
 	{
-		private static readonly IDictionary<IncludeType, string> _compressorUrlFormatStrings = new Dictionary<IncludeType, string>
-		{
-			{
-				IncludeType.Script,
-				"<script type='text/javascript' src='{0}'></script>"
-				},
-			{
-				IncludeType.Css,
-				"<link rel='stylesheet' type='text/css' href='{0}'/>"
-				}
-		};
-
 		public static string RenderIncludes(this HtmlHelper helper, IncludeType type)
 		{
-			var relativePathsToInclude = helper.ViewData[getViewDataKey(type)] as IList<string> ?? new List<string>();
-			var toRender = new StringBuilder();
-			foreach (var path in relativePathsToInclude)
-			{
-				var absolute = VirtualPathUtility.ToAbsolute(path);
-				toRender.AppendFormat(_compressorUrlFormatStrings[type], absolute).AppendLine();
-			}
+			var sources = helper.ViewData[getViewDataKey(type)] as IList<string> ?? new List<string>();
+			var combiner = ServiceLocator.Current.GetInstance<IIncludeCombiner>();
+			var toRender = combiner.RenderIncludes(sources, type);
 			helper.ViewData[getViewDataKey(type)] = new List<string>();
-			return toRender.ToString();
+			return toRender;
 		}
 
 		public static string RenderCss(this HtmlHelper helper)

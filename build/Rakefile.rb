@@ -4,16 +4,10 @@ require 'rake/tasklib'
 require 'rake_dotnet'
 
 PRODUCT_NAME = ENV['PRODUCT_NAME'] ? ENV['PRODUCT_NAME'] : 'IncludeCombiner'
-COMPANY = ENV['COMPANY'] ? ENV['COMPANY'] : 'NeverRunWithScissors.com'
+COMPANY_NAME = ENV['COMPANY_NAME'] ? ENV['COMPANY_NAME'] : 'NeverRunWithScissors.com'
 RDNVERSION = Versioner.new.get
 
-Rake::AssemblyInfoTask.new do |ai|
-	# TODO: Read {configuration, product, company} from Rakefile.yaml config file ?
-	ai.product_name = PRODUCT_NAME
-	ai.company_name = COMPANY
-	ai.configuration = CONFIGURATION
-	ai.version = RDNVERSION
-end
+Rake::AssemblyInfoTask.new
 
 bin_out = File.join(OUT_DIR, 'bin')
 Rake::MsBuildTask.new({:verbosity=>MSBUILD_VERBOSITY, :deps=>[bin_out, :assembly_info]})
@@ -21,7 +15,9 @@ Rake::MsBuildTask.new({:verbosity=>MSBUILD_VERBOSITY, :deps=>[bin_out, :assembly
 Rake::HarvestOutputTask.new({:deps => [:compile]})
 
 Rake::XUnitTask.new({:options=>{:html=>true,:xml=>true}, :deps=>[:compile, :harvest_output]})
-Rake::FxCopTask.new({:deps=>[:compile, :harvest_output]})
+Rake::FxCopTask.new({:deps=>[:compile, :harvest_output]}) do |fxc|
+	fxc.dll_list.exclude("#{fxc.suites_dir}/**/*Tests*.dll")
+end
 Rake::NCoverTask.new({:deps=>[:compile, :harvest_output], :ncover_options=>{:arch=>'amd64'}, :ncover_reporting_options=>{:arch=>'amd64'}})
 
 demo_site = File.join(OUT_DIR, 'Demo.Site')

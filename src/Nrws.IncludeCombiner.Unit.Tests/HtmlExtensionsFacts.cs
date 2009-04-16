@@ -102,7 +102,8 @@ namespace Nrws.IncludeCombiner.Unit.Tests
 		{
 			get
 			{
-				yield return new object[] { IncludeType.Css, new[] { "foo.css", "bar.css" }, "<link rel='stylesheet' type='text/css' href='foo.css' />\n<link rel='stylesheet' type='text/css' href='bar.css' />" };
+				yield return new object[] { IncludeType.Css, new[] { "/foo.css", "/bar.css" }, string.Format("<link rel='stylesheet' type='text/css' href='/foo.css' />{0}<link rel='stylesheet' type='text/css' href='/bar.css' />{0}", Environment.NewLine) };
+				yield return new object[] { IncludeType.Script, new[] { "/foo.js", "/bar.js" }, string.Format("<script type='text/javascript' src='/foo.js'></script>{0}<script type='text/javascript' src='/bar.js'></script>{0}", Environment.NewLine) };
 			}
 		}
 

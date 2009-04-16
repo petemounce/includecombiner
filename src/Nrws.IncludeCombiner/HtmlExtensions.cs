@@ -15,7 +15,7 @@ namespace Nrws.IncludeCombiner
 				},
 			{
 				IncludeType.Css,
-				"<link rel='stylesheet' type='text/css' href='{0}' />"
+				"<link rel='stylesheet' type='text/css' href='{0}'/>"
 				}
 		};
 

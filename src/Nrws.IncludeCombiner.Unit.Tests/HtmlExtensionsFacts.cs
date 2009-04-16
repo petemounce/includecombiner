@@ -9,6 +9,8 @@ using Rhino.Mocks;
 using Xunit;
 using Xunit.Extensions;
 
+using Nrws.IncludeCombiner;
+
 namespace Nrws.IncludeCombiner.Unit.Tests
 {
 	public class HtmlExtensionsFacts
@@ -114,6 +116,19 @@ namespace Nrws.IncludeCombiner.Unit.Tests
 			html.Include(type, includes);
 			var rendered = html.RenderIncludes(type);
 			Assert.Equal(rendered, expected);
+		}
+
+		[Fact]
+		public void Rendering_ShouldFlushTheSet()
+		{
+			html.IncludeCss("/foo.css");
+			var before = viewData[getViewDataKey(IncludeType.Css)] as IList<string>;
+            Assert.Equal(1, before.Count);
+
+			html.RenderCss();
+			
+			var after = viewData[getViewDataKey(IncludeType.Css)] as IList<string>;
+            Assert.Equal(0, after.Count);
 		}
 
 		private static string getViewDataKey(IncludeType type)

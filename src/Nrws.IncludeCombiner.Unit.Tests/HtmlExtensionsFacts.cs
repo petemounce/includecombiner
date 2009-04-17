@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -16,7 +17,10 @@ namespace Nrws.IncludeCombiner.Unit.Tests
 	public class HtmlExtensionsFacts
 	{
 		private readonly HtmlHelper html;
+		private readonly HttpContextBase mockHttpContext;
 		private readonly MockRepository mocks;
+		private readonly IView mockView;
+		private readonly ViewContext mockViewContext;
 		private readonly ViewDataDictionary viewData;
 
 		public HtmlExtensionsFacts()
@@ -25,15 +29,17 @@ namespace Nrws.IncludeCombiner.Unit.Tests
 
 			ServiceLocator.SetLocatorProvider(() => new QnDServiceLocator());
 
+			mockHttpContext = mocks.DynamicMock<HttpContextBase>();
 			var cc = mocks.DynamicMock<ControllerContext>(
-				mocks.DynamicMock<HttpContextBase>(),
+				mockHttpContext,
 				new RouteData(),
 				mocks.DynamicMock<ControllerBase>());
 
 			viewData = new ViewDataDictionary();
-			var mockViewContext = mocks.DynamicMock<ViewContext>(
+			mockView = mocks.DynamicMock<IView>();
+			mockViewContext = mocks.DynamicMock<ViewContext>(
 				cc,
-				mocks.DynamicMock<IView>(),
+				mockView,
 				viewData,
 				new TempDataDictionary());
 
@@ -52,6 +58,38 @@ namespace Nrws.IncludeCombiner.Unit.Tests
 				yield return new object[] { IncludeType.Css, new[] { "/foo.css", "/bar.css" }, string.Format("<link rel='stylesheet' type='text/css' href='/foo.css'/>{0}<link rel='stylesheet' type='text/css' href='/bar.css'/>{0}", Environment.NewLine) };
 				yield return new object[] { IncludeType.Script, new[] { "/foo.js", "/bar.js" }, string.Format("<script type='text/javascript' src='/foo.js'></script>{0}<script type='text/javascript' src='/bar.js'></script>{0}", Environment.NewLine) };
 			}
+		}
+
+		public static IEnumerable<object[]> DebugMode
+		{
+			get
+			{
+				yield return new object[] { new NameValueCollection(), new HttpCookieCollection(), false };
+				yield return new object[] { new NameValueCollection { { "debug", null } }, new HttpCookieCollection(), false };
+				yield return new object[] { new NameValueCollection { { "debug", "0" } }, new HttpCookieCollection(), false };
+				yield return new object[] { new NameValueCollection { { "debug", "1" } }, new HttpCookieCollection(), true };
+
+				yield return new object[] { new NameValueCollection(), new HttpCookieCollection { new HttpCookie("foo") }, false };
+				yield return new object[] { new NameValueCollection(), new HttpCookieCollection { new HttpCookie("debug", "0") }, false };
+				yield return new object[] { new NameValueCollection(), new HttpCookieCollection { new HttpCookie("debug", "1") { Expires = DateTime.UtcNow.AddDays(-1) } }, false };
+				yield return new object[] { new NameValueCollection(), new HttpCookieCollection { new HttpCookie("debug", "0") { Expires = DateTime.UtcNow.AddDays(1) } }, false };
+				yield return new object[] { new NameValueCollection(), new HttpCookieCollection { new HttpCookie("debug", "1") { Expires = DateTime.UtcNow.AddDays(1) } }, true };
+			}
+		}
+
+		[Theory]
+		[PropertyData("DebugMode")]
+		public void IsInDebugMode_ShouldBeCorrect(NameValueCollection queryString, HttpCookieCollection cookies, bool expected)
+		{
+			var mockRequest = mocks.DynamicMock<HttpRequestBase>();
+			mockRequest.Expect(r => r.QueryString).Return(queryString);
+			mockRequest.Expect(r => r.Cookies).Return(cookies);
+			mockRequest.Replay();
+			mockViewContext.Expect(vc => vc.View).Return(mockView);
+			mockViewContext.Expect(vc => vc.HttpContext).Return(mockHttpContext);
+			mockHttpContext.Expect(hc => hc.Request).Return(mockRequest);
+
+			Assert.Equal(expected, html.IsInDebugMode());
 		}
 
 		[Fact]

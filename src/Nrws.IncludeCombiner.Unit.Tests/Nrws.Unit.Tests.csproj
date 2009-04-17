@@ -64,7 +64,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Web\IncludeCombiner\IncludeCombinerHtmlExtensionsFacts.cs" />
+    <Compile Include="Web\IncludeHandling\IncludeCombinerFacts.cs" />
+    <Compile Include="Web\IncludeHandling\IncludeCombinerHtmlExtensionsFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\UtilityHtmlExtensionsFacts.cs" />
     <Compile Include="Web\WebTestUtility.cs" />

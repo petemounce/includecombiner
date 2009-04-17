@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
-using Nrws.Web.IncludeCombiner;
+using Nrws.Web.IncludeHandling;
 using Rhino.Mocks;
 using Xunit;
 using Xunit.Extensions;
 
-namespace Nrws.Unit.Tests.Web.IncludeCombiner
+namespace Nrws.Unit.Tests.Web.IncludeHandling
 {
 	public class IncludeCombinerHtmlExtensionsFacts
 	{
@@ -25,15 +25,6 @@ namespace Nrws.Unit.Tests.Web.IncludeCombiner
 
 			_html = WebTestUtility.BuildHtmlHelper(_mocks, _viewData, null);
 			_mocks.ReplayAll();
-		}
-
-		public static IEnumerable<object[]> Rendering
-		{
-			get
-			{
-				yield return new object[] { IncludeType.Css, new[] { "/foo.css", "/bar.css" }, true, string.Format("<link rel='stylesheet' type='text/css' href='/foo.css'/>{0}<link rel='stylesheet' type='text/css' href='/bar.css'/>{0}", Environment.NewLine) };
-				yield return new object[] { IncludeType.Script, new[] { "/foo.js", "/bar.js" }, true, string.Format("<script type='text/javascript' src='/foo.js'></script>{0}<script type='text/javascript' src='/bar.js'></script>{0}", Environment.NewLine) };
-			}
 		}
 
 		[Fact]
@@ -91,15 +82,6 @@ namespace Nrws.Unit.Tests.Web.IncludeCombiner
 			Assert.NotNull(cssSet);
 			Assert.Equal(1, cssSet.Count);
 			Assert.Equal("foo.css", cssSet[0]);
-		}
-
-		[Theory]
-		[PropertyData("Rendering")]
-		public void Render_ShouldWriteOutEachIncludeSeparately(IncludeType type, IList<string> includes, bool isInDebugMode, string expected)
-		{
-			_html.Include(type, includes);
-			var rendered = _html.RenderIncludes(type, isInDebugMode);
-			Assert.Equal(rendered, expected);
 		}
 
 		[Fact]

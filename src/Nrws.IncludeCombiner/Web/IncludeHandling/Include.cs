@@ -1,4 +1,4 @@
-namespace Nrws.Web.IncludeCombiner
+namespace Nrws.Web.IncludeHandling
 {
 	public enum IncludeType
 	{

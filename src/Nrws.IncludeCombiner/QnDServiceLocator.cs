@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Microsoft.Practices.ServiceLocation;
 
-using Nrws.Web.IncludeCombiner;
+using Nrws.Web.IncludeHandling;
 
 namespace Nrws
 {

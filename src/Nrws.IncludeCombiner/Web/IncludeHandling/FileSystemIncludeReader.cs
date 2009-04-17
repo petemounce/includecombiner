@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Nrws.Web.IncludeCombiner
+namespace Nrws.Web.IncludeHandling
 {
 	public class FileSystemIncludeReader : IIncludeReader
 	{

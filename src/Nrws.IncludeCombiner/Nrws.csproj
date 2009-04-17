@@ -49,16 +49,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Web\IncludeCombiner\FileSystemIncludeReader.cs" />
-    <Compile Include="Web\IncludeCombiner\IncludeCombinerHtmlExtensions.cs" />
-    <Compile Include="Web\IncludeCombiner\IIncludeCombiner.cs" />
-    <Compile Include="Web\IncludeCombiner\IIncludeReader.cs" />
-    <Compile Include="Web\IncludeCombiner\Include.cs" />
-    <Compile Include="Web\IncludeCombiner\IncludeCombiner.cs" />
+    <Compile Include="Web\IncludeHandling\FileSystemIncludeReader.cs" />
+    <Compile Include="Web\IncludeHandling\IncludeCombinerHtmlExtensions.cs" />
+    <Compile Include="Web\IncludeHandling\IIncludeCombiner.cs" />
+    <Compile Include="Web\IncludeHandling\IIncludeReader.cs" />
+    <Compile Include="Web\IncludeHandling\Include.cs" />
+    <Compile Include="Web\IncludeHandling\IncludeCombiner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QnDServiceLocator.cs" />
-    <Compile Include="Web\IncludeCombiner\ISourceResolver.cs" />
-    <Compile Include="Web\IncludeCombiner\SourceResolver.cs" />
+    <Compile Include="Web\IncludeHandling\ISourceResolver.cs" />
+    <Compile Include="Web\IncludeHandling\SourceResolver.cs" />
     <Compile Include="Web\UtilityHtmlExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

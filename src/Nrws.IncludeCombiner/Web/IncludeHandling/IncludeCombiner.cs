@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
-namespace Nrws.Web.IncludeCombiner
+namespace Nrws.Web.IncludeHandling
 {
 	public class IncludeCombiner : IIncludeCombiner
 	{
@@ -26,7 +26,7 @@ namespace Nrws.Web.IncludeCombiner
 			_sourceResolver = sourceResolver;
 		}
 
-		public string RenderIncludes(IList<string> sources, IncludeType type, bool isInDebugMode)
+		public string RenderIncludes(ICollection<string> sources, IncludeType type, bool isInDebugMode)
 		{
 			var toRender = new StringBuilder();
 			if (isInDebugMode)
@@ -39,7 +39,7 @@ namespace Nrws.Web.IncludeCombiner
 			}
 			else
 			{
-				var hash = RegisterCombination(type, sources, DateTime.UtcNow);
+				var hash = RegisterCombination(sources, type, DateTime.UtcNow);
 				var compressorUrl = _sourceResolver.Resolve(string.Format("~/content/compressor/{0}", type));
 				var outputUrl = string.Format("{0}?hash={1}", compressorUrl, HttpUtility.UrlEncode(hash));
 				toRender.AppendFormat(_includeFormatStrings[type], outputUrl);
@@ -47,7 +47,7 @@ namespace Nrws.Web.IncludeCombiner
 			return toRender.ToString();
 		}
 
-		public string RegisterCombination(IncludeType type, IList<string> sources, DateTime now)
+		public string RegisterCombination(ICollection<string> sources, IncludeType type, DateTime now)
 		{
 			throw new NotImplementedException();
 		}

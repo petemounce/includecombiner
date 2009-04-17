@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
 
-namespace Nrws.Web.IncludeCombiner
+namespace Nrws.Web.IncludeHandling
 {
 	public static class IncludeCombinerHtmlExtensions
 	{

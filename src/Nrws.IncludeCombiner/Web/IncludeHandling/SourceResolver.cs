@@ -1,6 +1,6 @@
 using System.Web;
 
-namespace Nrws.Web.IncludeCombiner
+namespace Nrws.Web.IncludeHandling
 {
 	public class SourceResolver : ISourceResolver
 	{

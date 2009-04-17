@@ -40,7 +40,7 @@ namespace Nrws.Web.IncludeCombiner
 			else
 			{
 				var hash = RegisterCombination(type, sources, DateTime.UtcNow);
-				var compressorUrl = VirtualPathUtility.ToAbsolute(string.Format("~/content/compressor/{0}", type));
+				var compressorUrl = _sourceResolver.Resolve(string.Format("~/content/compressor/{0}", type));
 				var outputUrl = string.Format("{0}?hash={1}", compressorUrl, HttpUtility.UrlEncode(hash));
 				toRender.AppendFormat(_includeFormatStrings[type], outputUrl);
 			}

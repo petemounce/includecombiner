@@ -9,9 +9,9 @@ namespace Nrws
 {
 	public class QnDServiceLocator : IServiceLocator
 	{
-		private readonly IDictionary<Type, object> _types;
+		private static readonly IDictionary<Type, object> _types;
 
-		public QnDServiceLocator()
+		static QnDServiceLocator()
 		{
 			_types = new Dictionary<Type, object>
 			{

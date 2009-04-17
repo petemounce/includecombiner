@@ -1,12 +1,16 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
-
 using Microsoft.Practices.ServiceLocation;
 
 namespace Nrws.Web.IncludeCombiner
 {
 	public static class IncludeCombinerHtmlExtensions
 	{
+		public static string RenderIncludes(this HtmlHelper helper, IncludeType type)
+		{
+			return helper.RenderIncludes(type, helper.IsInDebugMode());
+		}
+
 		public static string RenderIncludes(this HtmlHelper helper, IncludeType type, bool isInDebugMode)
 		{
 			var sources = helper.ViewData[getViewDataKey(type)] as IList<string> ?? new List<string>();
@@ -16,9 +20,19 @@ namespace Nrws.Web.IncludeCombiner
 			return toRender;
 		}
 
+		public static string RenderCss(this HtmlHelper helper)
+		{
+			return helper.RenderCss(helper.IsInDebugMode());
+		}
+
 		public static string RenderCss(this HtmlHelper helper, bool isInDebugMode)
 		{
 			return helper.RenderIncludes(IncludeType.Css, isInDebugMode);
+		}
+
+		public static string RenderScript(this HtmlHelper helper)
+		{
+			return helper.RenderScript(helper.IsInDebugMode());
 		}
 
 		public static string RenderScript(this HtmlHelper helper, bool isInDebugMode)

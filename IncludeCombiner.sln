@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nrws", "src\Nrws.IncludeCombiner\Nrws.csproj", "{81F9E621-013D-430C-825F-F0A6BA7D163B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nrws", "src\Nrws\Nrws.csproj", "{81F9E621-013D-430C-825F-F0A6BA7D163B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nrws.Unit.Tests", "src\Nrws.IncludeCombiner.Unit.Tests\Nrws.Unit.Tests.csproj", "{DB7129C4-978A-47A5-B879-BD0D4A484D89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nrws.Unit.Tests", "src\Nrws.Unit.Tests\Nrws.Unit.Tests.csproj", "{DB7129C4-978A-47A5-B879-BD0D4A484D89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nrws.Integration.Tests", "src\Nrws.IncludeCombiner.Integration.Tests\Nrws.Integration.Tests.csproj", "{28157901-F128-49CB-99B1-A832B1D453ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nrws.Integration.Tests", "src\Nrws.Integration.Tests\Nrws.Integration.Tests.csproj", "{28157901-F128-49CB-99B1-A832B1D453ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Site", "src\Demo.Site\Demo.Site.csproj", "{E14AD029-5094-4BDB-95FA-D5E784A811B6}"
 EndProject

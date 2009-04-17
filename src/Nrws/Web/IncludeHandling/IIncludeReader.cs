@@ -2,6 +2,7 @@ namespace Nrws.Web.IncludeHandling
 {
 	public interface IIncludeReader
 	{
-		string Read(string source);
+		string MapToAbsoluteUri(string source);
+		Include Read(string source, IncludeType type);
 	}
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 
+using Nrws.Web.IncludeCombiner;
+
 using Xunit;
 using Xunit.Extensions;
 
-namespace Nrws.IncludeCombiner.Integration.Tests
+namespace Nrws.Integration.Tests.Web.IncludeCombiner
 {
 	public class FileSystemIncludeReaderFacts
 	{

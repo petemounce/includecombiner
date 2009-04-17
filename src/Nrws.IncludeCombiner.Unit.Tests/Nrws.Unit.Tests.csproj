@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{28157901-F128-49CB-99B1-A832B1D453ED}</ProjectGuid>
+    <ProjectGuid>{DB7129C4-978A-47A5-B879-BD0D4A484D89}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nrws.IncludeCombiner.Integration.Tests</RootNamespace>
-    <AssemblyName>Nrws.IncludeCombiner.Integration.Tests</AssemblyName>
+    <RootNamespace>Nrws.Unit.Tests</RootNamespace>
+    <AssemblyName>Nrws.Unit.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -35,8 +35,23 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\3rdparty\commonservicelocator\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.5.0.1337, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\3rdparty\rhino\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\3rdparty\aspnetmvc\Assemblies\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Routing">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="xunit, Version=1.1.0.1323, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -49,19 +64,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileSystemIncludeReaderFacts.cs" />
+    <Compile Include="Web\IncludeCombiner\IncludeCombinerHtmlExtensionsFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\UtilityHtmlExtensionsFacts.cs" />
+    <Compile Include="Web\WebTestUtility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nrws.IncludeCombiner\Nrws.IncludeCombiner.csproj">
+    <ProjectReference Include="..\Nrws.IncludeCombiner\Nrws.csproj">
       <Project>{81F9E621-013D-430C-825F-F0A6BA7D163B}</Project>
-      <Name>Nrws.IncludeCombiner</Name>
+      <Name>Nrws</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="tests\exists.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

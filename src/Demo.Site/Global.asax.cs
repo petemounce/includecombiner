@@ -4,7 +4,7 @@ using System.Web.Routing;
 
 using Microsoft.Practices.ServiceLocation;
 
-using Nrws.IncludeCombiner;
+using Nrws;
 
 namespace Demo.Site
 {

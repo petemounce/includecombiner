@@ -88,9 +88,9 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nrws.IncludeCombiner\Nrws.IncludeCombiner.csproj">
+    <ProjectReference Include="..\Nrws.IncludeCombiner\Nrws.csproj">
       <Project>{81F9E621-013D-430C-825F-F0A6BA7D163B}</Project>
-      <Name>Nrws.IncludeCombiner</Name>
+      <Name>Nrws</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

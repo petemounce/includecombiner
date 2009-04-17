@@ -1,4 +1,4 @@
-namespace Nrws.IncludeCombiner
+namespace Nrws.Web.IncludeCombiner
 {
 	public interface IIncludeReader
 	{

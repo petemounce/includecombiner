@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 using Microsoft.Practices.ServiceLocation;
 
-namespace Nrws.IncludeCombiner
+using Nrws.Web.IncludeCombiner;
+
+namespace Nrws
 {
 	public class QnDServiceLocator : IServiceLocator
 	{

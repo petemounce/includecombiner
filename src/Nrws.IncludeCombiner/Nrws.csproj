@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DB7129C4-978A-47A5-B879-BD0D4A484D89}</ProjectGuid>
+    <ProjectGuid>{81F9E621-013D-430C-825F-F0A6BA7D163B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nrws.IncludeCombiner.Unit.Tests</RootNamespace>
-    <AssemblyName>Nrws.IncludeCombiner.Unit.Tests</AssemblyName>
+    <RootNamespace>Nrws</RootNamespace>
+    <AssemblyName>Nrws</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -35,10 +35,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\3rdparty\commonservicelocator\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Rhino.Mocks, Version=3.5.0.1337, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\3rdparty\rhino\Rhino.Mocks.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -51,27 +47,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\3rdparty\aspnetmvc\Assemblies\System.Web.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Routing">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="xunit, Version=1.1.0.1323, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\3rdparty\xunit\xunit.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.extensions, Version=1.1.0.1323, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\3rdparty\xunit\xunit.extensions.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HtmlExtensionsFacts.cs" />
+    <Compile Include="Web\IncludeCombiner\FileSystemIncludeReader.cs" />
+    <Compile Include="Web\IncludeCombiner\IncludeCombinerHtmlExtensions.cs" />
+    <Compile Include="Web\IncludeCombiner\IIncludeCombiner.cs" />
+    <Compile Include="Web\IncludeCombiner\IIncludeReader.cs" />
+    <Compile Include="Web\IncludeCombiner\Include.cs" />
+    <Compile Include="Web\IncludeCombiner\IncludeCombiner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nrws.IncludeCombiner\Nrws.IncludeCombiner.csproj">
-      <Project>{81F9E621-013D-430C-825F-F0A6BA7D163B}</Project>
-      <Name>Nrws.IncludeCombiner</Name>
-    </ProjectReference>
+    <Compile Include="QnDServiceLocator.cs" />
+    <Compile Include="Web\UtilityHtmlExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

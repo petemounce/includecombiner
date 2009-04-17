@@ -1,39 +1,29 @@
-using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
 using Microsoft.Practices.ServiceLocation;
 
-namespace Nrws.IncludeCombiner
+namespace Nrws.Web.IncludeCombiner
 {
-	public static class HtmlExtensions
+	public static class IncludeCombinerHtmlExtensions
 	{
-		public static bool IsInDebugMode(this HtmlHelper helper)
-		{
-			var debugCookie = helper.ViewContext.HttpContext.Request.Cookies["debug"];
-			var trueByCookie = (debugCookie != null && debugCookie.Value == "1" && debugCookie.Expires > DateTime.UtcNow);
-			var debugQueryString = helper.ViewContext.HttpContext.Request.QueryString["debug"];
-			var trueByQueryString = (debugQueryString != null && debugQueryString == "1");
-			return trueByQueryString || trueByCookie;
-		}
-
-		public static string RenderIncludes(this HtmlHelper helper, IncludeType type)
+		public static string RenderIncludes(this HtmlHelper helper, IncludeType type, bool isInDebugMode)
 		{
 			var sources = helper.ViewData[getViewDataKey(type)] as IList<string> ?? new List<string>();
 			var combiner = ServiceLocator.Current.GetInstance<IIncludeCombiner>();
-			var toRender = combiner.RenderIncludes(sources, type, helper.IsInDebugMode());
+			var toRender = combiner.RenderIncludes(sources, type, isInDebugMode);
 			helper.ViewData[getViewDataKey(type)] = new List<string>();
 			return toRender;
 		}
 
-		public static string RenderCss(this HtmlHelper helper)
+		public static string RenderCss(this HtmlHelper helper, bool isInDebugMode)
 		{
-			return helper.RenderIncludes(IncludeType.Css);
+			return helper.RenderIncludes(IncludeType.Css, isInDebugMode);
 		}
 
-		public static string RenderScript(this HtmlHelper helper)
+		public static string RenderScript(this HtmlHelper helper, bool isInDebugMode)
 		{
-			return helper.RenderIncludes(IncludeType.Script);
+			return helper.RenderIncludes(IncludeType.Script, isInDebugMode);
 		}
 
 		public static void Include(this HtmlHelper helper, IncludeType type, string relativePath)
@@ -95,7 +85,7 @@ namespace Nrws.IncludeCombiner
 
 		private static string getViewDataKey(IncludeType type)
 		{
-			return typeof (HtmlExtensions).FullName + "_" + type;
+			return typeof (IncludeCombinerHtmlExtensions).FullName + "_" + type;
 		}
 	}
 }

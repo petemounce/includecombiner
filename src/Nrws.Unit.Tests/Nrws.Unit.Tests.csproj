@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KeyGeneratorFacts.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombinerFacts.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombinerHtmlExtensionsFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

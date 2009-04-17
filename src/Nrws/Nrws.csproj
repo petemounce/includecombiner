@@ -49,6 +49,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IKeyGenerator.cs" />
+    <Compile Include="KeyGenerator.cs" />
     <Compile Include="Web\IncludeHandling\FileSystemIncludeReader.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombinerHtmlExtensions.cs" />
     <Compile Include="Web\IncludeHandling\IIncludeCombiner.cs" />

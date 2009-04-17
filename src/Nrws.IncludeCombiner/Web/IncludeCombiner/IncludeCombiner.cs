@@ -19,6 +19,13 @@ namespace Nrws.Web.IncludeCombiner
 				}
 		};
 
+		private readonly ISourceResolver _sourceResolver;
+
+		public IncludeCombiner(ISourceResolver sourceResolver)
+		{
+			_sourceResolver = sourceResolver;
+		}
+
 		public string RenderIncludes(IList<string> sources, IncludeType type, bool isInDebugMode)
 		{
 			var toRender = new StringBuilder();
@@ -26,8 +33,8 @@ namespace Nrws.Web.IncludeCombiner
 			{
 				foreach (var source in sources)
 				{
-					var absolute = VirtualPathUtility.ToAbsolute(source);
-					toRender.AppendFormat(_includeFormatStrings[type], absolute).AppendLine();
+					var url = _sourceResolver.Resolve(source);
+					toRender.AppendFormat(_includeFormatStrings[type], url).AppendLine();
 				}
 			}
 			else

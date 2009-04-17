@@ -57,6 +57,8 @@
     <Compile Include="Web\IncludeCombiner\IncludeCombiner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QnDServiceLocator.cs" />
+    <Compile Include="Web\IncludeCombiner\ISourceResolver.cs" />
+    <Compile Include="Web\IncludeCombiner\SourceResolver.cs" />
     <Compile Include="Web\UtilityHtmlExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

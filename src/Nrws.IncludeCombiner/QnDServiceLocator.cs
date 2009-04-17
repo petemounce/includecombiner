@@ -15,8 +15,11 @@ namespace Nrws
 		{
 			_types = new Dictionary<Type, object>
 			{
-				{ typeof (IIncludeCombiner), new IncludeCombiner() }
+				{ typeof (ISourceResolver), new SourceResolver() },
+				
 			};
+			var combiner = new IncludeCombiner((ISourceResolver) _types[typeof (ISourceResolver)]);
+			_types.Add(typeof (IIncludeCombiner), combiner);
 		}
 
 		public object GetService(Type serviceType)

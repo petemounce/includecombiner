@@ -40,61 +40,43 @@ namespace Nrws.Web.IncludeHandling
 			return helper.RenderIncludes(IncludeType.Js, isInDebugMode);
 		}
 
-		public static void Include(this HtmlHelper helper, IncludeType type, string relativePath)
+		public static void Include(this HtmlHelper helper, IncludeType type, string source)
 		{
-			var relativePathsToInclude =
+			var sourcesToInclude =
 				helper.ViewData[getViewDataKey(type)] as IList<string> ?? new List<string>();
-			if (!relativePathsToInclude.Contains(relativePath))
+			if (!sourcesToInclude.Contains(source))
 			{
-				relativePathsToInclude.Add(relativePath);
+				sourcesToInclude.Add(source);
 			}
-			helper.ViewData[getViewDataKey(type)] = relativePathsToInclude;
+			helper.ViewData[getViewDataKey(type)] = sourcesToInclude;
 		}
 
-		public static void Include(this HtmlHelper helper, IncludeType type, params string[] relativePaths)
+		public static void Include(this HtmlHelper helper, IncludeType type, params string[] sources)
 		{
-			foreach (var path in relativePaths)
-			{
-				helper.Include(type, path);
-			}
-		}
-
-		public static void Include(this HtmlHelper helper, IncludeType type, IList<string> relativePaths)
-		{
-			foreach (var path in relativePaths)
+			foreach (var path in sources)
 			{
 				helper.Include(type, path);
 			}
 		}
 
-		public static void IncludeCss(this HtmlHelper helper, string relativePath)
+		public static void IncludeCss(this HtmlHelper helper, string source)
 		{
-			helper.Include(IncludeType.Css, relativePath);
+			helper.Include(IncludeType.Css, source);
 		}
 
-		public static void IncludeCss(this HtmlHelper helper, params string[] relativePaths)
+		public static void IncludeCss(this HtmlHelper helper, params string[] sources)
 		{
-			helper.Include(IncludeType.Css, relativePaths);
+			helper.Include(IncludeType.Css, sources);
 		}
 
-		public static void IncludeCss(this HtmlHelper helper, IList<string> relativePaths)
+		public static void IncludeJs(this HtmlHelper helper, string source)
 		{
-			helper.Include(IncludeType.Css, relativePaths);
+			helper.Include(IncludeType.Js, source);
 		}
 
-		public static void IncludeJs(this HtmlHelper helper, string relativePath)
+		public static void IncludeJs(this HtmlHelper helper, params string[] sources)
 		{
-			helper.Include(IncludeType.Js, relativePath);
-		}
-
-		public static void IncludeJs(this HtmlHelper helper, params string[] relativePaths)
-		{
-			helper.Include(IncludeType.Js, relativePaths);
-		}
-
-		public static void IncludeJs(this HtmlHelper helper, IList<string> relativePaths)
-		{
-			Include(helper, IncludeType.Js, (string[]) relativePaths);
+			helper.Include(IncludeType.Js, sources);
 		}
 
 		private static string getViewDataKey(IncludeType type)

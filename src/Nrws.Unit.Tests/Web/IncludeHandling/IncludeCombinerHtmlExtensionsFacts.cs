@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
 using Nrws.Web.IncludeHandling;
 using Rhino.Mocks;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Nrws.Unit.Tests.Web.IncludeHandling
 {
@@ -68,6 +66,28 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		}
 
 		[Fact]
+		public void IncludeJs_ViaParams_ShouldWork()
+		{
+			_html.IncludeJs("foo.js", "bar.js");
+			var set = _viewData[getViewDataKey(IncludeType.Js)] as IList<string>;
+			Assert.NotNull(set);
+			Assert.Equal(2, set.Count);
+			Assert.Equal("foo.js", set[0]);
+			Assert.Equal("bar.js", set[1]);
+		}
+
+		[Fact]
+		public void IncludeCss_ViaParams_ShouldWork()
+		{
+			_html.IncludeCss("foo.css", "bar.css");
+			var set = _viewData[getViewDataKey(IncludeType.Css)] as IList<string>;
+			Assert.NotNull(set);
+			Assert.Equal(2, set.Count);
+			Assert.Equal("foo.css", set[0]);
+			Assert.Equal("bar.css", set[1]);
+		}
+
+		[Fact]
 		public void AddIncludesOfDifferentTypes_ShouldAddToAppropriateSet()
 		{
 			_html.IncludeJs("foo.js");
@@ -85,7 +105,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		}
 
 		[Fact]
-		public void Rendering_ShouldFlushTheSet()
+		public void RenderCss_ShouldFlushTheSet()
 		{
 			_html.IncludeCss("/foo.css");
 			var before = _viewData[getViewDataKey(IncludeType.Css)] as IList<string>;
@@ -94,6 +114,19 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_html.RenderCss(true);
 
 			var after = _viewData[getViewDataKey(IncludeType.Css)] as IList<string>;
+			Assert.Equal(0, after.Count);
+		}
+
+		[Fact]
+		public void RenderJs_ShouldFlushTheSet()
+		{
+			_html.IncludeJs("/foo.js");
+			var before = _viewData[getViewDataKey(IncludeType.Js)] as IList<string>;
+			Assert.Equal(1, before.Count);
+
+			_html.RenderJs(true);
+
+			var after = _viewData[getViewDataKey(IncludeType.Js)] as IList<string>;
 			Assert.Equal(0, after.Count);
 		}
 

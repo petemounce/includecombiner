@@ -69,10 +69,15 @@
     <Compile Include="Web\IncludeHandling\IncludeCombinerHtmlExtensionsFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombinerInteractionFacts.cs" />
+    <Compile Include="Web\IncludeHandling\IncludeStorageFacts.cs" />
     <Compile Include="Web\UtilityHtmlExtensionsFacts.cs" />
     <Compile Include="Web\WebTestUtility.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Demo.Site\Demo.Site.csproj">
+      <Project>{E14AD029-5094-4BDB-95FA-D5E784A811B6}</Project>
+      <Name>Demo.Site</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nrws\Nrws.csproj">
       <Project>{81F9E621-013D-430C-825F-F0A6BA7D163B}</Project>
       <Name>Nrws</Name>

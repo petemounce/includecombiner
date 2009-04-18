@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
+using Nrws;
 using Nrws.Web.IncludeHandling;
 
-namespace Nrws
+namespace Demo.Site
 {
 	public class QnDServiceLocator : IServiceLocator
 	{
@@ -15,7 +16,7 @@ namespace Nrws
 			{
 				{ typeof (IIncludeReader), new IncludeReader() },
 				{ typeof(IKeyGenerator), new KeyGenerator()},
-				{ typeof(IIncludeStorage), new MemoryIncludeStorage()}
+				{ typeof(IIncludeStorage), new StaticIncludeStorage()}
 			};
 			var includeReader = (IIncludeReader) _types[typeof (IIncludeReader)];
 			var keyGen = (IKeyGenerator)_types[typeof(IKeyGenerator)];

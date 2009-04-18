@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
+using Demo.Site;
 using Microsoft.Practices.ServiceLocation;
 using Nrws.Web.IncludeHandling;
 using Rhino.Mocks;

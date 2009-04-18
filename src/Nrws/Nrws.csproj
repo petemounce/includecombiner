@@ -60,7 +60,6 @@
     <Compile Include="Web\IncludeHandling\Include.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombiner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QnDServiceLocator.cs" />
     <Compile Include="Web\IncludeHandling\MemoryIncludeStorage.cs" />
     <Compile Include="Web\UtilityHtmlExtensions.cs" />
   </ItemGroup>

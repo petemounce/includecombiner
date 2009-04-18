@@ -4,8 +4,6 @@ using System.Web.Routing;
 
 using Microsoft.Practices.ServiceLocation;
 
-using Nrws;
-
 namespace Demo.Site
 {
 	// Note: For instructions on enabling IIS6 or IIS7 classic mode, 

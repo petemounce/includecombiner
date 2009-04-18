@@ -10,7 +10,7 @@ namespace Nrws.Web.IncludeHandling
 		private static readonly IDictionary<IncludeType, string> _includeFormatStrings = new Dictionary<IncludeType, string>
 		{
 			{
-				IncludeType.Script,
+				IncludeType.Js,
 				"<script type='text/javascript' src='{0}'></script>"
 				},
 			{
@@ -19,11 +19,15 @@ namespace Nrws.Web.IncludeHandling
 				}
 		};
 
-		private readonly ISourceResolver _sourceResolver;
+		private readonly IIncludeReader _reader;
+		private readonly IKeyGenerator _keyGen;
+		private readonly IIncludeStorage _storage;
 
-		public IncludeCombiner(ISourceResolver sourceResolver)
+		public IncludeCombiner(IIncludeReader reader, IKeyGenerator keyGen, IIncludeStorage storage)
 		{
-			_sourceResolver = sourceResolver;
+			_reader = reader;
+			_keyGen = keyGen;
+			_storage = storage;
 		}
 
 		public string RenderIncludes(ICollection<string> sources, IncludeType type, bool isInDebugMode)
@@ -33,15 +37,14 @@ namespace Nrws.Web.IncludeHandling
 			{
 				foreach (var source in sources)
 				{
-					var url = _sourceResolver.Resolve(source);
+					var url = _reader.MapToAbsoluteUri(source);
 					toRender.AppendFormat(_includeFormatStrings[type], url).AppendLine();
 				}
 			}
 			else
 			{
 				var hash = RegisterCombination(sources, type, DateTime.UtcNow);
-				var compressorUrl = _sourceResolver.Resolve(string.Format("~/content/compressor/{0}", type));
-				var outputUrl = string.Format("{0}?hash={1}", compressorUrl, HttpUtility.UrlEncode(hash));
+				var outputUrl = _reader.MapToAbsoluteUri(string.Format("~/content/{0}/{1}.{0}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
 				toRender.AppendFormat(_includeFormatStrings[type], outputUrl);
 			}
 			return toRender.ToString();
@@ -49,7 +52,26 @@ namespace Nrws.Web.IncludeHandling
 
 		public string RegisterCombination(ICollection<string> sources, IncludeType type, DateTime now)
 		{
-			throw new NotImplementedException();
+			var longKey = new StringBuilder();
+			var combinedContent = new StringBuilder();
+			foreach (var source in sources)
+			{
+				longKey.Append("|").Append(source);
+				var include = RegisterInclude(source, type);
+				combinedContent.Append(include.Content).AppendLine();
+			}
+			longKey.Remove(0, 1);
+			var key = _keyGen.Generate(longKey.ToString());
+			var combination = new IncludeCombination(key, type, combinedContent.ToString(), now);
+			_storage.Store(combination);
+			return key;
+		}
+
+		public Include RegisterInclude(string source, IncludeType type)
+		{
+			var include = _reader.Read(source, type);
+			_storage.Store(include);
+			return include;
 		}
 	}
 }

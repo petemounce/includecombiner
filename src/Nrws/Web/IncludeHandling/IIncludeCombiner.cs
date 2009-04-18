@@ -7,5 +7,6 @@ namespace Nrws.Web.IncludeHandling
 	{
 		string RenderIncludes(ICollection<string> sources, IncludeType type, bool isInDebugMode);
 		string RegisterCombination(ICollection<string> sources, IncludeType type, DateTime now);
+		Include RegisterInclude(string source, IncludeType type);
 	}
 }

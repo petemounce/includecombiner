@@ -8,7 +8,7 @@
 	</title>
 	<% Html.IncludeCss("~/content/css/site.css"); %>
 	<%= Html.RenderCss() %>
-	<% Html.IncludeScript("~/content/js/lib/jq/jquery.js"); %>
+	<% Html.IncludeJs("~/content/js/lib/jq/jquery.js"); %>
 </head>
 <body>
 	<div class="page">
@@ -34,6 +34,6 @@
 			</div>
 		</div>
 	</div>
-	<%= Html.RenderScript() %>
+	<%= Html.RenderJs() %>
 </body>
 </html>

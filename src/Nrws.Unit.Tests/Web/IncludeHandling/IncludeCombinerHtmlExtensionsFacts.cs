@@ -41,11 +41,11 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void AddMultipleIncludes_ShouldAppendIncludeToSetInSameOrderAsAdded()
 		{
-			_html.IncludeScript("foo");
-			_html.IncludeScript("bar");
-			_html.IncludeScript("baz");
+			_html.IncludeJs("foo");
+			_html.IncludeJs("bar");
+			_html.IncludeJs("baz");
 
-			var set = _viewData[getViewDataKey(IncludeType.Script)] as IList<string>;
+			var set = _viewData[getViewDataKey(IncludeType.Js)] as IList<string>;
 			Assert.NotNull(set);
 			Assert.Equal(3, set.Count);
 			Assert.Equal("foo", set[0]);
@@ -56,11 +56,11 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void AddSameIncludeMoreThanOnce_ShouldOnlyAddIncludeTheFirstTime()
 		{
-			_html.IncludeScript("foo");
-			_html.IncludeScript("bar");
-			_html.IncludeScript("foo");
+			_html.IncludeJs("foo");
+			_html.IncludeJs("bar");
+			_html.IncludeJs("foo");
 
-			var set = _viewData[getViewDataKey(IncludeType.Script)] as IList<string>;
+			var set = _viewData[getViewDataKey(IncludeType.Js)] as IList<string>;
 			Assert.NotNull(set);
 			Assert.Equal(2, set.Count);
 			Assert.Equal("foo", set[0]);
@@ -70,10 +70,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void AddIncludesOfDifferentTypes_ShouldAddToAppropriateSet()
 		{
-			_html.IncludeScript("foo.js");
+			_html.IncludeJs("foo.js");
 			_html.IncludeCss("foo.css");
 
-			var jsSet = _viewData[getViewDataKey(IncludeType.Script)] as IList<string>;
+			var jsSet = _viewData[getViewDataKey(IncludeType.Js)] as IList<string>;
 			Assert.NotNull(jsSet);
 			Assert.Equal(1, jsSet.Count);
 			Assert.Equal("foo.js", jsSet[0]);

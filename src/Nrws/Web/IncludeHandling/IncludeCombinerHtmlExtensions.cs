@@ -30,14 +30,14 @@ namespace Nrws.Web.IncludeHandling
 			return helper.RenderIncludes(IncludeType.Css, isInDebugMode);
 		}
 
-		public static string RenderScript(this HtmlHelper helper)
+		public static string RenderJs(this HtmlHelper helper)
 		{
-			return helper.RenderScript(helper.IsInDebugMode());
+			return helper.RenderJs(helper.IsInDebugMode());
 		}
 
-		public static string RenderScript(this HtmlHelper helper, bool isInDebugMode)
+		public static string RenderJs(this HtmlHelper helper, bool isInDebugMode)
 		{
-			return helper.RenderIncludes(IncludeType.Script, isInDebugMode);
+			return helper.RenderIncludes(IncludeType.Js, isInDebugMode);
 		}
 
 		public static void Include(this HtmlHelper helper, IncludeType type, string relativePath)
@@ -82,19 +82,19 @@ namespace Nrws.Web.IncludeHandling
 			helper.Include(IncludeType.Css, relativePaths);
 		}
 
-		public static void IncludeScript(this HtmlHelper helper, string relativePath)
+		public static void IncludeJs(this HtmlHelper helper, string relativePath)
 		{
-			helper.Include(IncludeType.Script, relativePath);
+			helper.Include(IncludeType.Js, relativePath);
 		}
 
-		public static void IncludeScript(this HtmlHelper helper, params string[] relativePaths)
+		public static void IncludeJs(this HtmlHelper helper, params string[] relativePaths)
 		{
-			helper.Include(IncludeType.Script, relativePaths);
+			helper.Include(IncludeType.Js, relativePaths);
 		}
 
-		public static void IncludeScript(this HtmlHelper helper, IList<string> relativePaths)
+		public static void IncludeJs(this HtmlHelper helper, IList<string> relativePaths)
 		{
-			Include(helper, IncludeType.Script, (string[]) relativePaths);
+			Include(helper, IncludeType.Js, (string[]) relativePaths);
 		}
 
 		private static string getViewDataKey(IncludeType type)

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-
 using Microsoft.Practices.ServiceLocation;
-
 using Nrws.Web.IncludeHandling;
 
 namespace Nrws
@@ -15,10 +13,14 @@ namespace Nrws
 		{
 			_types = new Dictionary<Type, object>
 			{
-				{ typeof (ISourceResolver), new SourceResolver() },
-				
+				{ typeof (IIncludeReader), new IncludeReader() },
+				{ typeof(IKeyGenerator), new KeyGenerator()},
+				{ typeof(IIncludeStorage), new MemoryIncludeStorage()}
 			};
-			var combiner = new IncludeCombiner((ISourceResolver) _types[typeof (ISourceResolver)]);
+			var includeReader = (IIncludeReader) _types[typeof (IIncludeReader)];
+			var keyGen = (IKeyGenerator)_types[typeof(IKeyGenerator)];
+			var storage = (IIncludeStorage) _types[typeof (IIncludeStorage)];
+			var combiner = new IncludeCombiner(includeReader, keyGen, storage);
 			_types.Add(typeof (IIncludeCombiner), combiner);
 		}
 
@@ -44,7 +46,7 @@ namespace Nrws
 
 		public TService GetInstance<TService>()
 		{
-			return (TService)GetInstance(typeof (TService));
+			return (TService) GetInstance(typeof (TService));
 		}
 
 		public TService GetInstance<TService>(string key)

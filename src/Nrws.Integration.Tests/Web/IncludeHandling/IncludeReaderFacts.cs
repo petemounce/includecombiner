@@ -20,7 +20,7 @@ namespace Nrws.Integration.Tests.Web.IncludeHandling
 		public void WhenFileExists_WillReadIt()
 		{
 			Include include = null;
-			Assert.DoesNotThrow(() => include = _reader.Read("tests\\exists.txt", IncludeType.Script));
+			Assert.DoesNotThrow(() => include = _reader.Read("tests\\exists.txt", IncludeType.Js));
 			Assert.Equal("hello world", include.Content);
 		}
 

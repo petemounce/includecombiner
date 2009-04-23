@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Mvc;
 using Demo.Site;
 using Microsoft.Practices.ServiceLocation;
+using Nrws.Web;
 using Nrws.Web.IncludeHandling;
 using Rhino.Mocks;
 using Xunit;
@@ -13,12 +15,15 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly HtmlHelper _html;
 		private readonly MockRepository _mocks;
 		private readonly ViewDataDictionary _viewData;
+		private readonly IHttpContextProvider _mockHttpContextProvider;
 
 		public IncludeCombinerHtmlExtensionsFacts()
 		{
 			_mocks = new MockRepository();
 
-			ServiceLocator.SetLocatorProvider(() => new QnDServiceLocator());
+			_mockHttpContextProvider = _mocks.Stub<IHttpContextProvider>();
+			_mockHttpContextProvider.Expect(hcp => hcp.Request).Return(_mocks.Stub<HttpRequestBase>()).Repeat.Twice();
+			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(_mockHttpContextProvider));
 
 			_viewData = new ViewDataDictionary();
 

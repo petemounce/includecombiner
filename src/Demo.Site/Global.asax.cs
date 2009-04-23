@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 
 using Microsoft.Practices.ServiceLocation;
+using Nrws.Web;
 
 namespace Demo.Site
 {
@@ -25,7 +26,7 @@ namespace Demo.Site
 		protected void Application_Start()
 		{
 			RegisterRoutes(RouteTable.Routes);
-			ServiceLocator.SetLocatorProvider(() => new QnDServiceLocator());
+			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(new HttpContextProvider(HttpContext.Current)));
 		}
 	}
 }

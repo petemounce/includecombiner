@@ -99,7 +99,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		{
 			foreach (var kvp in includes)
 			{
-				_mockReader.Expect(sr => sr.MapToAbsoluteUri(kvp.Key)).Return(kvp.Value);
+				_mockReader.Expect(sr => sr.ToAbsolute(kvp.Key)).Return(kvp.Value);
 			}
 			string rendered = null;
 			Assert.DoesNotThrow(() => rendered = _combiner.RenderIncludes(includes.Keys, type, true));
@@ -117,7 +117,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 				_mockReader.Expect(r => r.Read(kvp.Key, type)).Return(include);
 				_mockStorage.Expect(s => s.Store(include));
 			}
-			_mockReader.Expect(r => r.MapToAbsoluteUri(Arg<string>.Is.NotNull)).Return(string.Format("/content/{0}/{1}.{0}", type.ToString().ToLowerInvariant(), key));
+			_mockReader.Expect(r => r.ToAbsolute(Arg<string>.Is.NotNull)).Return(string.Format("/content/{0}/{1}.{0}", type.ToString().ToLowerInvariant(), key));
 			_mockKeyGen.Expect(kg => kg.Generate(Arg<string>.Is.Anything)).Return(key);
 			_mockStorage.Expect(s => s.Store(Arg<IncludeCombination>.Is.NotNull));
 

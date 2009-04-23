@@ -37,14 +37,14 @@ namespace Nrws.Web.IncludeHandling
 			{
 				foreach (var source in sources)
 				{
-					var url = _reader.MapToAbsoluteUri(source);
+					var url = _reader.ToAbsolute(source);
 					toRender.AppendFormat(_includeFormatStrings[type], url).AppendLine();
 				}
 			}
 			else
 			{
 				var hash = RegisterCombination(sources, type, DateTime.UtcNow);
-				var outputUrl = _reader.MapToAbsoluteUri(string.Format("~/content/{0}/{1}.{0}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
+				var outputUrl = _reader.ToAbsolute(string.Format("~/content/{0}/{1}.{0}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
 				toRender.AppendFormat(_includeFormatStrings[type], outputUrl);
 			}
 			return toRender.ToString();

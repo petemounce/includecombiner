@@ -1,19 +1,16 @@
 ﻿using System;
-
 using Nrws.Web.IncludeHandling;
-
 using Xunit;
-using Xunit.Extensions;
 
 namespace Nrws.Integration.Tests.Web.IncludeHandling
 {
-	public class IncludeReaderFacts
+	public class FileSystemIncludeReaderFacts
 	{
 		private readonly IIncludeReader _reader;
 
-		public IncludeReaderFacts()
+		public FileSystemIncludeReaderFacts()
 		{
-			_reader = new IncludeReader();
+			_reader = new FileSystemIncludeReader("/", Environment.CurrentDirectory);
 		}
 
 		[Fact]
@@ -22,14 +19,6 @@ namespace Nrws.Integration.Tests.Web.IncludeHandling
 			Include include = null;
 			Assert.DoesNotThrow(() => include = _reader.Read("tests\\exists.txt", IncludeType.Js));
 			Assert.Equal("hello world", include.Content);
-		}
-
-		[Theory]
-		[InlineData("")]
-		[InlineData(null)]
-		public void WhenSourceMissing_WillThrow(string source)
-		{
-			Assert.Throws<ArgumentException>(() => _reader.Read(source, IncludeType.Css));
 		}
 
 		[Fact]

@@ -51,9 +51,11 @@
   <ItemGroup>
     <Compile Include="IKeyGenerator.cs" />
     <Compile Include="KeyGenerator.cs" />
+    <Compile Include="Web\HttpContextProvider.cs" />
+    <Compile Include="Web\IHttpContextProvider.cs" />
     <Compile Include="Web\IncludeHandling\IIncludeStorage.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombination.cs" />
-    <Compile Include="Web\IncludeHandling\IncludeReader.cs" />
+    <Compile Include="Web\IncludeHandling\FileSystemIncludeReader.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombinerHtmlExtensions.cs" />
     <Compile Include="Web\IncludeHandling\IIncludeCombiner.cs" />
     <Compile Include="Web\IncludeHandling\IIncludeReader.cs" />

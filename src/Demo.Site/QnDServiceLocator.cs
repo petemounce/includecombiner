@@ -2,27 +2,18 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Nrws;
+using Nrws.Web;
 using Nrws.Web.IncludeHandling;
 
 namespace Demo.Site
 {
 	public class QnDServiceLocator : IServiceLocator
 	{
-		private static readonly IDictionary<Type, object> _types;
+		private static IDictionary<Type, object> _types;
 
-		static QnDServiceLocator()
+		public QnDServiceLocator(IDictionary<Type, object> types)
 		{
-			_types = new Dictionary<Type, object>
-			{
-				{ typeof (IIncludeReader), new IncludeReader() },
-				{ typeof(IKeyGenerator), new KeyGenerator()},
-				{ typeof(IIncludeStorage), new StaticIncludeStorage()}
-			};
-			var includeReader = (IIncludeReader) _types[typeof (IIncludeReader)];
-			var keyGen = (IKeyGenerator)_types[typeof(IKeyGenerator)];
-			var storage = (IIncludeStorage) _types[typeof (IIncludeStorage)];
-			var combiner = new IncludeCombiner(includeReader, keyGen, storage);
-			_types.Add(typeof (IIncludeCombiner), combiner);
+			_types = types;
 		}
 
 		public object GetService(Type serviceType)
@@ -58,6 +49,24 @@ namespace Demo.Site
 		public IEnumerable<TService> GetAllInstances<TService>()
 		{
 			throw new NotImplementedException();
+		}
+
+		public static QnDServiceLocator Create(IHttpContextProvider http)
+		{
+			var types = new Dictionary<Type, object>
+			{
+				{ typeof (IHttpContextProvider), http },
+				{ typeof (IKeyGenerator), new KeyGenerator() },
+				{ typeof (IIncludeStorage), new StaticIncludeStorage() }
+			};
+			types.Add(typeof (IIncludeReader), new FileSystemIncludeReader((IHttpContextProvider) types[typeof (IHttpContextProvider)]));
+
+			var includeReader = (IIncludeReader) types[typeof (IIncludeReader)];
+			var keyGen = (IKeyGenerator) types[typeof (IKeyGenerator)];
+			var storage = (IIncludeStorage) types[typeof (IIncludeStorage)];
+			var combiner = new IncludeCombiner(includeReader, keyGen, storage);
+			types.Add(typeof (IIncludeCombiner), combiner);
+			return new QnDServiceLocator(types);
 		}
 	}
 }

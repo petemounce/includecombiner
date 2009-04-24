@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-
+using Demo.Site.Controllers;
 using Microsoft.Practices.ServiceLocation;
 using Nrws.Web;
 
@@ -16,6 +16,12 @@ namespace Demo.Site
 		{
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+			//routes.MapRoute(
+			//    "Includes",
+			//    "include/{action}/{key}",
+			//    new { controller = "Include", action = "index", key = "" }
+			//    );
+
 			routes.MapRoute(
 				"Default", // Route name
 				"{controller}/{action}/{id}", // URL with parameters
@@ -26,7 +32,10 @@ namespace Demo.Site
 		protected void Application_Start()
 		{
 			RegisterRoutes(RouteTable.Routes);
-			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(new HttpContextProvider(HttpContext.Current)));
+			var httpContextProvider = new HttpContextProvider(HttpContext.Current);
+			var controllers = new Controller[] { new HomeController(), new AccountController() };
+			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(httpContextProvider, controllers));
+			ControllerBuilder.Current.SetControllerFactory(new CommonServiceLocatorControllerFactory());
 		}
 	}
 }

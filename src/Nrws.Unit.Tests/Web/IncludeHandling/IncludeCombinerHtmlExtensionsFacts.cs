@@ -23,7 +23,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 
 			_mockHttpContextProvider = _mocks.Stub<IHttpContextProvider>();
 			_mockHttpContextProvider.Expect(hcp => hcp.Request).Return(_mocks.Stub<HttpRequestBase>()).Repeat.Twice();
-			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(_mockHttpContextProvider));
+			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(_mockHttpContextProvider, new Controller[]{}));
 
 			_viewData = new ViewDataDictionary();
 

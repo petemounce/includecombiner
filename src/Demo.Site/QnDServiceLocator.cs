@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
 using Nrws;
 using Nrws.Web;
@@ -51,7 +52,7 @@ namespace Demo.Site
 			throw new NotImplementedException();
 		}
 
-		public static QnDServiceLocator Create(IHttpContextProvider http)
+		public static QnDServiceLocator Create(IHttpContextProvider http, Controller[] controllers)
 		{
 			var types = new Dictionary<Type, object>
 			{
@@ -66,6 +67,12 @@ namespace Demo.Site
 			var storage = (IIncludeStorage) types[typeof (IIncludeStorage)];
 			var combiner = new IncludeCombiner(includeReader, keyGen, storage);
 			types.Add(typeof (IIncludeCombiner), combiner);
+
+			types.Add(typeof (IncludeController), new IncludeController(combiner));
+			foreach (var controller in controllers)
+			{
+				types.Add(controller.GetType(), controller);
+			}
 			return new QnDServiceLocator(types);
 		}
 	}

@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+
 namespace Nrws
 {
 	public interface IKeyGenerator
 	{
-		string Generate(string generateFrom);
+		string Generate(IEnumerable<string> generateFrom);
 	}
 }

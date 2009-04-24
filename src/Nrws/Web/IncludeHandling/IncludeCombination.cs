@@ -1,20 +1,21 @@
 using System;
+using System.Collections.Generic;
 
 namespace Nrws.Web.IncludeHandling
 {
 	public class IncludeCombination
 	{
-		public string Key { get; protected set; }
-		public IncludeType Type { get; protected set; }
-		public string Content { get; protected set; }
-		public DateTime LastModifiedAt { get; protected set; }
-
-		public IncludeCombination(string key, IncludeType type, string content, DateTime now)
+		public IncludeCombination(IncludeType type, IEnumerable<string> sources, string content, DateTime now)
 		{
-			Key = key;
 			Type = type;
+			Sources = sources;
 			Content = content;
 			LastModifiedAt = now;
 		}
+
+		public IncludeType Type { get; protected set; }
+		public IEnumerable<string> Sources { get; protected set; }
+		public string Content { get; protected set; }
+		public DateTime LastModifiedAt { get; protected set; }
 	}
 }

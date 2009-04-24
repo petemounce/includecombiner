@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Nrws.Web.IncludeHandling
 {
@@ -7,11 +8,18 @@ namespace Nrws.Web.IncludeHandling
 	{
 		private static readonly IDictionary<string, IncludeCombination> _combinations;
 		private static readonly IDictionary<string, Include> _includes;
-
+		
 		static StaticIncludeStorage()
 		{
 			_includes = new Dictionary<string, Include>();
 			_combinations = new Dictionary<string, IncludeCombination>();
+		}
+
+		private readonly IKeyGenerator _keyGen;
+
+		public StaticIncludeStorage(IKeyGenerator keyGen)
+		{
+			_keyGen = keyGen;
 		}
 
 		public void Store(Include include)
@@ -30,20 +38,23 @@ namespace Nrws.Web.IncludeHandling
 			}
 		}
 
-		public void Store(IncludeCombination combination)
+		public string Store(IncludeCombination combination)
 		{
 			if (combination == null)
 			{
 				throw new ArgumentNullException("combination");
 			}
-			if (!_combinations.ContainsKey(combination.Key))
+			var key = _keyGen.Generate(combination.Sources);
+
+			if (!_combinations.ContainsKey(key))
 			{
-				_combinations.Add(combination.Key, combination);
+				_combinations.Add(key, combination);
 			}
 			else
 			{
-				_combinations[combination.Key] = combination;
+				_combinations[key] = combination;
 			}
+			return key;
 		}
 
 		public IncludeCombination GetCombination(string key)

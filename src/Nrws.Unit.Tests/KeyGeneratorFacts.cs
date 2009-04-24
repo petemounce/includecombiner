@@ -22,7 +22,7 @@ namespace Nrws.Unit.Tests
 		public void Generate_WillGenerateAKeyBasedOnInput()
 		{
 			string key = null;
-			Assert.DoesNotThrow(() => key = _keygen.Generate("foobar"));
+			Assert.DoesNotThrow(() => key = _keygen.Generate(new[] { "foobar" }));
 			Assert.Equal("iEPX+SQWIR3p67lj/0zigSWTKHg=", key);
 		}
 
@@ -34,8 +34,8 @@ namespace Nrws.Unit.Tests
 			var input2 = random.Next().ToString();
 
 			string key1 = null, key2 = null;
-			Assert.DoesNotThrow(() => key1 = _keygen.Generate(input1));
-			Assert.DoesNotThrow(() => key2 = _keygen.Generate(input2));
+			Assert.DoesNotThrow(() => key1 = _keygen.Generate(new[] { input1 }));
+			Assert.DoesNotThrow(() => key2 = _keygen.Generate(new[] { input2 }));
 
 			if (input1 == input2)
 			{

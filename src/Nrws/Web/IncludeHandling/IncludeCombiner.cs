@@ -20,13 +20,11 @@ namespace Nrws.Web.IncludeHandling
 		};
 
 		private readonly IIncludeReader _reader;
-		private readonly IKeyGenerator _keyGen;
 		private readonly IIncludeStorage _storage;
 
-		public IncludeCombiner(IIncludeReader reader, IKeyGenerator keyGen, IIncludeStorage storage)
+		public IncludeCombiner(IIncludeReader reader, IIncludeStorage storage)
 		{
 			_reader = reader;
-			_keyGen = keyGen;
 			_storage = storage;
 		}
 
@@ -52,18 +50,14 @@ namespace Nrws.Web.IncludeHandling
 
 		public string RegisterCombination(ICollection<string> sources, IncludeType type, DateTime now)
 		{
-			var longKey = new StringBuilder();
 			var combinedContent = new StringBuilder();
 			foreach (var source in sources)
 			{
-				longKey.Append("|").Append(source);
 				var include = RegisterInclude(source, type);
 				combinedContent.Append(include.Content).AppendLine();
 			}
-			longKey.Remove(0, 1);
-			var key = _keyGen.Generate(longKey.ToString());
-			var combination = new IncludeCombination(key, type, combinedContent.ToString(), now);
-			_storage.Store(combination);
+			var combination = new IncludeCombination(type, sources, combinedContent.ToString(), now);
+			var key = _storage.Store(combination);
 			return key;
 		}
 

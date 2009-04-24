@@ -22,8 +22,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockCombiner = _mocks.StrictMock<IIncludeCombiner>();
 			_controller = new IncludeController(_mockCombiner);
 			_mocks.ReplayAll();
-			_cssCombination = new IncludeCombination("foo", IncludeType.Css, "#foo {color:red;}", DateTime.UtcNow);
-			_jsCombination = new IncludeCombination("foo", IncludeType.Js, "alert('foo');", DateTime.UtcNow);
+			_cssCombination = new IncludeCombination(IncludeType.Css, new [] {"~/content/css/foo.css"}, "#foo {color:red;}", DateTime.UtcNow);
+			_jsCombination = new IncludeCombination(IncludeType.Js, new[] { "~/content/js/foo.js" }, "alert('foo');", DateTime.UtcNow);
 		}
 
 		[Fact]

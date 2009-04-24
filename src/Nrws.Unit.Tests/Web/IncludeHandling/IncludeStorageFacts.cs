@@ -1,5 +1,6 @@
 using System;
 using Nrws.Web.IncludeHandling;
+using Rhino.Mocks;
 using Xunit;
 using Xunit.Extensions;
 
@@ -8,10 +9,17 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 	public class IncludeStorageFacts
 	{
 		private readonly IIncludeStorage _storage;
+		private readonly IncludeCombination _combination;
+		private readonly MockRepository _mocks;
+		private readonly IKeyGenerator _stubKeyGen;
 
 		public IncludeStorageFacts()
 		{
-			_storage = new StaticIncludeStorage();
+			_mocks = new MockRepository();
+			_stubKeyGen = _mocks.Stub<IKeyGenerator>();
+			_storage = new StaticIncludeStorage(_stubKeyGen);
+			_combination = new IncludeCombination(IncludeType.Css, new [] {"~/content/css/foo.css"}, "#foo {color:red}", Clock.UtcNow);
+			_mocks.ReplayAll();
 		}
 
 		[Fact]
@@ -46,27 +54,29 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void StoreCombination_DoesNotThrow_WhenCombinationIsValid()
 		{
-			var combination = new IncludeCombination("foo", IncludeType.Css, "#foo {color:red}", Clock.UtcNow);
-			Assert.DoesNotThrow(() => _storage.Store(combination));
+			_stubKeyGen.Expect(kg => kg.Generate(_combination.Sources)).Return("foo");
+			string key = null;
+			Assert.DoesNotThrow(() => key = _storage.Store(_combination));
+			Assert.Equal("foo", key);
 		}
 
 		[Fact]
 		public void StoreCombinationTwice_DoesNotThrow()
 		{
-			var combination = new IncludeCombination("foo", IncludeType.Css, "#foo {color:red}", Clock.UtcNow);
-			Assert.DoesNotThrow(() => _storage.Store(combination));
-			Assert.DoesNotThrow(() => _storage.Store(combination));
+			_stubKeyGen.Expect(kg => kg.Generate(_combination.Sources)).Return("foo").Repeat.Twice();
+			Assert.DoesNotThrow(() => _storage.Store(_combination));
+			Assert.DoesNotThrow(() => _storage.Store(_combination));
 		}
 
 		[Fact]
 		public void GetCombination_WhenCombinationExists_DoesNotThrow()
 		{
-			var combination = new IncludeCombination("foo", IncludeType.Css, "#foo {color:red}", Clock.UtcNow);
-			_storage.Store(combination);
+			_stubKeyGen.Expect(kg => kg.Generate(_combination.Sources)).Return("foo");
+			string key = _storage.Store(_combination);
 			IncludeCombination result = null;
-			Assert.DoesNotThrow(() => result = _storage.GetCombination("foo"));
+			Assert.DoesNotThrow(() => result = _storage.GetCombination(key));
 
-			Assert.Equal(combination.Content, result.Content);
+			Assert.Equal(_combination.Content, result.Content);
 		}
 
 		[Fact]

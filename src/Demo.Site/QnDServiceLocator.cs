@@ -58,14 +58,16 @@ namespace Demo.Site
 			{
 				{ typeof (IHttpContextProvider), http },
 				{ typeof (IKeyGenerator), new KeyGenerator() },
-				{ typeof (IIncludeStorage), new StaticIncludeStorage() }
 			};
 			types.Add(typeof (IIncludeReader), new FileSystemIncludeReader((IHttpContextProvider) types[typeof (IHttpContextProvider)]));
+	
+			var keyGen = (IKeyGenerator)types[typeof(IKeyGenerator)];
+
+			types.Add(typeof(IIncludeStorage), new StaticIncludeStorage(keyGen));
 
 			var includeReader = (IIncludeReader) types[typeof (IIncludeReader)];
-			var keyGen = (IKeyGenerator) types[typeof (IKeyGenerator)];
 			var storage = (IIncludeStorage) types[typeof (IIncludeStorage)];
-			var combiner = new IncludeCombiner(includeReader, keyGen, storage);
+			var combiner = new IncludeCombiner(includeReader, storage);
 			types.Add(typeof (IIncludeCombiner), combiner);
 
 			types.Add(typeof (IncludeController), new IncludeController(combiner));

@@ -11,7 +11,6 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 	{
 		private readonly IIncludeCombiner _combiner;
 		private readonly IIncludeReader _mockReader;
-		private readonly IKeyGenerator _mockKeyGen;
 		private readonly MockRepository _mocks;
 		private readonly IIncludeStorage _mockStorage;
 
@@ -19,9 +18,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		{
 			_mocks = new MockRepository();
 			_mockReader = _mocks.DynamicMock<IIncludeReader>();
-			_mockKeyGen = _mocks.DynamicMock<IKeyGenerator>();
 			_mockStorage = _mocks.DynamicMock<IIncludeStorage>();
-			_combiner = new IncludeCombiner(_mockReader, _mockKeyGen, _mockStorage);
+			_combiner = new IncludeCombiner(_mockReader, _mockStorage);
 			_mocks.ReplayAll();
 		}
 
@@ -118,8 +116,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 				_mockStorage.Expect(s => s.Store(include));
 			}
 			_mockReader.Expect(r => r.ToAbsolute(Arg<string>.Is.NotNull)).Return(string.Format("/content/{0}/{1}.{0}", type.ToString().ToLowerInvariant(), key));
-			_mockKeyGen.Expect(kg => kg.Generate(Arg<string>.Is.Anything)).Return(key);
-			_mockStorage.Expect(s => s.Store(Arg<IncludeCombination>.Is.NotNull));
+			string hash = null;
+			_mockStorage.Expect(s => hash = s.Store(Arg<IncludeCombination>.Is.NotNull)).Return("foo");
 
 			string reference = null;
 			Assert.DoesNotThrow(() => reference = _combiner.RenderIncludes(includes.Keys, type, false));
@@ -136,8 +134,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 				_mockReader.Expect(r => r.Read(kvp.Key, kvp.Value.Type)).Return(kvp.Value);
 				_mockStorage.Expect(s => s.Store(kvp.Value));
 			}
-			_mockKeyGen.Expect(kg => kg.Generate(Arg<string>.Is.Anything)).Return("foo");
-			_mockStorage.Expect(s => s.Store(new IncludeCombination(Arg<string>.Is.Equal("foo"), type, "content", Clock.UtcNow))).IgnoreArguments();
+			_mockStorage.Expect(s => s.Store(new IncludeCombination(type, sources.Keys, "content", Clock.UtcNow))).IgnoreArguments().Return("foo");
 			string key = null;
 			Assert.DoesNotThrow(() => key = _combiner.RegisterCombination(sources.Keys, IncludeType.Js, Clock.UtcNow));
 			Assert.Equal("foo", key);

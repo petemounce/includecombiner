@@ -7,7 +7,6 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 {
 	public class IncludeCombinerInteractionFacts
 	{
-		private readonly IKeyGenerator _mockKeyGen;
 		private readonly IIncludeReader _mockReader;
 		private readonly IIncludeStorage _mockStorage;
 		private readonly IIncludeCombiner _combiner;
@@ -16,10 +15,9 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		public IncludeCombinerInteractionFacts()
 		{
 			_mocks = new MockRepository();
-			_mockKeyGen = _mocks.StrictMock<IKeyGenerator>();
 			_mockReader = _mocks.StrictMock<IIncludeReader>();
 			_mockStorage = _mocks.StrictMock<IIncludeStorage>();
-			_combiner = new IncludeCombiner(_mockReader, _mockKeyGen, _mockStorage);
+			_combiner = new IncludeCombiner(_mockReader, _mockStorage);
 			_mocks.ReplayAll();
 		}
 
@@ -36,7 +34,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void GetCombination_ShouldAskStorageForCombination()
 		{
-			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination("foo", IncludeType.Css, ".foo{}", Clock.UtcNow));
+			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination(IncludeType.Css, new [] {"~/content/css/foo.css"}, ".foo{}", Clock.UtcNow));
 			IncludeCombination combination = null;
 			Assert.DoesNotThrow(() => combination = _combiner.GetCombination("foo"));
 			_mocks.VerifyAll();

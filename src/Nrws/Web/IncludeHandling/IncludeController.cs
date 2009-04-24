@@ -12,16 +12,16 @@ namespace Nrws.Web.IncludeHandling
 			_combiner = combiner;
 		}
 
-		public ActionResult Css(string key)
+		public ActionResult Css(string id)
 		{
-			var combination = _combiner.GetCombination(key);
+			var combination = _combiner.GetCombination(id);
 			var content = combination == null ? string.Empty : combination.Content;
 			return Content(content, MimeTypes.TextCss, Encoding.UTF8);
 		}
 
-		public ActionResult Js(string key)
+		public ActionResult Js(string id)
 		{
-			var combination = _combiner.GetCombination(key);
+			var combination = _combiner.GetCombination(id);
 			var content = combination == null ? string.Empty : combination.Content;
 			return Content(content, MimeTypes.ApplicationJavaScript, Encoding.UTF8);
 		}

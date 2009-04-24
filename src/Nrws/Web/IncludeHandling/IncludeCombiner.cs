@@ -42,7 +42,7 @@ namespace Nrws.Web.IncludeHandling
 			else
 			{
 				var hash = RegisterCombination(sources, type, DateTime.UtcNow);
-				var outputUrl = _reader.ToAbsolute(string.Format("~/include/{0}?key={1}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
+				var outputUrl = _reader.ToAbsolute(string.Format("~/include/{0}/{1}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
 				toRender.AppendFormat(_includeFormatStrings[type], outputUrl);
 			}
 			return toRender.ToString();

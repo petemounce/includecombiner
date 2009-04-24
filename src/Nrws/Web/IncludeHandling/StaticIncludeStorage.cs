@@ -5,10 +5,10 @@ namespace Nrws.Web.IncludeHandling
 {
 	public class StaticIncludeStorage : IIncludeStorage
 	{
-		private static IDictionary<string, IncludeCombination> _combinations;
-		private static IDictionary<string, Include> _includes;
+		private static readonly IDictionary<string, IncludeCombination> _combinations;
+		private static readonly IDictionary<string, Include> _includes;
 
-		public StaticIncludeStorage()
+		static StaticIncludeStorage()
 		{
 			_includes = new Dictionary<string, Include>();
 			_combinations = new Dictionary<string, IncludeCombination>();

@@ -44,7 +44,7 @@ namespace Nrws.Web.IncludeHandling
 			else
 			{
 				var hash = RegisterCombination(sources, type, DateTime.UtcNow);
-				var outputUrl = _reader.ToAbsolute(string.Format("~/content/{0}/{1}.{0}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
+				var outputUrl = _reader.ToAbsolute(string.Format("~/include/{0}/{1}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
 				toRender.AppendFormat(_includeFormatStrings[type], outputUrl);
 			}
 			return toRender.ToString();
@@ -72,6 +72,11 @@ namespace Nrws.Web.IncludeHandling
 			var include = _reader.Read(source, type);
 			_storage.Store(include);
 			return include;
+		}
+
+		public IncludeCombination GetCombination(string key)
+		{
+			return _storage.GetCombination(key);
 		}
 	}
 }

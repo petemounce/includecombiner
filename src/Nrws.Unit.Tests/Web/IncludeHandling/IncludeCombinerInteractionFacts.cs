@@ -32,5 +32,14 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			Assert.DoesNotThrow(() => _combiner.RegisterInclude("~/foo.js", IncludeType.Js));
 			_mocks.VerifyAll();
 		}
+
+		[Fact]
+		public void GetCombination_ShouldAskStorageForCombination()
+		{
+			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination("foo", IncludeType.Css, ".foo{}", Clock.UtcNow));
+			IncludeCombination combination = null;
+			Assert.DoesNotThrow(() => combination = _combiner.GetCombination("foo"));
+			_mocks.VerifyAll();
+		}
 	}
 }

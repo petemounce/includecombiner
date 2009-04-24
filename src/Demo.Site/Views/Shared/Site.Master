@@ -9,6 +9,7 @@
 	<% Html.IncludeCss("~/content/css/site.css"); %>
 	<%= Html.RenderCss() %>
 	<% Html.IncludeJs("~/content/js/lib/jq/jquery.js"); %>
+	<% Html.IncludeJs("~/content/js/common.js"); %>
 </head>
 <body>
 	<div class="page">

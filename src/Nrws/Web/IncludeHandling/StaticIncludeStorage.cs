@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Nrws.Web.IncludeHandling
 {
@@ -67,6 +66,16 @@ namespace Nrws.Web.IncludeHandling
 			{
 				return null;
 			}
+		}
+
+		public IEnumerable<Include> GetAllIncludes()
+		{
+			return _includes.Values;
+		}
+
+		public IDictionary<string, IncludeCombination> GetAllCombinations()
+		{
+			return _combinations;
 		}
 	}
 }

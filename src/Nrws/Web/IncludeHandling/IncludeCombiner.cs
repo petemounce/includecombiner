@@ -72,5 +72,15 @@ namespace Nrws.Web.IncludeHandling
 		{
 			return _storage.GetCombination(key);
 		}
+
+		public IEnumerable<Include> GetAllIncludes()
+		{
+			return _storage.GetAllIncludes();
+		}
+
+		public IDictionary<string, IncludeCombination> GetAllCombinations()
+		{
+			return _storage.GetAllCombinations();
+		}
 	}
 }

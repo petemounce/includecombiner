@@ -9,5 +9,7 @@ namespace Nrws.Web.IncludeHandling
 		string RegisterCombination(ICollection<string> sources, IncludeType type, DateTime now);
 		Include RegisterInclude(string source, IncludeType type);
 		IncludeCombination GetCombination(string key);
+		IEnumerable<Include> GetAllIncludes();
+		IDictionary<string, IncludeCombination> GetAllCombinations();
 	}
 }

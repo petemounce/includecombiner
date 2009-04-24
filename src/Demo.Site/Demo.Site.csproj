@@ -72,8 +72,10 @@
     <Compile Include="QnDServiceLocator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\js\common.js" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Views\Include\Index.aspx" />
     <Content Include="Web.config" />
     <Content Include="Content\css\Site.css" />
     <Content Include="Content\js\lib\jq\jquery.js" />

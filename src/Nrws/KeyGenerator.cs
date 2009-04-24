@@ -22,7 +22,8 @@ namespace Nrws
 			var toHashBytes = Encoding.UTF8.GetBytes(longKey.ToString());
 			var hashAlgorithm = SHA1.Create();
 			var hashed = hashAlgorithm.ComputeHash(toHashBytes);
-			return Convert.ToBase64String(hashed).Replace("/", "_").Replace("=", "-");
+			var base64String = Convert.ToBase64String(hashed);
+			return base64String.Replace("/", "_");
 		}
 	}
 }

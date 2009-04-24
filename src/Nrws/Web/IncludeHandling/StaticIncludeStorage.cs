@@ -28,13 +28,13 @@ namespace Nrws.Web.IncludeHandling
 			{
 				throw new ArgumentNullException("include");
 			}
-			if (!_includes.ContainsKey(include.Uri))
+			if (!_includes.ContainsKey(include.Source))
 			{
-				_includes.Add(include.Uri, include);
+				_includes.Add(include.Source, include);
 			}
 			else
 			{
-				_includes[include.Uri] = include;
+				_includes[include.Source] = include;
 			}
 		}
 

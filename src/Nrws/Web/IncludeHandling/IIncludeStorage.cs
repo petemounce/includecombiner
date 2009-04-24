@@ -4,5 +4,6 @@ namespace Nrws.Web.IncludeHandling
 	{
 		void Store(Include include);
 		void Store(IncludeCombination combination);
+		IncludeCombination GetCombination(string key);
 	}
 }

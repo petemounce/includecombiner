@@ -57,5 +57,24 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			Assert.DoesNotThrow(() => _storage.Store(combination));
 			Assert.DoesNotThrow(() => _storage.Store(combination));
 		}
+
+		[Fact]
+		public void GetCombination_WhenCombinationExists_DoesNotThrow()
+		{
+			var combination = new IncludeCombination("foo", IncludeType.Css, "#foo {color:red}", Clock.UtcNow);
+			_storage.Store(combination);
+			IncludeCombination result = null;
+			Assert.DoesNotThrow(() => result = _storage.GetCombination("foo"));
+
+			Assert.Equal(combination.Content, result.Content);
+		}
+
+		[Fact]
+		public void GetCombination_WhenCombinationDoesNotExist_ReturnsNull()
+		{
+			IncludeCombination result = null;
+			Assert.DoesNotThrow(() => result = _storage.GetCombination("flsihjdf"));
+			Assert.Null(result);
+		}
 	}
 }

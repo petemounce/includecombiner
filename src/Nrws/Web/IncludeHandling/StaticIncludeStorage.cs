@@ -5,8 +5,8 @@ namespace Nrws.Web.IncludeHandling
 {
 	public class StaticIncludeStorage : IIncludeStorage
 	{
-		private static IDictionary<string, Include> _includes;
 		private static IDictionary<string, IncludeCombination> _combinations;
+		private static IDictionary<string, Include> _includes;
 
 		public StaticIncludeStorage()
 		{
@@ -43,6 +43,18 @@ namespace Nrws.Web.IncludeHandling
 			else
 			{
 				_combinations[combination.Key] = combination;
+			}
+		}
+
+		public IncludeCombination GetCombination(string key)
+		{
+			try
+			{
+				return _combinations[key];
+			}
+			catch (KeyNotFoundException)
+			{
+				return null;
 			}
 		}
 	}

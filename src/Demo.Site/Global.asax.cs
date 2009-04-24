@@ -16,12 +16,6 @@ namespace Demo.Site
 		{
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-			//routes.MapRoute(
-			//    "Includes",
-			//    "include/{action}/{key}",
-			//    new { controller = "Include", action = "index", key = "" }
-			//    );
-
 			routes.MapRoute(
 				"Default", // Route name
 				"{controller}/{action}/{id}", // URL with parameters

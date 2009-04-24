@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="IKeyGenerator.cs" />
     <Compile Include="KeyGenerator.cs" />
+    <Compile Include="Web\CommonServiceLocatorControllerFactory.cs" />
     <Compile Include="Web\HttpContextProvider.cs" />
     <Compile Include="Web\IHttpContextProvider.cs" />
     <Compile Include="Web\IncludeHandling\IIncludeStorage.cs" />
@@ -62,7 +63,9 @@
     <Compile Include="Web\IncludeHandling\Include.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombiner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\IncludeHandling\IncludeController.cs" />
     <Compile Include="Web\IncludeHandling\StaticIncludeStorage.cs" />
+    <Compile Include="Web\MimeTypes.cs" />
     <Compile Include="Web\UtilityHtmlExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

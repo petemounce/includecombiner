@@ -4,6 +4,7 @@ using System.Web.Mvc;
 
 namespace Nrws.Web.IncludeHandling
 {
+	[DebugFilter]
 	public class IncludeController : Controller
 	{
 		private readonly IIncludeCombiner _combiner;

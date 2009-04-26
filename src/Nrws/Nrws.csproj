@@ -52,6 +52,7 @@
     <Compile Include="IKeyGenerator.cs" />
     <Compile Include="KeyGenerator.cs" />
     <Compile Include="Web\CommonServiceLocatorControllerFactory.cs" />
+    <Compile Include="Web\DebugFilterAttribute.cs" />
     <Compile Include="Web\HttpContextProvider.cs" />
     <Compile Include="Web\IHttpContextProvider.cs" />
     <Compile Include="Web\IncludeHandling\IIncludeStorage.cs" />

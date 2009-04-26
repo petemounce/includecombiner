@@ -1,4 +1,3 @@
-using System.Collections.Specialized;
 using System.Web;
 
 namespace Nrws.Web
@@ -7,7 +6,5 @@ namespace Nrws.Web
 	{
 		HttpContextBase Context { get; }
 		HttpRequestBase Request { get; }
-		HttpResponseBase Response { get; }
-		NameValueCollection FormOrQueryString { get; }
 	}
 }

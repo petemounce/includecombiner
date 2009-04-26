@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Nrws.Web.IncludeHandling;
 using Rhino.Mocks;
 using Xunit;
@@ -85,6 +86,22 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			IncludeCombination result = null;
 			Assert.DoesNotThrow(() => result = _storage.GetCombination("flsihjdf"));
 			Assert.Null(result);
+		}
+
+		[Fact]
+		public void GetAllIncludes_WillReturnAllIncludes()
+		{
+			IEnumerable<Include> includes = null;
+			Assert.DoesNotThrow(() => includes = _storage.GetAllIncludes());
+			Assert.NotNull(includes);
+		}
+
+		[Fact]
+		public void GetAllCombinations_WillReturnAllCombinations()
+		{
+			IDictionary<string, IncludeCombination> combinations = null;
+			Assert.DoesNotThrow(() => combinations = _storage.GetAllCombinations());
+			Assert.NotNull(combinations);
 		}
 	}
 }

@@ -1,4 +1,3 @@
-using System.Collections.Specialized;
 using System.Web;
 
 namespace Nrws.Web
@@ -20,23 +19,6 @@ namespace Nrws.Web
 		public HttpRequestBase Request
 		{
 			get { return Context.Request; }
-		}
-
-		public HttpResponseBase Response
-		{
-			get { return Context.Response; }
-		}
-
-		public NameValueCollection FormOrQueryString
-		{
-			get
-			{
-				if (Request.RequestType == "POST")
-				{
-					return Request.Form;
-				}
-				return Request.QueryString;
-			}
 		}
 	}
 }

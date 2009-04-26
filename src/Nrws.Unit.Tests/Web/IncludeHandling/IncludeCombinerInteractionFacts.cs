@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Nrws.Web.IncludeHandling;
 using Rhino.Mocks;
 using Xunit;
@@ -37,6 +38,27 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination(IncludeType.Css, new [] {"~/content/css/foo.css"}, ".foo{}", Clock.UtcNow));
 			IncludeCombination combination = null;
 			Assert.DoesNotThrow(() => combination = _combiner.GetCombination("foo"));
+			Assert.NotNull(combination);
+			_mocks.VerifyAll();
+		}
+
+		[Fact]
+		public void GetAllIncludes_ShouldAskStorageForIncludes()
+		{
+			_mockStorage.Expect(s => s.GetAllIncludes()).Return(new[] { new Include(IncludeType.Css, "~/foo.css", "#foo{color:red;}", Clock.UtcNow)});
+			IEnumerable<Include> includes = null;
+			Assert.DoesNotThrow(() => includes = _combiner.GetAllIncludes());
+			Assert.NotNull(includes); 
+			_mocks.VerifyAll();
+		}
+
+		[Fact]
+		public void GetAllCombinations_ShouldAskStorageForCombinations()
+		{
+			_mockStorage.Expect(s => s.GetAllCombinations()).Return(new Dictionary<string, IncludeCombination>());
+			IDictionary<string, IncludeCombination> combinations = null;
+			Assert.DoesNotThrow(() => combinations = _combiner.GetAllCombinations());
+			Assert.NotNull(combinations);
 			_mocks.VerifyAll();
 		}
 	}

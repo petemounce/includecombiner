@@ -3,7 +3,7 @@ require 'rake'
 require 'rake/tasklib'
 require 'rake_dotnet'
 
-PRODUCT_NAME = ENV['PRODUCT_NAME'] ? ENV['PRODUCT_NAME'] : 'IncludeCombiner'
+PRODUCT_NAME = ENV['PRODUCT_NAME'] ? ENV['PRODUCT_NAME'] : 'Nrws'
 COMPANY_NAME = ENV['COMPANY_NAME'] ? ENV['COMPANY_NAME'] : 'NeverRunWithScissors.com'
 RDNVERSION = Versioner.new.get
 
@@ -45,7 +45,7 @@ task :ci_kludge do
 	end
 end
 
-CLEAN.include("#{SRC_DIR}/**/web.config")
+CLEAN.include("#{SRC_DIR}/*Site*/web.config")
 CLEAN.include("#{SRC_DIR}/**/app.config")
 
 task :configs,[:base_dirs, :environment] do |t, args|

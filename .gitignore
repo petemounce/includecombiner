@@ -3,6 +3,7 @@
 *.cache
 *.data
 *.dll
+*.exe
 *.ldb
 *.log
 *.pdb
@@ -16,8 +17,11 @@
 *.xsx
 Thumbs.db
 
-!3rdparty/**/*.dll
-!3rdparty/**/*.pdb
+!3rdparty/*/*.dll
+!3rdparty/*/*/*.dll
+!3rdparty/**/*.exe
+!3rdparty/*/*/*.exe
+!3rdparty/*/*.pdb
 
 _ReSharper.*
 _vti_cnf

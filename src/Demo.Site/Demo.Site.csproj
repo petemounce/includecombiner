@@ -100,6 +100,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\js\lib\dojo.js" />
+    <Content Include="Content\js\lib\jq\jquery-ui.js" />
+    <Content Include="Content\js\lib\moo\mootools-core-nc.js" />
+    <Content Include="Content\js\lib\prototype.js" />
+    <Content Include="Content\js\lib\scriptaculous\builder.js" />
+    <Content Include="Content\js\lib\scriptaculous\controls.js" />
+    <Content Include="Content\js\lib\scriptaculous\dragdrop.js" />
+    <Content Include="Content\js\lib\scriptaculous\effects.js" />
+    <Content Include="Content\js\lib\scriptaculous\scriptaculous.js" />
+    <Content Include="Content\js\lib\scriptaculous\slider.js" />
+    <Content Include="Content\js\lib\scriptaculous\sound.js" />
+    <Content Include="Content\js\lib\scriptaculous\unittest.js" />
+    <Content Include="Views\Home\Jquery.aspx" />
+    <Content Include="Views\Shared\Blank.Master" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
   </ItemGroup>

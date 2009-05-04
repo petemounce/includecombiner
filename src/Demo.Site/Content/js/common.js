@@ -1,5 +1,3 @@
-﻿$(function() {
-	if (console && console.log) {
-		console.log("hi");
-	}
-});
+﻿if (console && console.log) {
+	console.log("hi");
+}

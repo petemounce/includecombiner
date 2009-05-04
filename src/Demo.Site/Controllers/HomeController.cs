@@ -16,5 +16,35 @@ namespace Demo.Site.Controllers
 		{
 			return View();
 		}
+
+		public ActionResult JsJquery()
+		{
+			return View();
+		}
+
+		public ActionResult JsMooTools()
+		{
+			return View();
+		}
+
+		public ActionResult JsPrototype()
+		{
+			return View();
+		}
+
+		public ActionResult JsTen()
+		{
+			return View();
+		}
+
+		public ActionResult CssOne()
+		{
+			return View();
+		}
+
+		public ActionResult CssMany()
+		{
+			return View();
+		}
 	}
 }

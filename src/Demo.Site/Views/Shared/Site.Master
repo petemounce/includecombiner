@@ -6,9 +6,7 @@
 	<title>
 		<asp:ContentPlaceHolder ID="TitleContent" runat="server" />
 	</title>
-	<% Html.IncludeCss("~/content/css/site.css"); %>
 	<%= Html.RenderCss() %>
-	<% Html.IncludeJs("~/content/js/common.js"); %>
 </head>
 <body>
 	<div class="page">

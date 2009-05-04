@@ -91,6 +91,14 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			}
 		}
 
+		[Fact]
+		public void RenderIncludes_ShouldWriteNothing_WhenNoSourcesArePending()
+		{
+			string rendered = null;
+			Assert.DoesNotThrow(() => rendered = _combiner.RenderIncludes(new string[0], IncludeType.Js, false));
+			Assert.Equal("", rendered);
+		}
+
 		[Theory]
 		[PropertyData("RenderingInDebug")]
 		public void RenderIncludes_ShouldWriteOutEachIncludeSeparately_WhenInDebugMode(IDictionary<string, string> includes, IncludeType type, string expected)

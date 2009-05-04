@@ -31,19 +31,22 @@ namespace Nrws.Web.IncludeHandling
 		public string RenderIncludes(ICollection<string> sources, IncludeType type, bool isInDebugMode)
 		{
 			var toRender = new StringBuilder();
-			if (isInDebugMode)
+			if (sources.Count > 0)
 			{
-				foreach (var source in sources)
+				if (isInDebugMode)
 				{
-					var url = _reader.ToAbsolute(source);
-					toRender.AppendFormat(_includeFormatStrings[type], url).AppendLine();
+					foreach (var source in sources)
+					{
+						var url = _reader.ToAbsolute(source);
+						toRender.AppendFormat(_includeFormatStrings[type], url).AppendLine();
+					}
 				}
-			}
-			else
-			{
-				var hash = RegisterCombination(sources, type, DateTime.UtcNow);
-				var outputUrl = _reader.ToAbsolute(string.Format("~/include/{0}/{1}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
-				toRender.AppendFormat(_includeFormatStrings[type], outputUrl);
+				else
+				{
+					var hash = RegisterCombination(sources, type, DateTime.UtcNow);
+					var outputUrl = _reader.ToAbsolute(string.Format("~/include/{0}/{1}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
+					toRender.AppendFormat(_includeFormatStrings[type], outputUrl);
+				}
 			}
 			return toRender.ToString();
 		}

@@ -67,7 +67,7 @@
     <Compile Include="KeyGeneratorFacts.cs" />
     <Compile Include="Web\DebugFilterAttributeFacts.cs" />
     <Compile Include="Web\IncludeHandling\FileSystemIncludeReaderFacts.cs" />
-    <Compile Include="Web\IncludeHandling\IncludeCombinationResultFacts.cs" />
+    <Compile Include="Web\IncludeHandling\IncludeCombinationInteractionFacts.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombinerFacts.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombinerHtmlExtensionsFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

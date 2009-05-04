@@ -55,7 +55,6 @@
     <Compile Include="Web\DebugFilterAttribute.cs" />
     <Compile Include="Web\HttpContextProvider.cs" />
     <Compile Include="Web\HttpHeaders.cs" />
-    <Compile Include="Web\HttpStatusCodes.cs" />
     <Compile Include="Web\IHttpContextProvider.cs" />
     <Compile Include="Web\IncludeHandling\IIncludeStorage.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombination.cs" />

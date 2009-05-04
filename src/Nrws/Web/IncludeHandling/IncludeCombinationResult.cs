@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Web.Mvc;
 
@@ -39,7 +40,7 @@ namespace Nrws.Web.IncludeHandling
 			context.HttpContext.Response.ContentEncoding = Encoding.UTF8;
 			if (Combination == null || Combination.Content == null)
 			{
-				context.HttpContext.Response.StatusCode = HttpStatusCodes.NotFound;
+				context.HttpContext.Response.StatusCode = (int) HttpStatusCode.NotFound;
 				return;
 			}
 			context.HttpContext.Response.ContentType = _contentTypes[Combination.Type];
@@ -49,6 +50,11 @@ namespace Nrws.Web.IncludeHandling
 				var noCompression = Encoding.UTF8.GetBytes(Combination.Content);
 				memoryStream.Write(noCompression, 0, noCompression.Length);
 				responseBodyBytes = memoryStream.ToArray();
+			}
+			if (responseBodyBytes.Length <= 0)
+			{
+				context.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
+				return;
 			}
 			context.HttpContext.Response.AddHeader(HttpHeaders.ContentLength, responseBodyBytes.Length.ToString());
 			context.HttpContext.Response.OutputStream.Write(responseBodyBytes, 0, responseBodyBytes.Length);

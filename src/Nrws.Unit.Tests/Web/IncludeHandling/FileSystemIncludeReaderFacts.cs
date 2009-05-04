@@ -11,7 +11,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 
 		public FileSystemIncludeReaderFacts()
 		{
-			_reader = new FileSystemIncludeReader("", "c:\\");
+			_reader = new FileSystemIncludeReader("/", "c:\\");
 		}
 
 		[Fact]

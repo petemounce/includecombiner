@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Web;
 
 namespace Nrws.Web.IncludeHandling
 {
@@ -22,9 +23,9 @@ namespace Nrws.Web.IncludeHandling
 
 		public string ToAbsolute(string source)
 		{
-			if (source.StartsWith("~"))
+			if (source.StartsWith("~/"))
 			{
-				return _applicationRoot + source.Substring(1);
+				return VirtualPathUtility.AppendTrailingSlash(_applicationRoot) + source.Substring(2);
 			}
 			return source;
 		}
@@ -50,9 +51,9 @@ namespace Nrws.Web.IncludeHandling
 
 		protected string ToFileSystem(string source)
 		{
-			if (source.StartsWith("~"))
+			if (source.StartsWith("~/"))
 			{
-				var fsSource = source.Substring(1).Replace('/', '\\');
+				var fsSource = source.Substring(2).Replace('/', '\\');
 				return _fileSystemRoot + fsSource;
 			}
 			// assume absolute path already

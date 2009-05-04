@@ -22,9 +22,9 @@ namespace Nrws.Web.IncludeHandling
 
 		public string ToAbsolute(string source)
 		{
-			if (source.StartsWith("~/"))
+			if (source.StartsWith("~"))
 			{
-				return _applicationRoot + source.Substring(2);
+				return _applicationRoot + source.Substring(1);
 			}
 			return source;
 		}
@@ -50,9 +50,9 @@ namespace Nrws.Web.IncludeHandling
 
 		protected string ToFileSystem(string source)
 		{
-			if (source.StartsWith("~/"))
+			if (source.StartsWith("~"))
 			{
-				var fsSource = source.Substring(2).Replace('/', '\\');
+				var fsSource = source.Substring(1).Replace('/', '\\');
 				return _fileSystemRoot + fsSource;
 			}
 			// assume absolute path already

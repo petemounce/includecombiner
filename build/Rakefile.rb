@@ -18,15 +18,15 @@ Rake::XUnitTask.new({:options=>{:html=>true,:xml=>true}, :deps=>[:compile, :harv
 Rake::FxCopTask.new({:deps=>[:compile, :harvest_output]}) do |fxc|
 	fxc.dll_list.exclude("#{fxc.suites_dir}/**/*Tests*.dll")
 end
-Rake::NCoverTask.new({:deps=>[:compile, :harvest_output], :ncover_options=>{:arch=>'amd64'}, :ncover_reporting_options=>{:arch=>'amd64'}})
+Rake::NCoverTask.new({:deps=>[:compile, :harvest_output]})
 
 demo_site = File.join(OUT_DIR, 'Demo.Site')
 Rake::HarvestWebApplicationTask.new({:deps=>[:compile]})
 
-Rake::RDNPackageTask.new(name='bin', version=RDNVERSION, {:deps=>[:harvest_output, :xunit]}) do |p|
+Rake::RDNPackageTask.new(name='bin', version=RDNVERSION, {:deps=>[:harvest_output]}) do |p|
 	p.targets.include("#{bin_out}/*")
 end
-Rake::RDNPackageTask.new(name='Demo.Site', version=RDNVERSION, {:deps=>[:harvest_webapps, :xunit]}) do |p|
+Rake::RDNPackageTask.new(name='Demo.Site', version=RDNVERSION, {:deps=>[:harvest_webapps]}) do |p|
 	p.targets.include("#{demo_site}/*")
 end
 
@@ -45,7 +45,7 @@ task :ci_kludge do
 	end
 end
 
-CLEAN.include("#{SRC_DIR}/*Site*/web.config")
+#CLEAN.include("#{SRC_DIR}/*Site*/web.config")
 CLEAN.include("#{SRC_DIR}/**/app.config")
 
 task :configs,[:base_dirs, :environment] do |t, args|

@@ -11,4 +11,15 @@
     </p>
     <p><%= Html.RouteLink("index", new { controller = "include", action = "index" })%></p>
     
+    <h3>Benchmarking</h3>
+    <p>Before each test:</p>
+    <ol>
+			<li>Ensure Compilation Debug="false" in web.config</li>
+			<li>Recycle IIS app-pool</li>
+			<li>Clear browser cache</li>
+		</ol>
+		<ol>
+			<li>Request each of the benchmark pages in order; note down timing result from Firebug/Net</li>
+			<li>Run Hammerhead against each benchmark page (now that the browser cache is primed)</li>
+    </ol>
 </asp:Content>

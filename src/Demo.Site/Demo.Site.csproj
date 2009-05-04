@@ -118,6 +118,8 @@
     <Content Include="Content\js\lib\scriptaculous\slider.js" />
     <Content Include="Content\js\lib\scriptaculous\sound.js" />
     <Content Include="Content\js\lib\scriptaculous\unittest.js" />
+    <Content Include="Views\Home\CssMany.aspx" />
+    <Content Include="Views\Home\CssOne.aspx" />
     <Content Include="Views\Home\JsJquery.aspx" />
     <Content Include="Views\Home\JsMany.aspx" />
     <Content Include="Views\Home\JsMooTools.aspx" />

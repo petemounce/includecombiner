@@ -23,7 +23,7 @@ namespace Nrws.Unit.Tests
 		{
 			string key = null;
 			Assert.DoesNotThrow(() => key = _keygen.Generate(new[] { "foobar" }));
-			Assert.Equal("iEPX+SQWIR3p67lj_0zigSWTKHg=", key);
+			Assert.Equal("iEPX-SQWIR3p67lj_0zigSWTKHg@", key);
 		}
 
 		[Fact]

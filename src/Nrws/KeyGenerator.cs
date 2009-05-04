@@ -18,7 +18,7 @@ namespace Nrws
 			{
 				longKey.Append("|").Append(s);
 			}
-			longKey.Remove(0, 1);
+			if (longKey.Length > 0) longKey.Remove(0, 1);
 			var toHashBytes = Encoding.UTF8.GetBytes(longKey.ToString());
 			var hashAlgorithm = SHA1.Create();
 			var hashed = hashAlgorithm.ComputeHash(toHashBytes);

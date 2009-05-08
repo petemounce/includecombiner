@@ -32,7 +32,7 @@ namespace Demo.Site.Controllers
 			return View();
 		}
 
-		public ActionResult JsTen()
+		public ActionResult JsMany()
 		{
 			return View();
 		}

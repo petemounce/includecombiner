@@ -19,7 +19,7 @@
 			<li>Clear browser cache</li>
 		</ol>
 		<ol>
-			<li>Request each of the benchmark pages in order; note down timing result from Firebug/Net; this gives us time-to-render with empty server-side cache.</li>
+			<li>Request each of the benchmark pages in order; note down timing result from Firebug/Net; this gives us time-to-render whole page with empty server-side cache.</li>
 			<li>Run Hammerhead against each benchmark page (now that the server-side cache is primed)</li>
     </ol>
     
@@ -36,36 +36,37 @@
 							<th>Gzip?</th>
 							<th>Deflate?</th>
 							<th>Write cache headers?</th>
-							<th>1st request (prime server-side cache)</th>
-							<th>Hammerhead; Cleared client-cache</th>
-							<th>Hammerhead; Allow client-cache</th>
+							<th>Includes' size (Kb)</th>
+							<th>1st request (prime server-side cache) (ms)</th>
+							<th>Hammerhead; Empty client-cache (ms)</th>
+							<th>Hammerhead; Primed client-cache (ms)</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<td>Raw</td>
 							<td>no</td><td>no</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request raw</td>
 							<td>yes</td><td>no</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified</td>
 							<td>yes</td><td>yes</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified gzip'd</td>
 							<td>yes</td><td>yes</td><td>yes</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified gzip'd cache'd</td>
 							<td>yes</td><td>yes</td><td>yes</td><td>no</td><td>yes</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 					</tbody>
 				</table>
@@ -81,6 +82,7 @@
 							<th>Gzip?</th>
 							<th>Deflate?</th>
 							<th>Write cache headers?</th>
+							<th>Includes' size</th>
 							<th>1st request (prime server-side cache)</th>
 							<th>Hammerhead; Cleared client-cache</th>
 							<th>Hammerhead; Allow client-cache</th>
@@ -90,12 +92,12 @@
 						<tr>
 							<td>Raw</td>
 							<td>no</td><td>no</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request raw</td>
 							<td>yes</td><td>no</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified</td>
@@ -105,12 +107,12 @@
 						<tr>
 							<td>1 request minified gzip'd</td>
 							<td>yes</td><td>yes</td><td>yes</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified gzip'd cache'd</td>
 							<td>yes</td><td>yes</td><td>yes</td><td>no</td><td>yes</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 					</tbody>
 				</table>
@@ -126,6 +128,7 @@
 							<th>Gzip?</th>
 							<th>Deflate?</th>
 							<th>Write cache headers?</th>
+							<th>Includes' size</th>
 							<th>1st request (prime server-side cache)</th>
 							<th>Hammerhead; Cleared client-cache</th>
 							<th>Hammerhead; Allow client-cache</th>
@@ -135,27 +138,27 @@
 						<tr>
 							<td>Raw</td>
 							<td>no</td><td>no</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request raw</td>
 							<td>yes</td><td>no</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified</td>
 							<td>yes</td><td>yes</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified gzip'd</td>
 							<td>yes</td><td>yes</td><td>yes</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified gzip'd cache'd</td>
 							<td>yes</td><td>yes</td><td>yes</td><td>no</td><td>yes</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 					</tbody>
 				</table>
@@ -171,6 +174,7 @@
 							<th>Gzip?</th>
 							<th>Deflate?</th>
 							<th>Write cache headers?</th>
+							<th>Includes' size</th>
 							<th>1st request (prime server-side cache)</th>
 							<th>Hammerhead; Cleared client-cache</th>
 							<th>Hammerhead; Allow client-cache</th>
@@ -180,27 +184,27 @@
 						<tr>
 							<td>Raw</td>
 							<td>no</td><td>no</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request raw</td>
 							<td>yes</td><td>no</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified</td>
 							<td>yes</td><td>yes</td><td>no</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified gzip'd</td>
 							<td>yes</td><td>yes</td><td>yes</td><td>no</td><td>no</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 						<tr>
 							<td>1 request minified gzip'd cache'd</td>
 							<td>yes</td><td>yes</td><td>yes</td><td>no</td><td>yes</td>
-							<td></td><td></td><td></td>
+							<td></td><td></td><td></td><td></td>
 						</tr>
 					</tbody>
 				</table>

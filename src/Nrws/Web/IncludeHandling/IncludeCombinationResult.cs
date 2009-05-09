@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Text;
 using System.Web.Mvc;
@@ -44,16 +43,10 @@ namespace Nrws.Web.IncludeHandling
 				return;
 			}
 			context.HttpContext.Response.ContentType = _contentTypes[Combination.Type];
-			byte[] responseBodyBytes;
-			using (var memoryStream = new MemoryStream(8092))
-			{
-				var noCompression = Encoding.UTF8.GetBytes(Combination.Content);
-				memoryStream.Write(noCompression, 0, noCompression.Length);
-				responseBodyBytes = memoryStream.ToArray();
-			}
+			var responseBodyBytes = Combination.GetResponseBodyBytes();
 			if (responseBodyBytes.Length <= 0)
 			{
-				context.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
+				context.HttpContext.Response.StatusCode = (int) HttpStatusCode.NoContent;
 				return;
 			}
 			context.HttpContext.Response.AddHeader(HttpHeaders.ContentLength, responseBodyBytes.Length.ToString());

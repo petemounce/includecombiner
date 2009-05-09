@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace Nrws.Web.IncludeHandling
 {
@@ -18,6 +20,8 @@ namespace Nrws.Web.IncludeHandling
 		public string Content { get; private set; }
 		public DateTime LastModifiedAt { get; private set; }
 
+		#region IEquatable<IncludeCombination> Members
+
 		public bool Equals(IncludeCombination other)
 		{
 			if (ReferenceEquals(null, other))
@@ -29,6 +33,20 @@ namespace Nrws.Web.IncludeHandling
 				return true;
 			}
 			return Equals(other.Type, Type) && Equals(other.Sources, Sources) && Equals(other.Content, Content) && other.LastModifiedAt.Equals(LastModifiedAt);
+		}
+
+		#endregion
+
+		public byte[] GetResponseBodyBytes()
+		{
+			byte[] responseBodyBytes;
+			using (var memoryStream = new MemoryStream(8092))
+			{
+				var noCompression = Encoding.UTF8.GetBytes(Content);
+				memoryStream.Write(noCompression, 0, noCompression.Length);
+				responseBodyBytes = memoryStream.ToArray();
+			}
+			return responseBodyBytes;
 		}
 
 		public override bool Equals(object obj)

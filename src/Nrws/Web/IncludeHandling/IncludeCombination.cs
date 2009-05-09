@@ -85,6 +85,8 @@ namespace Nrws.Web.IncludeHandling
 
 		private string minify()
 		{
+			if (Content == "")
+				return "";
 			switch (Type)
 			{
 				case IncludeType.Js:

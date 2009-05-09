@@ -8,6 +8,8 @@ namespace Nrws.Web.IncludeHandling
 {
 	public class IncludeCombinationResult : ActionResult
 	{
+		private readonly string _key;
+
 		private static readonly IDictionary<IncludeType, string> _contentTypes = new Dictionary<IncludeType, string>
 		{
 			{ IncludeType.Css, MimeTypes.TextCss }
@@ -24,11 +26,17 @@ namespace Nrws.Web.IncludeHandling
 			{
 				throw new ArgumentException("key");
 			}
-			Combination = combiner.GetCombination(key);
+			_key = key;
+			Combination = combiner.GetCombination(_key);
 		}
 
-		public IncludeCombinationResult(IncludeCombination combination)
+		public IncludeCombinationResult(IncludeCombination combination, string key)
 		{
+			if (string.IsNullOrEmpty(key))
+			{
+				throw new ArgumentException("key");
+			}
+			_key = key;
 			Combination = combination;
 		}
 
@@ -43,6 +51,8 @@ namespace Nrws.Web.IncludeHandling
 				return;
 			}
 			context.HttpContext.Response.ContentType = _contentTypes[Combination.Type];
+			context.HttpContext.Response.Cache.SetETag(_key + "-" + Combination.LastModifiedAt.Ticks);
+
 			var responseBodyBytes = Combination.GetResponseBodyBytes();
 			if (responseBodyBytes.Length <= 0)
 			{

@@ -2,17 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Yahoo.Yui.Compressor;
 
 namespace Nrws.Web.IncludeHandling
 {
 	public class IncludeCombination : IEquatable<IncludeCombination>
 	{
+		private readonly string _minified;
+
 		public IncludeCombination(IncludeType type, IEnumerable<string> sources, string content, DateTime now)
 		{
 			Type = type;
 			Sources = sources;
 			Content = content;
 			LastModifiedAt = now;
+			_minified = minify();
 		}
 
 		public IncludeType Type { get; private set; }
@@ -32,7 +36,7 @@ namespace Nrws.Web.IncludeHandling
 			{
 				return true;
 			}
-			return Equals(other.Type, Type) && Equals(other.Sources, Sources) && Equals(other.Content, Content) && other.LastModifiedAt.Equals(LastModifiedAt);
+			return Equals(other._minified, _minified) && Equals(other.Type, Type) && Equals(other.Sources, Sources) && Equals(other.Content, Content) && other.LastModifiedAt.Equals(LastModifiedAt);
 		}
 
 		#endregion
@@ -42,7 +46,7 @@ namespace Nrws.Web.IncludeHandling
 			byte[] responseBodyBytes;
 			using (var memoryStream = new MemoryStream(8092))
 			{
-				var noCompression = Encoding.UTF8.GetBytes(Content);
+				var noCompression = Encoding.UTF8.GetBytes(_minified);
 				memoryStream.Write(noCompression, 0, noCompression.Length);
 				responseBodyBytes = memoryStream.ToArray();
 			}
@@ -70,11 +74,30 @@ namespace Nrws.Web.IncludeHandling
 		{
 			unchecked
 			{
-				var result = Type.GetHashCode();
+				var result = (_minified != null ? _minified.GetHashCode() : 0);
+				result = (result * 397) ^ Type.GetHashCode();
 				result = (result * 397) ^ (Sources != null ? Sources.GetHashCode() : 0);
 				result = (result * 397) ^ (Content != null ? Content.GetHashCode() : 0);
 				result = (result * 397) ^ LastModifiedAt.GetHashCode();
 				return result;
+			}
+		}
+
+		private string minify()
+		{
+			switch (Type)
+			{
+				case IncludeType.Js:
+						var compressor = new JavaScriptCompressor(Content);
+						var minifiedJs = compressor.Compress(false, false, true, false, 80);
+						return minifiedJs;
+
+				case IncludeType.Css:
+						var minifiedCss = CssCompressor.Compress(Content, int.MaxValue, CssCompressionType.Hybrid);
+						return minifiedCss;
+
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 	}

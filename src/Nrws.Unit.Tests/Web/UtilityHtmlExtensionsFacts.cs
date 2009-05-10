@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web;
 using System.Web.Mvc;
-
 using Nrws.Web;
-
 using Rhino.Mocks;
-
 using Xunit;
 using Xunit.Extensions;
 
@@ -16,9 +13,9 @@ namespace Nrws.Unit.Tests.Web
 	public class UtilityHtmlExtensionsFacts
 	{
 		private readonly HtmlHelper _html;
+		private readonly HttpRequestBase _mockRequest;
 		private readonly MockRepository _mocks;
 		private readonly ViewDataDictionary _viewData;
-		private readonly HttpRequestBase _mockRequest;
 
 		public UtilityHtmlExtensionsFacts()
 		{

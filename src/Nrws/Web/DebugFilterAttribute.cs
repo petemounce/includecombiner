@@ -6,6 +6,8 @@ namespace Nrws.Web
 {
 	public class DebugFilterAttribute : FilterAttribute, IActionFilter
 	{
+		#region IActionFilter Members
+
 		public void OnActionExecuting(ActionExecutingContext filterContext)
 		{
 			// pass
@@ -26,9 +28,9 @@ namespace Nrws.Web
 				{
 					filterContext.HttpContext.Response.Cookies.Add(new HttpCookie("debug", "1")
 					{
-						Domain = filterContext.HttpContext.Request.Url.DnsSafeHost, 
+						Domain = filterContext.HttpContext.Request.Url.DnsSafeHost,
 						Path = "/",
-						HttpOnly = true, 
+						HttpOnly = true,
 						Expires = DateTime.UtcNow.AddDays(1)
 					});
 				}
@@ -41,5 +43,7 @@ namespace Nrws.Web
 				}
 			}
 		}
+
+		#endregion
 	}
 }

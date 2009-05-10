@@ -17,6 +17,8 @@ namespace Demo.Site
 			_types = types;
 		}
 
+		#region IServiceLocator Members
+
 		public object GetService(Type serviceType)
 		{
 			throw new NotImplementedException();
@@ -52,6 +54,8 @@ namespace Demo.Site
 			throw new NotImplementedException();
 		}
 
+		#endregion
+
 		public static QnDServiceLocator Create(IHttpContextProvider http, Controller[] controllers)
 		{
 			var types = new Dictionary<Type, object>
@@ -60,10 +64,10 @@ namespace Demo.Site
 				{ typeof (IKeyGenerator), new KeyGenerator() },
 			};
 			types.Add(typeof (IIncludeReader), new FileSystemIncludeReader((IHttpContextProvider) types[typeof (IHttpContextProvider)]));
-	
-			var keyGen = (IKeyGenerator)types[typeof(IKeyGenerator)];
 
-			types.Add(typeof(IIncludeStorage), new StaticIncludeStorage(keyGen));
+			var keyGen = (IKeyGenerator) types[typeof (IKeyGenerator)];
+
+			types.Add(typeof (IIncludeStorage), new StaticIncludeStorage(keyGen));
 
 			var includeReader = (IIncludeReader) types[typeof (IIncludeReader)];
 			var storage = (IIncludeStorage) types[typeof (IIncludeStorage)];

@@ -9,9 +9,9 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 {
 	public class IncludeControllerFacts
 	{
-		private readonly MockRepository _mocks;
-		private readonly IIncludeCombiner _mockCombiner;
 		private readonly IncludeController _controller;
+		private readonly IIncludeCombiner _mockCombiner;
+		private readonly MockRepository _mocks;
 
 		public IncludeControllerFacts()
 		{
@@ -30,7 +30,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			Assert.DoesNotThrow(() => result = _controller.Css("foo"));
 
 			Assert.IsType<IncludeCombinationResult>(result);
-			Assert.Equal(combination, ((IncludeCombinationResult)result).Combination);
+			Assert.Equal(combination, ((IncludeCombinationResult) result).Combination);
 			_mocks.VerifyAll();
 		}
 
@@ -43,7 +43,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			Assert.DoesNotThrow(() => result = _controller.Js("foo"));
 
 			Assert.IsType<IncludeCombinationResult>(result);
-			Assert.Equal(combination, ((IncludeCombinationResult)result).Combination);
+			Assert.Equal(combination, ((IncludeCombinationResult) result).Combination);
 			_mocks.VerifyAll();
 		}
 

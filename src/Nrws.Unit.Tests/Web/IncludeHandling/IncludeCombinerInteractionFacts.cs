@@ -8,10 +8,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 {
 	public class IncludeCombinerInteractionFacts
 	{
-		private readonly IIncludeReader _mockReader;
-		private readonly IIncludeStorage _mockStorage;
 		private readonly IIncludeCombiner _combiner;
+		private readonly IIncludeReader _mockReader;
 		private readonly MockRepository _mocks;
+		private readonly IIncludeStorage _mockStorage;
 
 		public IncludeCombinerInteractionFacts()
 		{
@@ -35,7 +35,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void GetCombination_ShouldAskStorageForCombination()
 		{
-			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination(IncludeType.Css, new [] {"~/content/css/foo.css"}, ".foo{}", Clock.UtcNow));
+			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination(IncludeType.Css, new[] { "~/content/css/foo.css" }, ".foo{}", Clock.UtcNow));
 			IncludeCombination combination = null;
 			Assert.DoesNotThrow(() => combination = _combiner.GetCombination("foo"));
 			Assert.NotNull(combination);
@@ -45,10 +45,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void GetAllIncludes_ShouldAskStorageForIncludes()
 		{
-			_mockStorage.Expect(s => s.GetAllIncludes()).Return(new[] { new Include(IncludeType.Css, "~/foo.css", "#foo{color:red;}", Clock.UtcNow)});
+			_mockStorage.Expect(s => s.GetAllIncludes()).Return(new[] { new Include(IncludeType.Css, "~/foo.css", "#foo{color:red;}", Clock.UtcNow) });
 			IEnumerable<Include> includes = null;
 			Assert.DoesNotThrow(() => includes = _combiner.GetAllIncludes());
-			Assert.NotNull(includes); 
+			Assert.NotNull(includes);
 			_mocks.VerifyAll();
 		}
 

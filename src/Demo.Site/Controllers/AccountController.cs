@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Security.Principal;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using System.Web.UI;
 
 namespace Demo.Site.Controllers
 {
-
 	[HandleError]
 	public class AccountController : Controller
 	{
-
 		// This constructor is used by the MVC framework to instantiate the controller using
 		// the default forms authentication and membership providers.
 
@@ -32,30 +27,20 @@ namespace Demo.Site.Controllers
 			MembershipService = service ?? new AccountMembershipService();
 		}
 
-		public IFormsAuthentication FormsAuth
-		{
-			get;
-			private set;
-		}
+		public IFormsAuthentication FormsAuth { get; private set; }
 
-		public IMembershipService MembershipService
-		{
-			get;
-			private set;
-		}
+		public IMembershipService MembershipService { get; private set; }
 
 		public ActionResult LogOn()
 		{
-
 			return View();
 		}
 
 		[AcceptVerbs(HttpVerbs.Post)]
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings",
+		[SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings",
 			Justification = "Needs to take same parameter type as Controller.Redirect()")]
 		public ActionResult LogOn(string userName, string password, bool rememberMe, string returnUrl)
 		{
-
 			if (!ValidateLogOn(userName, password))
 			{
 				return View();
@@ -74,7 +59,6 @@ namespace Demo.Site.Controllers
 
 		public ActionResult LogOff()
 		{
-
 			FormsAuth.SignOut();
 
 			return RedirectToAction("Index", "Home");
@@ -82,7 +66,6 @@ namespace Demo.Site.Controllers
 
 		public ActionResult Register()
 		{
-
 			ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
 
 			return View();
@@ -91,13 +74,12 @@ namespace Demo.Site.Controllers
 		[AcceptVerbs(HttpVerbs.Post)]
 		public ActionResult Register(string userName, string email, string password, string confirmPassword)
 		{
-
 			ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
 
 			if (ValidateRegistration(userName, email, password, confirmPassword))
 			{
 				// Attempt to register the user
-				MembershipCreateStatus createStatus = MembershipService.CreateUser(userName, password, email);
+				var createStatus = MembershipService.CreateUser(userName, password, email);
 
 				if (createStatus == MembershipCreateStatus.Success)
 				{
@@ -117,7 +99,6 @@ namespace Demo.Site.Controllers
 		[Authorize]
 		public ActionResult ChangePassword()
 		{
-
 			ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
 
 			return View();
@@ -125,11 +106,10 @@ namespace Demo.Site.Controllers
 
 		[Authorize]
 		[AcceptVerbs(HttpVerbs.Post)]
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes",
+		[SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes",
 			Justification = "Exceptions result in password not being changed.")]
 		public ActionResult ChangePassword(string currentPassword, string newPassword, string confirmPassword)
 		{
-
 			ViewData["PasswordLength"] = MembershipService.MinPasswordLength;
 
 			if (!ValidateChangePassword(currentPassword, newPassword, confirmPassword))
@@ -158,7 +138,6 @@ namespace Demo.Site.Controllers
 
 		public ActionResult ChangePasswordSuccess()
 		{
-
 			return View();
 		}
 
@@ -170,8 +149,6 @@ namespace Demo.Site.Controllers
 			}
 		}
 
-		#region Validation Methods
-
 		private bool ValidateChangePassword(string currentPassword, string newPassword, string confirmPassword)
 		{
 			if (String.IsNullOrEmpty(currentPassword))
@@ -181,9 +158,9 @@ namespace Demo.Site.Controllers
 			if (newPassword == null || newPassword.Length < MembershipService.MinPasswordLength)
 			{
 				ModelState.AddModelError("newPassword",
-					String.Format(CultureInfo.CurrentCulture,
-						 "You must specify a new password of {0} or more characters.",
-						 MembershipService.MinPasswordLength));
+				                         String.Format(CultureInfo.CurrentCulture,
+				                                       "You must specify a new password of {0} or more characters.",
+				                                       MembershipService.MinPasswordLength));
 			}
 
 			if (!String.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
@@ -225,9 +202,9 @@ namespace Demo.Site.Controllers
 			if (password == null || password.Length < MembershipService.MinPasswordLength)
 			{
 				ModelState.AddModelError("password",
-					String.Format(CultureInfo.CurrentCulture,
-						 "You must specify a password of {0} or more characters.",
-						 MembershipService.MinPasswordLength));
+				                         String.Format(CultureInfo.CurrentCulture,
+				                                       "You must specify a password of {0} or more characters.",
+				                                       MembershipService.MinPasswordLength));
 			}
 			if (!String.Equals(password, confirmPassword, StringComparison.Ordinal))
 			{
@@ -273,7 +250,6 @@ namespace Demo.Site.Controllers
 					return "An unknown error occurred. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
 			}
 		}
-		#endregion
 	}
 
 	// The FormsAuthentication type is sealed and contains static members, so it is difficult to
@@ -289,14 +265,19 @@ namespace Demo.Site.Controllers
 
 	public class FormsAuthenticationService : IFormsAuthentication
 	{
+		#region IFormsAuthentication Members
+
 		public void SignIn(string userName, bool createPersistentCookie)
 		{
 			FormsAuthentication.SetAuthCookie(userName, createPersistentCookie);
 		}
+
 		public void SignOut()
 		{
 			FormsAuthentication.SignOut();
 		}
+
+		#endregion
 	}
 
 	public interface IMembershipService
@@ -310,7 +291,7 @@ namespace Demo.Site.Controllers
 
 	public class AccountMembershipService : IMembershipService
 	{
-		private MembershipProvider _provider;
+		private readonly MembershipProvider _provider;
 
 		public AccountMembershipService()
 			: this(null)
@@ -322,12 +303,11 @@ namespace Demo.Site.Controllers
 			_provider = provider ?? Membership.Provider;
 		}
 
+		#region IMembershipService Members
+
 		public int MinPasswordLength
 		{
-			get
-			{
-				return _provider.MinRequiredPasswordLength;
-			}
+			get { return _provider.MinRequiredPasswordLength; }
 		}
 
 		public bool ValidateUser(string userName, string password)
@@ -344,8 +324,10 @@ namespace Demo.Site.Controllers
 
 		public bool ChangePassword(string userName, string oldPassword, string newPassword)
 		{
-			MembershipUser currentUser = _provider.GetUser(userName, true /* userIsOnline */);
+			var currentUser = _provider.GetUser(userName, true /* userIsOnline */);
 			return currentUser.ChangePassword(oldPassword, newPassword);
 		}
+
+		#endregion
 	}
 }

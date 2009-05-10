@@ -9,9 +9,9 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 {
 	public class IncludeStorageFacts
 	{
-		private readonly IIncludeStorage _storage;
 		private readonly IncludeCombination _combination;
 		private readonly MockRepository _mocks;
+		private readonly IIncludeStorage _storage;
 		private readonly IKeyGenerator _stubKeyGen;
 
 		public IncludeStorageFacts()
@@ -19,7 +19,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mocks = new MockRepository();
 			_stubKeyGen = _mocks.Stub<IKeyGenerator>();
 			_storage = new StaticIncludeStorage(_stubKeyGen);
-			_combination = new IncludeCombination(IncludeType.Css, new [] {"~/content/css/foo.css"}, "#foo {color:red}", Clock.UtcNow);
+			_combination = new IncludeCombination(IncludeType.Css, new[] { "~/content/css/foo.css" }, "#foo {color:red}", Clock.UtcNow);
 			_mocks.ReplayAll();
 		}
 
@@ -73,7 +73,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		public void GetCombination_WhenCombinationExists_DoesNotThrow()
 		{
 			_stubKeyGen.Expect(kg => kg.Generate(_combination.Sources)).Return("foo");
-			string key = _storage.Store(_combination);
+			var key = _storage.Store(_combination);
 			IncludeCombination result = null;
 			Assert.DoesNotThrow(() => result = _storage.GetCombination(key));
 

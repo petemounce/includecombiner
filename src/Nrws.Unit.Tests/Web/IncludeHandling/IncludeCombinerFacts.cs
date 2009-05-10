@@ -56,21 +56,21 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 				{
 					new Dictionary<string, string> { { "~/content/js/foo.js", "/content/js/foo.js" }, { "/bar.js", "/bar.js" } },
 					IncludeType.Js,
-                    "hashed",
+					"hashed",
 					"<script type='text/javascript' src='/content/js/hashed.js'></script>"
 				};
 				yield return new object[]
 				{
 					new Dictionary<string, string> { { "~/content/css/foo.css", "/content/css/foo.css" }, { "/bar.css", "/bar.css" } },
 					IncludeType.Css,
-                    "hashed==",
+					"hashed==",
 					"<link rel='stylesheet' type='text/css' href='/content/css/hashed==.css'/>"
 				};
 				yield return new object[]
 				{
 					new Dictionary<string, string> { { "~/content/css/foo.css", "/content/css/foo.css" }, { "/bar.css", "/bar.css" } },
 					IncludeType.Css,
-                    "really/nasty%20url=",
+					"really/nasty%20url=",
 					"<link rel='stylesheet' type='text/css' href='/content/css/really/nasty%20url=.css'/>"
 				};
 			}

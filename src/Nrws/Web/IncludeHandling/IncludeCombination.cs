@@ -86,17 +86,19 @@ namespace Nrws.Web.IncludeHandling
 		private string minify()
 		{
 			if (Content == "")
+			{
 				return "";
+			}
 			switch (Type)
 			{
 				case IncludeType.Js:
-						var compressor = new JavaScriptCompressor(Content);
-						var minifiedJs = compressor.Compress(false, false, true, false, 80);
-						return minifiedJs;
+					var compressor = new JavaScriptCompressor(Content);
+					var minifiedJs = compressor.Compress(false, false, true, false, 80);
+					return minifiedJs;
 
 				case IncludeType.Css:
-						var minifiedCss = CssCompressor.Compress(Content, int.MaxValue, CssCompressionType.Hybrid);
-						return minifiedCss;
+					var minifiedCss = CssCompressor.Compress(Content, int.MaxValue, CssCompressionType.Hybrid);
+					return minifiedCss;
 
 				default:
 					throw new ArgumentOutOfRangeException();

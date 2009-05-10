@@ -8,13 +8,13 @@ namespace Nrws.Web.IncludeHandling
 {
 	public class IncludeCombinationResult : ActionResult
 	{
-		private readonly string _key;
-
 		private static readonly IDictionary<IncludeType, string> _contentTypes = new Dictionary<IncludeType, string>
 		{
 			{ IncludeType.Css, MimeTypes.TextCss }
 			, { IncludeType.Js, MimeTypes.ApplicationJavaScript }
 		};
+
+		private readonly string _key;
 
 		public IncludeCombinationResult(IIncludeCombiner combiner, string key)
 		{

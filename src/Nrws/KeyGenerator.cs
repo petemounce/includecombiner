@@ -7,6 +7,8 @@ namespace Nrws
 {
 	public class KeyGenerator : IKeyGenerator
 	{
+		#region IKeyGenerator Members
+
 		public string Generate(IEnumerable<string> generateFrom)
 		{
 			if (generateFrom == null)
@@ -14,11 +16,14 @@ namespace Nrws
 				throw new ArgumentNullException("generateFrom");
 			}
 			var longKey = new StringBuilder();
-			foreach(var s in generateFrom)
+			foreach (var s in generateFrom)
 			{
 				longKey.Append("|").Append(s);
 			}
-			if (longKey.Length > 0) longKey.Remove(0, 1);
+			if (longKey.Length > 0)
+			{
+				longKey.Remove(0, 1);
+			}
 			var toHashBytes = Encoding.UTF8.GetBytes(longKey.ToString());
 			var hashAlgorithm = SHA1.Create();
 			var hashed = hashAlgorithm.ComputeHash(toHashBytes);
@@ -30,5 +35,7 @@ namespace Nrws
 				;
 			return scrubbed;
 		}
+
+		#endregion
 	}
 }

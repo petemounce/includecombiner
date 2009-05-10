@@ -28,6 +28,8 @@ namespace Nrws.Web.IncludeHandling
 			_storage = storage;
 		}
 
+		#region IIncludeCombiner Members
+
 		public string RenderIncludes(ICollection<string> sources, IncludeType type, bool isInDebugMode)
 		{
 			var toRender = new StringBuilder();
@@ -85,5 +87,7 @@ namespace Nrws.Web.IncludeHandling
 		{
 			return _storage.GetAllCombinations();
 		}
+
+		#endregion
 	}
 }

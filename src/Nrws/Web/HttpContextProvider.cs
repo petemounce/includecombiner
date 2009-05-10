@@ -11,6 +11,8 @@ namespace Nrws.Web
 			_context = context;
 		}
 
+		#region IHttpContextProvider Members
+
 		public HttpContextBase Context
 		{
 			get { return new HttpContextWrapper(_context); }
@@ -20,5 +22,7 @@ namespace Nrws.Web
 		{
 			get { return Context.Request; }
 		}
+
+		#endregion
 	}
 }

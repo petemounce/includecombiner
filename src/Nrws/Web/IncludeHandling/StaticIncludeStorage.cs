@@ -7,19 +7,21 @@ namespace Nrws.Web.IncludeHandling
 	{
 		private static readonly IDictionary<string, IncludeCombination> _combinations;
 		private static readonly IDictionary<string, Include> _includes;
-		
+
+		private readonly IKeyGenerator _keyGen;
+
 		static StaticIncludeStorage()
 		{
 			_includes = new Dictionary<string, Include>();
 			_combinations = new Dictionary<string, IncludeCombination>();
 		}
 
-		private readonly IKeyGenerator _keyGen;
-
 		public StaticIncludeStorage(IKeyGenerator keyGen)
 		{
 			_keyGen = keyGen;
 		}
+
+		#region IIncludeStorage Members
 
 		public void Store(Include include)
 		{
@@ -77,5 +79,7 @@ namespace Nrws.Web.IncludeHandling
 		{
 			return _combinations;
 		}
+
+		#endregion
 	}
 }

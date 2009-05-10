@@ -21,6 +21,8 @@ namespace Nrws.Web.IncludeHandling
 			_fileSystemRoot = http.Request.MapPath("~/");
 		}
 
+		#region IIncludeReader Members
+
 		public string ToAbsolute(string source)
 		{
 			if (source.StartsWith("~/"))
@@ -48,6 +50,8 @@ namespace Nrws.Web.IncludeHandling
 			var lastModifiedAt = File.GetLastWriteTimeUtc(abs);
 			return new Include(type, source, content, lastModifiedAt);
 		}
+
+		#endregion
 
 		protected string ToFileSystem(string source)
 		{

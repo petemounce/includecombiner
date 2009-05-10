@@ -17,12 +17,12 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 	{
 		private readonly ControllerContext _controllerContext;
 		private readonly IncludeCombination _cssCombination;
+		private readonly HttpCachePolicyBase _mockCachePolicy;
 		private readonly ControllerBase _mockController;
 		private readonly HttpContextBase _mockHttpContext;
 		private readonly HttpResponseBase _mockResponse;
 		private readonly MockRepository _mocks;
-		private readonly HttpCachePolicyBase _mockCachePolicy;
-		private IIncludeCombiner _stubCombiner;
+		private readonly IIncludeCombiner _stubCombiner;
 
 		public IncludeCombinationInteractionFacts()
 		{
@@ -42,7 +42,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		{
 			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Twice();
 			_mockResponse.Expect(r => r.ContentEncoding = Encoding.UTF8);
-			_mockResponse.Expect(r => r.StatusCode = (int)HttpStatusCode.NotFound);
+			_mockResponse.Expect(r => r.StatusCode = (int) HttpStatusCode.NotFound);
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(null);
 
 			var result = new IncludeCombinationResult(_stubCombiner, "foo");
@@ -74,12 +74,12 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 	{
 		private readonly ControllerContext _controllerContext;
 		private readonly IncludeCombination _cssCombination;
-		private readonly ControllerBase _stubController;
-		private readonly HttpResponseBase _stubResponse;
 		private readonly MockRepository _mocks;
-		private readonly HttpContextBase _stubHttpContext;
 		private readonly HttpCachePolicyBase _stubCache;
-		private IIncludeCombiner _stubCombiner;
+		private readonly IIncludeCombiner _stubCombiner;
+		private readonly ControllerBase _stubController;
+		private readonly HttpContextBase _stubHttpContext;
+		private readonly HttpResponseBase _stubResponse;
 
 		public IncludeCombinationResultStateFacts()
 		{
@@ -131,7 +131,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_stubResponse.Expect(r => r.OutputStream).Return(new MemoryStream(8092)).Repeat.Twice();
 			_stubResponse.Expect(r => r.Cache).Return(_stubCache);
 
-			var emptyCombination = new IncludeCombination(IncludeType.Css, new [] {"foo.css"}, "", Clock.UtcNow);
+			var emptyCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "", Clock.UtcNow);
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(emptyCombination);
 			var result = new IncludeCombinationResult(_stubCombiner, "foo");
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));

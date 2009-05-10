@@ -36,7 +36,7 @@ namespace Nrws.Unit.Tests.Web
 		{
 			get
 			{
-				yield return new object[] { new HttpCookieCollection{new HttpCookie("debug", "1")}, true };
+				yield return new object[] { new HttpCookieCollection { new HttpCookie("debug", "1") }, true };
 				yield return new object[] { new HttpCookieCollection(), false };
 			}
 		}

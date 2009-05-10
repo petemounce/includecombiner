@@ -13,9 +13,9 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 	public class IncludeCombinerHtmlExtensionsFacts
 	{
 		private readonly HtmlHelper _html;
+		private readonly IHttpContextProvider _mockHttpContextProvider;
 		private readonly MockRepository _mocks;
 		private readonly ViewDataDictionary _viewData;
-		private readonly IHttpContextProvider _mockHttpContextProvider;
 
 		public IncludeCombinerHtmlExtensionsFacts()
 		{
@@ -23,7 +23,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 
 			_mockHttpContextProvider = _mocks.Stub<IHttpContextProvider>();
 			_mockHttpContextProvider.Expect(hcp => hcp.Request).Return(_mocks.Stub<HttpRequestBase>()).Repeat.Twice();
-			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(_mockHttpContextProvider, new Controller[]{}));
+			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(_mockHttpContextProvider, new Controller[] { }));
 
 			_viewData = new ViewDataDictionary();
 

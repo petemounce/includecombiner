@@ -30,16 +30,6 @@ namespace Nrws.Web.IncludeHandling
 			Combination = combiner.GetCombination(_key);
 		}
 
-		public IncludeCombinationResult(IncludeCombination combination, string key)
-		{
-			if (string.IsNullOrEmpty(key))
-			{
-				throw new ArgumentException("key");
-			}
-			_key = key;
-			Combination = combination;
-		}
-
 		public IncludeCombination Combination { get; private set; }
 
 		public override void ExecuteResult(ControllerContext context)

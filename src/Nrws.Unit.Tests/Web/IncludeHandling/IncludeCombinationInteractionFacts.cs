@@ -21,7 +21,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly HttpContextBase _mockHttpContext;
 		private readonly HttpResponseBase _mockResponse;
 		private readonly MockRepository _mocks;
-		private HttpCachePolicyBase _mockCachePolicy;
+		private readonly HttpCachePolicyBase _mockCachePolicy;
+		private IIncludeCombiner _stubCombiner;
 
 		public IncludeCombinationInteractionFacts()
 		{
@@ -31,6 +32,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockResponse = _mocks.StrictMock<HttpResponseBase>();
 			_mockCachePolicy = _mocks.StrictMock<HttpCachePolicyBase>();
 			_controllerContext = new ControllerContext(_mockHttpContext, new RouteData(), _mockController);
+			_stubCombiner = _mocks.Stub<IIncludeCombiner>();
 			_mocks.ReplayAll();
 			_cssCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red}", Clock.UtcNow);
 		}
@@ -41,10 +43,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Twice();
 			_mockResponse.Expect(r => r.ContentEncoding = Encoding.UTF8);
 			_mockResponse.Expect(r => r.StatusCode = (int)HttpStatusCode.NotFound);
+			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(null);
 
-			const IncludeCombination combination = null;
-			var result = new IncludeCombinationResult(combination, "foo");
-			result.ExecuteResult(_controllerContext);
+			var result = new IncludeCombinationResult(_stubCombiner, "foo");
+			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
 
 			_mocks.VerifyAll();
 		}
@@ -59,9 +61,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockResponse.Expect(r => r.OutputStream).Return(new MemoryStream(8092)).Repeat.Twice();
 			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy);
 			_mockCachePolicy.Expect(cp => cp.SetETag(Arg<string>.Matches(etag => etag.StartsWith("foo") && etag.EndsWith(_cssCombination.LastModifiedAt.Ticks.ToString()))));
+			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(_cssCombination);
 
-			var result = new IncludeCombinationResult(_cssCombination, "foo");
-			result.ExecuteResult(_controllerContext);
+			var result = new IncludeCombinationResult(_stubCombiner, "foo");
+			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
 
 			_mocks.VerifyAll();
 		}
@@ -76,6 +79,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly MockRepository _mocks;
 		private readonly HttpContextBase _stubHttpContext;
 		private readonly HttpCachePolicyBase _stubCache;
+		private IIncludeCombiner _stubCombiner;
 
 		public IncludeCombinationResultStateFacts()
 		{
@@ -85,6 +89,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_stubResponse = _mocks.Stub<HttpResponseBase>();
 			_stubCache = _mocks.Stub<HttpCachePolicyBase>();
 			_controllerContext = new ControllerContext(_stubHttpContext, new RouteData(), _stubController);
+			_stubCombiner = _mocks.Stub<IIncludeCombiner>();
+
 			_mocks.ReplayAll();
 			_cssCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red;}", Clock.UtcNow);
 		}
@@ -97,14 +103,6 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			mockCombiner.Expect(c => c.GetCombination("foo")).Return(_cssCombination);
 			IncludeCombinationResult result = null;
 			Assert.DoesNotThrow(() => result = new IncludeCombinationResult(mockCombiner, "foo"));
-			Assert.Equal(_cssCombination, result.Combination);
-		}
-
-		[Fact]
-		public void WhenConstructedViaCombination_CombinationIsSet()
-		{
-			IncludeCombinationResult result = null;
-			Assert.DoesNotThrow(() => result = new IncludeCombinationResult(_cssCombination, "foo"));
 			Assert.Equal(_cssCombination, result.Combination);
 		}
 
@@ -134,7 +132,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_stubResponse.Expect(r => r.Cache).Return(_stubCache);
 
 			var emptyCombination = new IncludeCombination(IncludeType.Css, new [] {"foo.css"}, "", Clock.UtcNow);
-			var result = new IncludeCombinationResult(emptyCombination, "foo");
+			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(emptyCombination);
+			var result = new IncludeCombinationResult(_stubCombiner, "foo");
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
 		}
 	}

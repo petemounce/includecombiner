@@ -47,15 +47,14 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mocks.ReplayAll();
 			mockCombiner.Expect(c => c.GetCombination("foo")).Return(_cssCombination);
 			IncludeCombinationResult result = null;
-			Assert.DoesNotThrow(() => result = new IncludeCombinationResult(mockCombiner, "foo"));
+			Assert.DoesNotThrow(() => result = new IncludeCombinationResult(mockCombiner, "foo", Clock.UtcNow));
 			Assert.Equal(_cssCombination, result.Combination);
 		}
 
 		[Fact]
 		public void ConstructorThrows_WhenCombinerIsNull()
 		{
-			const IIncludeCombiner combiner = null;
-			Assert.Throws<ArgumentNullException>(() => new IncludeCombinationResult(combiner, "foo"));
+			Assert.Throws<ArgumentNullException>(() => new IncludeCombinationResult(null, "foo", Clock.UtcNow));
 		}
 
 		[Theory]
@@ -63,7 +62,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[InlineData("")]
 		public void ConstructorThrows_WhenKeyIsBad(string key)
 		{
-			Assert.Throws<ArgumentException>(() => new IncludeCombinationResult(_mocks.Stub<IIncludeCombiner>(), key));
+			Assert.Throws<ArgumentException>(() => new IncludeCombinationResult(_mocks.Stub<IIncludeCombiner>(), key, Clock.UtcNow));
 		}
 
 		[Fact]
@@ -80,7 +79,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 
 			var emptyCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "", Clock.UtcNow);
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(emptyCombination);
-			var result = new IncludeCombinationResult(_stubCombiner, "foo");
+			var result = new IncludeCombinationResult(_stubCombiner, "foo", Clock.UtcNow);
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
 		}
 	}

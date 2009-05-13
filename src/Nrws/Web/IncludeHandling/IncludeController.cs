@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
@@ -15,12 +16,12 @@ namespace Nrws.Web.IncludeHandling
 
 		public ActionResult Css(string id)
 		{
-			return new IncludeCombinationResult(_combiner, id);
+			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, TimeSpan.FromDays(365));
 		}
 
 		public ActionResult Js(string id)
 		{
-			return new IncludeCombinationResult(_combiner, id);
+			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, TimeSpan.FromDays(365));
 		}
 
 		public ActionResult Index()

@@ -24,8 +24,12 @@ namespace Nrws.Web.IncludeHandling
 
 		private readonly IIncludeCombiner _combiner;
 		private readonly string _key;
+		private DateTime _now;
+		private TimeSpan? _cacheFor;
 
-		public IncludeCombinationResult(IIncludeCombiner combiner, string key)
+		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now) : this(combiner, key, now, null) {}
+
+		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now, TimeSpan? cacheFor)
 		{
 			if (combiner == null)
 			{
@@ -37,6 +41,8 @@ namespace Nrws.Web.IncludeHandling
 			}
 			_combiner = combiner;
 			_key = key;
+			_now = now;
+			_cacheFor = cacheFor;
 			Combination = combiner.GetCombination(_key);
 		}
 
@@ -51,6 +57,14 @@ namespace Nrws.Web.IncludeHandling
 				return;
 			}
 			context.HttpContext.Response.ContentType = _contentTypes[Combination.Type];
+			if (_cacheFor.HasValue)
+			{
+				context.HttpContext.Response.Cache.SetCacheability(HttpCacheability.Public);
+				context.HttpContext.Response.Cache.SetExpires(_now.Add(_cacheFor.Value));
+				context.HttpContext.Response.Cache.SetMaxAge(_cacheFor.Value);
+				context.HttpContext.Response.Cache.SetValidUntilExpires(true);
+				context.HttpContext.Response.Cache.SetLastModified(Combination.LastModifiedAt);
+			}
 			context.HttpContext.Response.Cache.SetETag(_key + "-" + Combination.LastModifiedAt.Ticks);
 			var compressionAccepted = figureOutCompression(context.HttpContext.Request);
 			var responseBodyBytes = Combination.GetResponseBodyBytes(compressionAccepted);

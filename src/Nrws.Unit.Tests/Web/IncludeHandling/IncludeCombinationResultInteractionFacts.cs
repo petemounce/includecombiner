@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -46,7 +47,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockResponse.Expect(r => r.StatusCode = (int) HttpStatusCode.NotFound);
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(null);
 
-			var result = new IncludeCombinationResult(_stubCombiner, "foo");
+			var result = new IncludeCombinationResult(_stubCombiner, "foo", Clock.UtcNow);
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
 
 			_mocks.VerifyAll();
@@ -66,7 +67,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockCachePolicy.Expect(cp => cp.SetETag(Arg<string>.Matches(etag => etag.StartsWith("foo") && etag.EndsWith(_cssCombination.LastModifiedAt.Ticks.ToString()))));
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(_cssCombination);
 
-			var result = new IncludeCombinationResult(_stubCombiner, "foo");
+			var result = new IncludeCombinationResult(_stubCombiner, "foo", Clock.UtcNow);
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
 
 			_mocks.VerifyAll();
@@ -104,9 +105,41 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockCachePolicy.Expect(cp => cp.SetETag(Arg<string>.Matches(etag => etag.StartsWith("foo") && etag.EndsWith(_cssCombination.LastModifiedAt.Ticks.ToString()))));
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(_cssCombination);
 
-			var result = new IncludeCombinationResult(_stubCombiner, "foo");
+			var result = new IncludeCombinationResult(_stubCombiner, "foo", Clock.UtcNow);
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
 			
+			_mocks.VerifyAll();
+		}
+
+		[Fact]
+		[FreezeClock(2009, 10, 1, 1, 1, 1)]
+		public void WhenCacheForIsSet_ShouldAppendCacheHeaders()
+		{
+			var lastModifiedAt = Clock.UtcNow;
+			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", lastModifiedAt);
+			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(6);
+			_mockHttpContext.Expect(hc => hc.Request).Return(_mockRequest);
+			_mockRequest.Expect(r => r.Headers[HttpHeaders.AcceptEncoding]).Return("");
+			_mockResponse.Expect(r => r.ContentEncoding = Encoding.UTF8);
+			_mockResponse.Expect(r => r.ContentType = MimeTypes.TextCss);
+			_mockResponse.Expect(r => r.AddHeader(HttpHeaders.ContentLength, "15"));
+			_mockResponse.Expect(r => r.OutputStream).Return(new MemoryStream(8092)).Repeat.Twice();
+			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy);
+			_mockCachePolicy.Expect(cp => cp.SetETag(Arg<string>.Matches(etag => etag.StartsWith("foo") && etag.EndsWith(combination.LastModifiedAt.Ticks.ToString()))));
+			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(combination);
+
+			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(5);
+			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy).Repeat.Times(5);
+			var cacheFor = TimeSpan.FromMinutes(30);
+			_mockCachePolicy.Expect(cp => cp.SetCacheability(HttpCacheability.Public));
+			_mockCachePolicy.Expect(cp => cp.SetExpires(Clock.UtcNow.Add(cacheFor)));
+			_mockCachePolicy.Expect(cp => cp.SetMaxAge(cacheFor));
+			_mockCachePolicy.Expect(cp => cp.SetValidUntilExpires(true));
+			_mockCachePolicy.Expect(cp => cp.SetLastModified(lastModifiedAt));
+
+			var result = new IncludeCombinationResult(_stubCombiner, "foo", lastModifiedAt, cacheFor);
+			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
+
 			_mocks.VerifyAll();
 		}
 	}

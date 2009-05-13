@@ -47,4 +47,4 @@ Also:
 	* This may require replacing the default ControllerFactory with an IoC-aware one; see Nrws.Web.CommonServiceLocatorControllerFactory
 	
 * (optional) Create ~/Views/Include/Index.aspx and copy Demo.Site/Views/Include/Index.aspx's content to it (TODO: make embedded into Nrws dll or similar)
-* (optional) Configure it via web.config
+* (optional) Configure it via web.config (TODO)

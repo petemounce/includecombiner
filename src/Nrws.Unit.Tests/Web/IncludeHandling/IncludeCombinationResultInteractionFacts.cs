@@ -71,5 +71,43 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 
 			_mocks.VerifyAll();
 		}
+
+		[Theory]
+		[InlineData("gzip", "gzip", "AnActualBrowser", 3)]
+		[InlineData("gzip,deflate", "gzip", "AnActualBrowser", 3)]
+		[InlineData("deflate,gzip", "gzip", "AnActualBrowser", 3)]
+		[InlineData("deflate", "deflate", "AnActualBrowser", 3)]
+		[InlineData("gzip", null, "IE", 5)]
+		public void WhenRequestAcceptsCompression_ShouldAppendContentEncodingHeader(string acceptEncoding, string expectedContentEncoding, string browser, int browserMajorVersion)
+		{
+			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(6);
+			if (expectedContentEncoding != null)
+			{
+				_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse);
+			}
+			_mockHttpContext.Expect(hc => hc.Request).Return(_mockRequest);
+			_mockRequest.Expect(r => r.Headers[HttpHeaders.AcceptEncoding]).Return(acceptEncoding);
+			var stubBrowser = MockRepository.GenerateStub<HttpBrowserCapabilitiesBase>();
+			stubBrowser.Expect(b => b.Type).Return(browser);
+			stubBrowser.Expect(b => b.MajorVersion).Return(browserMajorVersion);
+			stubBrowser.Replay();
+			_mockRequest.Expect(r => r.Browser).Return(stubBrowser);
+			_mockResponse.Expect(r => r.ContentEncoding = Encoding.UTF8);
+			_mockResponse.Expect(r => r.ContentType = MimeTypes.TextCss);
+			_mockResponse.Expect(r => r.AddHeader(Arg<string>.Is.Equal(HttpHeaders.ContentLength), Arg<string>.Is.NotNull));
+			_mockResponse.Expect(r => r.OutputStream).Return(new MemoryStream(8092)).Repeat.Twice();
+			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy);
+			if (expectedContentEncoding != null)
+			{
+				_mockResponse.Expect(r => r.AppendHeader(HttpHeaders.ContentEncoding, expectedContentEncoding));
+			}
+			_mockCachePolicy.Expect(cp => cp.SetETag(Arg<string>.Matches(etag => etag.StartsWith("foo") && etag.EndsWith(_cssCombination.LastModifiedAt.Ticks.ToString()))));
+			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(_cssCombination);
+
+			var result = new IncludeCombinationResult(_stubCombiner, "foo");
+			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
+			
+			_mocks.VerifyAll();
+		}
 	}
 }

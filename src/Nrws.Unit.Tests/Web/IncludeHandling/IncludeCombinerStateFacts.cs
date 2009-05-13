@@ -7,14 +7,14 @@ using Xunit.Extensions;
 
 namespace Nrws.Unit.Tests.Web.IncludeHandling
 {
-	public class IncludeCombinerFacts
+	public class IncludeCombinerStateFacts
 	{
 		private readonly IIncludeCombiner _combiner;
 		private readonly IIncludeReader _mockReader;
 		private readonly MockRepository _mocks;
 		private readonly IIncludeStorage _mockStorage;
 
-		public IncludeCombinerFacts()
+		public IncludeCombinerStateFacts()
 		{
 			_mocks = new MockRepository();
 			_mockReader = _mocks.DynamicMock<IIncludeReader>();

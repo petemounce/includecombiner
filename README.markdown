@@ -28,3 +28,23 @@ Also:
 * It has a demo
 * It has benchmarks (see Demo.Site)
 * It's highly covered in unit-tests - see http://teamcity.codebetter.com -> IncludeCombiner
+* It has a page that tells you which includes and combinations are registered; the index action on IncludeController
+
+## How to use it
+
+* Unzip the distribution
+* Reference Nrws.dll in your web-project
+* Register services in your IoC container:
+
+	* IHttpContextProvider -> Nrws.Web.HttpContextProvider
+	* IKeyGenerator -> Nrws.KeyGenerator
+	* IIncludeReader -> Nrws.Web.FilesystemIncludeReader
+	* IIncludeStorage -> Nrws.Web.StaticIncludeStorage
+	* IIncludeCombiner -> Nrws.Web.IncludeCombiner
+
+* Ensure your web-project's ControllerFactory can create the IncludeController when it's required to
+
+	* This may require replacing the default ControllerFactory with an IoC-aware one; see Nrws.Web.CommonServiceLocatorControllerFactory
+	
+* (optional) Create ~/Views/Include/Index.aspx and copy Demo.Site/Views/Include/Index.aspx's content to it (TODO: make embedded into Nrws dll or similar)
+* (optional) Configure it via web.config

@@ -43,6 +43,16 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		}
 
 		[Fact]
+		public void SetCombination_ShouldTellStorageToStore()
+		{
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert();", Clock.UtcNow);
+			_mockStorage.Expect(s => s.Store(combination)).Return("foo");
+			
+			Assert.DoesNotThrow(() => _combiner.UpdateCombination(combination));
+			_mocks.VerifyAll();
+		}
+
+		[Fact]
 		public void GetAllIncludes_ShouldAskStorageForIncludes()
 		{
 			_mockStorage.Expect(s => s.GetAllIncludes()).Return(new[] { new Include(IncludeType.Css, "~/foo.css", "#foo{color:red;}", Clock.UtcNow) });

@@ -11,5 +11,6 @@ namespace Nrws.Web.IncludeHandling
 		IncludeCombination GetCombination(string key);
 		IEnumerable<Include> GetAllIncludes();
 		IDictionary<string, IncludeCombination> GetAllCombinations();
+		void UpdateCombination(IncludeCombination combination);
 	}
 }

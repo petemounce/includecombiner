@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using Yahoo.Yui.Compressor;
 
@@ -41,16 +42,40 @@ namespace Nrws.Web.IncludeHandling
 
 		#endregion
 
-		public byte[] GetResponseBodyBytes()
+		public byte[] GetResponseBodyBytes(ResponseCompression compressionType)
 		{
-			byte[] responseBodyBytes;
 			using (var memoryStream = new MemoryStream(8092))
 			{
-				var noCompression = Encoding.UTF8.GetBytes(_minified);
-				memoryStream.Write(noCompression, 0, noCompression.Length);
-				responseBodyBytes = memoryStream.ToArray();
+				switch (compressionType)
+				{
+					case ResponseCompression.None:
+						var none = Encoding.UTF8.GetBytes(_minified);
+						memoryStream.Write(none, 0, none.Length);
+						break;
+					case ResponseCompression.Gzip:
+						using (var writer = new GZipStream(memoryStream, CompressionMode.Compress))
+						{
+							var bytes = Encoding.UTF8.GetBytes(_minified);
+							writer.Write(bytes, 0, bytes.Length);
+							writer.Flush();
+						}
+						break;
+					case ResponseCompression.Deflate:
+						using (var writer = new DeflateStream(memoryStream, CompressionMode.Compress))
+						{
+							var bytes = Encoding.UTF8.GetBytes(_minified);
+							writer.Write(bytes, 0, bytes.Length);
+							writer.Flush();
+						}
+						break;
+					default:
+						throw new ArgumentOutOfRangeException("compressionType");
+				}
+
+				var array = memoryStream.ToArray();
+
+				return array;
 			}
-			return responseBodyBytes;
 		}
 
 		public override bool Equals(object obj)

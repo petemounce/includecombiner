@@ -88,6 +88,11 @@ namespace Nrws.Web.IncludeHandling
 			return _storage.GetAllCombinations();
 		}
 
+		public void UpdateCombination(IncludeCombination combination)
+		{
+			_storage.Store(combination);
+		}
+
 		#endregion
 	}
 }

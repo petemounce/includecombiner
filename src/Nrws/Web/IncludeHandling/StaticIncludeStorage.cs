@@ -80,6 +80,12 @@ namespace Nrws.Web.IncludeHandling
 			return _combinations;
 		}
 
+		public void Clear()
+		{
+			_includes.Clear();
+			_combinations.Clear();
+		}
+
 		#endregion
 	}
 }

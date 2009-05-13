@@ -14,21 +14,31 @@ namespace Nrws.Web.IncludeHandling
 			_combiner = combiner;
 		}
 
+		[AcceptVerbs(HttpVerbs.Get)]
 		public ActionResult Css(string id)
 		{
 			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, TimeSpan.FromDays(365));
 		}
 
+		[AcceptVerbs(HttpVerbs.Get)]
 		public ActionResult Js(string id)
 		{
 			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, TimeSpan.FromDays(365));
 		}
 
+		[AcceptVerbs(HttpVerbs.Get)]
 		public ActionResult Index()
 		{
 			// TODO: list the contents of the IncludeStorage; Includes and IncludeCombinations
 			var model = new IncludeIndexModel { Includes = _combiner.GetAllIncludes(), Combinations = _combiner.GetAllCombinations() };
 			return View(model);
+		}
+
+		[AcceptVerbs(HttpVerbs.Post)]
+		public ActionResult Clear()
+		{
+			_combiner.Clear();
+			return RedirectToAction("index");
 		}
 	}
 

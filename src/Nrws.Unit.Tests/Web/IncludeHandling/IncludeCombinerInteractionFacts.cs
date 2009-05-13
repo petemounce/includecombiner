@@ -71,5 +71,23 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			Assert.NotNull(combinations);
 			_mocks.VerifyAll();
 		}
+
+		[Fact]
+		public void RenderIncludes_InDebugMode_ShouldClearStorage()
+		{
+			_mockReader.Expect(r => r.ToAbsolute("foo.js")).Return("/foo.js");
+			_mockStorage.Expect(s => s.Clear());
+			string rendered = null;
+			Assert.DoesNotThrow(() => rendered = _combiner.RenderIncludes(new[] {"foo.js"}, IncludeType.Js, true));
+			_mocks.VerifyAll();
+		}
+
+		[Fact]
+		public void Clear_ShouldTellStorageToClear()
+		{
+			_mockStorage.Expect(s => s.Clear());
+			Assert.DoesNotThrow(() => _combiner.Clear());
+			_mocks.VerifyAll();
+		}
 	}
 }

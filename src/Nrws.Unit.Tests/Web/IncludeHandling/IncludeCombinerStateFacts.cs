@@ -107,6 +107,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			{
 				_mockReader.Expect(sr => sr.ToAbsolute(kvp.Key)).Return(kvp.Value);
 			}
+			_mockStorage.Expect(s => s.Clear());
 			string rendered = null;
 			Assert.DoesNotThrow(() => rendered = _combiner.RenderIncludes(includes.Keys, type, true));
 			Assert.Equal(rendered, expected);

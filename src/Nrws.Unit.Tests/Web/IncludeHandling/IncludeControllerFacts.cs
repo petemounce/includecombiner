@@ -58,5 +58,15 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			Assert.IsType<ViewResult>(result);
 			_mocks.VerifyAll();
 		}
+
+		[Fact]
+		public void Clear_ShouldTellCombinerToClear()
+		{
+			_mockCombiner.Expect(c => c.Clear());
+			ActionResult result = null;
+			Assert.DoesNotThrow(() => result = _controller.Clear());
+			Assert.IsType<RedirectToRouteResult>(result);
+			_mocks.VerifyAll();
+		}
 	}
 }

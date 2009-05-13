@@ -37,6 +37,7 @@ namespace Nrws.Web.IncludeHandling
 			{
 				if (isInDebugMode)
 				{
+					Clear();
 					foreach (var source in sources)
 					{
 						var url = _reader.ToAbsolute(source);
@@ -91,6 +92,11 @@ namespace Nrws.Web.IncludeHandling
 		public void UpdateCombination(IncludeCombination combination)
 		{
 			_storage.Store(combination);
+		}
+
+		public void Clear()
+		{
+			_storage.Clear();
 		}
 
 		#endregion

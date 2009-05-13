@@ -79,6 +79,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[InlineData("deflate,gzip", "gzip", "AnActualBrowser", 3)]
 		[InlineData("deflate", "deflate", "AnActualBrowser", 3)]
 		[InlineData("gzip", null, "IE", 5)]
+		[InlineData("mangled", null, "Anything", 3)]
 		public void WhenRequestAcceptsCompression_ShouldAppendContentEncodingHeader(string acceptEncoding, string expectedContentEncoding, string browser, int browserMajorVersion)
 		{
 			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(6);

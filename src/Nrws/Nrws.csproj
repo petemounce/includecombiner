@@ -36,6 +36,7 @@
       <HintPath>..\..\3rdparty\commonservicelocator\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -55,11 +56,22 @@
   <ItemGroup>
     <Compile Include="IKeyGenerator.cs" />
     <Compile Include="KeyGenerator.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="Web\CommonServiceLocatorControllerFactory.cs" />
     <Compile Include="Web\DebugFilterAttribute.cs" />
     <Compile Include="Web\HttpContextProvider.cs" />
     <Compile Include="Web\HttpHeaders.cs" />
     <Compile Include="Web\IHttpContextProvider.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\CssElement.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\CssOptionsElement.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\ICssSettings.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\IIncludeHandlingSettings.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\IIncludeTypeSettings.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\IJsSettings.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\IncludeHandlingSectionHandler.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\IncludeTypeElement.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\JsElement.cs" />
+    <Compile Include="Web\IncludeHandling\Configuration\JsOptionsElement.cs" />
     <Compile Include="Web\IncludeHandling\IIncludeStorage.cs" />
     <Compile Include="Web\IncludeHandling\IncludeCombination.cs" />
     <Compile Include="Web\IncludeHandling\FileSystemIncludeReader.cs" />

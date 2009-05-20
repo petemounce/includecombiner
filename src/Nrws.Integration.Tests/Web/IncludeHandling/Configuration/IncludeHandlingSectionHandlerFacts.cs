@@ -4,6 +4,7 @@ using System.Configuration;
 using Nrws.Web.IncludeHandling;
 using Nrws.Web.IncludeHandling.Configuration;
 using Xunit;
+using Xunit.Extensions;
 using Yahoo.Yui.Compressor;
 
 namespace Nrws.Integration.Tests.Web.IncludeHandling.Configuration
@@ -73,7 +74,17 @@ namespace Nrws.Integration.Tests.Web.IncludeHandling.Configuration
 			Assert.Equal(false, section.Js.Obfuscate);
 			Assert.Equal(false, section.Js.PreserveSemiColons);
 			Assert.Equal(true, section.Js.Verbose);
+		}
 
+		[Theory]
+		[InlineData("pathValidation1")]
+		[InlineData("pathValidation2")]
+		public void WhenPathMissingAFormatPlaceHolder_WillThrow(string sectionName)
+		{
+			var section = (IIncludeHandlingSettings) ConfigurationManager.GetSection(sectionName);
+			string path = null;
+			Assert.Throws<ConfigurationErrorsException>(() => path = section.Css.Path);
+			Assert.Null(path);
 		}
 	}
 }

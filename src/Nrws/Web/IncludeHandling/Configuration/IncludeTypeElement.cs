@@ -7,7 +7,7 @@ namespace Nrws.Web.IncludeHandling.Configuration
 {
 	public abstract class IncludeTypeElement : ConfigurationElement, IIncludeTypeSettings
 	{
-		private const string DEFAULTCACHEFOR = "365:00:00:00.000";
+		private const string DEFAULTCACHEFOR = "365.00:00:00.000";
 		private const string DEFAULTCOMPRESSIONORDER = "gzip,deflate";
 		private const string CACHEFOR = "cacheFor";
 		private const string COMPRESSIONORDER = "compressionOrder";

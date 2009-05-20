@@ -46,7 +46,7 @@ task :ci_kludge do
 end
 
 #CLEAN.include("#{SRC_DIR}/*Site*/web.config")
-CLEAN.include("#{SRC_DIR}/**/app.config")
+#CLEAN.include("#{SRC_DIR}/**/app.config")
 
 task :configs,[:base_dirs, :environment] do |t, args|
 	args.with_defaults(:environment => 'dev')

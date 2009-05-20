@@ -16,7 +16,7 @@ namespace Nrws.Web.IncludeHandling.Configuration
 			{
 				try
 				{
-					var type = this[COMPRESSIONTYPE] as string;
+					var type = this[COMPRESSIONTYPE].ToString();
 					return type.CastToEnum<CssCompressionType>();
 				}
 				catch

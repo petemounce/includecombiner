@@ -7,7 +7,6 @@ namespace Nrws.Web.IncludeHandling.Configuration
 {
 	public abstract class IncludeTypeElement : ConfigurationElement, IIncludeTypeSettings
 	{
-		private IList<ResponseCompression> _compressionOrderList;
 		private const string DEFAULTCACHEFOR = "365:00:00:00.000";
 		private const string DEFAULTCOMPRESSIONORDER = "gzip,deflate";
 		private const string CACHEFOR = "cacheFor";
@@ -15,38 +14,10 @@ namespace Nrws.Web.IncludeHandling.Configuration
 		private const string LINEBREAKAT = "lineBreakAt";
 		private const string MINIFY = "minify";
 		private const string PATH = "path";
+		private const string DEFAULTPATH = "~/include/{0}/{1}";
 
-		[ConfigurationProperty(COMPRESSIONORDER, DefaultValue = DEFAULTCOMPRESSIONORDER)]
-		private string compressionOrder
-		{
-			get
-			{
-				try
-				{
-					return this[COMPRESSIONORDER] as string;
-				}
-				catch (NullReferenceException)
-				{
-					return DEFAULTCOMPRESSIONORDER;
-				}
-			}
-		}
-
-		[ConfigurationProperty(CACHEFOR, DefaultValue = DEFAULTCACHEFOR)]
-		private string cacheFor
-		{
-			get
-			{
-				try
-				{
-					return this[CACHEFOR] as string;
-				}
-				catch (NullReferenceException)
-				{
-					return DEFAULTCACHEFOR;
-				}
-			}
-		}
+		private IList<ResponseCompression> _compressionOrderList;
+		private string _path;
 
 		[ConfigurationProperty(LINEBREAKAT, DefaultValue = int.MaxValue)]
 		public int LineBreakAt
@@ -54,11 +25,11 @@ namespace Nrws.Web.IncludeHandling.Configuration
 			get
 			{
 				int result;
-				if (!int.TryParse(this[LINEBREAKAT] as string, out result))
+				if (!int.TryParse(this[LINEBREAKAT].ToString(), out result))
 				{
 					result = int.MaxValue;
 				}
-				if (result == 0)
+				if (result <= 0)
 				{
 					result = int.MaxValue;
 				}
@@ -68,10 +39,34 @@ namespace Nrws.Web.IncludeHandling.Configuration
 
 		#region IIncludeTypeSettings Members
 
-		[ConfigurationProperty(PATH, DefaultValue = "~/include/{0}/{1}")]
+		[ConfigurationProperty(PATH, DefaultValue = DEFAULTPATH)]
 		public string Path
 		{
-			get { return this[PATH] as string; }
+			get
+			{
+				if (_path == null)
+				{
+					_path = this[PATH].ToString();
+					if (_path == null)
+					{
+						_path = DEFAULTPATH;
+					}
+					if (!_path.Contains("{0}") || !_path.Contains("{1}"))
+					{
+						throw new ConfigurationErrorsException("path must contain two format placeholders; {0} and {1}, for type and key respectively.");
+					}
+				}
+				return _path;
+			}
+		}
+
+		[ConfigurationProperty(COMPRESSIONORDER, DefaultValue = DEFAULTCOMPRESSIONORDER)]
+		public string compressionOrder
+		{
+			get
+			{
+				return this[COMPRESSIONORDER].ToString();
+			}
 		}
 
 		public IList<ResponseCompression> CompressionOrder
@@ -90,6 +85,15 @@ namespace Nrws.Web.IncludeHandling.Configuration
 		public bool Minify
 		{
 			get { return (bool) this[MINIFY]; }
+		}
+
+		[ConfigurationProperty(CACHEFOR, DefaultValue = DEFAULTCACHEFOR)]
+		public string cacheFor
+		{
+			get
+			{
+				return this[CACHEFOR].ToString();
+			}
 		}
 
 		public TimeSpan? CacheFor

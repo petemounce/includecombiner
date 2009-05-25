@@ -22,8 +22,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly IIncludeCombiner _stubCombiner;
 		private readonly ControllerBase _stubController;
 		private readonly HttpContextBase _stubHttpContext;
-		private readonly HttpResponseBase _stubResponse;
 		private readonly HttpRequestBase _stubRequest;
+		private readonly HttpResponseBase _stubResponse;
 
 		public IncludeCombinationResultStateFacts()
 		{
@@ -70,7 +70,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		{
 			_stubHttpContext.Expect(hc => hc.Response).Return(_stubResponse);
 			_stubHttpContext.Expect(hc => hc.Request).Return(_stubRequest);
-			_stubRequest.Expect(r => r.Headers).Return(new NameValueCollection { {HttpHeaders.AcceptEncoding, "" } });
+			_stubRequest.Expect(r => r.Headers).Return(new NameValueCollection { { HttpHeaders.AcceptEncoding, "" } });
 			_stubResponse.ContentEncoding = Encoding.UTF8;
 			_stubResponse.ContentType = MimeTypes.TextCss;
 			_stubResponse.AddHeader(HttpHeaders.ContentLength, "15");

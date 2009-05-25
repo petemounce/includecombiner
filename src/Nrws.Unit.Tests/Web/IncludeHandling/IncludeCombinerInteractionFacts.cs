@@ -47,7 +47,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		{
 			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert();", Clock.UtcNow);
 			_mockStorage.Expect(s => s.Store(combination)).Return("foo");
-			
+
 			Assert.DoesNotThrow(() => _combiner.UpdateCombination(combination));
 			_mocks.VerifyAll();
 		}
@@ -78,7 +78,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockReader.Expect(r => r.ToAbsolute("foo.js")).Return("/foo.js");
 			_mockStorage.Expect(s => s.Clear());
 			string rendered = null;
-			Assert.DoesNotThrow(() => rendered = _combiner.RenderIncludes(new[] {"foo.js"}, IncludeType.Js, true));
+			Assert.DoesNotThrow(() => rendered = _combiner.RenderIncludes(new[] { "foo.js" }, IncludeType.Js, true));
 			_mocks.VerifyAll();
 		}
 

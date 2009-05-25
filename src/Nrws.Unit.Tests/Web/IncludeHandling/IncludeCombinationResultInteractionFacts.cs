@@ -20,10 +20,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly HttpCachePolicyBase _mockCachePolicy;
 		private readonly ControllerBase _mockController;
 		private readonly HttpContextBase _mockHttpContext;
+		private readonly HttpRequestBase _mockRequest;
 		private readonly HttpResponseBase _mockResponse;
 		private readonly MockRepository _mocks;
 		private readonly IIncludeCombiner _stubCombiner;
-		private readonly HttpRequestBase _mockRequest;
 
 		public IncludeCombinationResultInteractionFacts()
 		{
@@ -108,7 +108,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 
 			var result = new IncludeCombinationResult(_stubCombiner, "foo", Clock.UtcNow);
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
-			
+
 			_mocks.VerifyAll();
 		}
 

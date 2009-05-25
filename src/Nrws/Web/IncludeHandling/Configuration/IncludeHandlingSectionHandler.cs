@@ -19,19 +19,13 @@ namespace Nrws.Web.IncludeHandling.Configuration
 		[ConfigurationProperty(CSS)]
 		public CssElement Css
 		{
-			get
-			{
-				return (CssElement) this[CSS] ?? new CssElement();
-			}
+			get { return (CssElement) this[CSS] ?? new CssElement(); }
 		}
 
 		[ConfigurationProperty(JS)]
 		public JsElement Js
 		{
-			get
-			{
-				return (JsElement) this[JS] ?? new JsElement();
-			}
+			get { return (JsElement) this[JS] ?? new JsElement(); }
 		}
 
 		#endregion

@@ -24,10 +24,13 @@ namespace Nrws.Web.IncludeHandling
 
 		private readonly IIncludeCombiner _combiner;
 		private readonly string _key;
-		private DateTime _now;
 		private TimeSpan? _cacheFor;
+		private DateTime _now;
 
-		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now) : this(combiner, key, now, null) {}
+		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now)
+			: this(combiner, key, now, null)
+		{
+		}
 
 		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now, TimeSpan? cacheFor)
 		{

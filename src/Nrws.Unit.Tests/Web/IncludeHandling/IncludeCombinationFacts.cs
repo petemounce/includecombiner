@@ -107,7 +107,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		public void Equals_CorrectlyHandlesNullObject()
 		{
 			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow);
-			var result = combination.Equals((object)null);
+			var result = combination.Equals((object) null);
 			Assert.False(result);
 		}
 

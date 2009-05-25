@@ -7,17 +7,31 @@ namespace Nrws.Web.IncludeHandling.Configuration
 {
 	public abstract class IncludeTypeElement : ConfigurationElement, IIncludeTypeSettings
 	{
-		private const string DEFAULTCACHEFOR = "365.00:00:00.000";
-		private const string DEFAULTCOMPRESSIONORDER = "gzip,deflate";
 		private const string CACHEFOR = "cacheFor";
 		private const string COMPRESSIONORDER = "compressionOrder";
+		private const string DEFAULTCACHEFOR = "365.00:00:00.000";
+		private const string DEFAULTCOMPRESSIONORDER = "gzip,deflate";
+		private const string DEFAULTPATH = "~/include/{0}/{1}";
 		private const string LINEBREAKAT = "lineBreakAt";
 		private const string MINIFY = "minify";
 		private const string PATH = "path";
-		private const string DEFAULTPATH = "~/include/{0}/{1}";
 
 		private IList<ResponseCompression> _compressionOrderList;
 		private string _path;
+
+		[ConfigurationProperty(COMPRESSIONORDER, DefaultValue = DEFAULTCOMPRESSIONORDER)]
+		public string compressionOrder
+		{
+			get { return this[COMPRESSIONORDER].ToString(); }
+		}
+
+		[ConfigurationProperty(CACHEFOR, DefaultValue = DEFAULTCACHEFOR)]
+		public string cacheFor
+		{
+			get { return this[CACHEFOR].ToString(); }
+		}
+
+		#region IIncludeTypeSettings Members
 
 		[ConfigurationProperty(LINEBREAKAT, DefaultValue = int.MaxValue)]
 		public int LineBreakAt
@@ -36,8 +50,6 @@ namespace Nrws.Web.IncludeHandling.Configuration
 				return result;
 			}
 		}
-
-		#region IIncludeTypeSettings Members
 
 		[ConfigurationProperty(PATH, DefaultValue = DEFAULTPATH)]
 		public string Path
@@ -60,15 +72,6 @@ namespace Nrws.Web.IncludeHandling.Configuration
 			}
 		}
 
-		[ConfigurationProperty(COMPRESSIONORDER, DefaultValue = DEFAULTCOMPRESSIONORDER)]
-		public string compressionOrder
-		{
-			get
-			{
-				return this[COMPRESSIONORDER].ToString();
-			}
-		}
-
 		public IList<ResponseCompression> CompressionOrder
 		{
 			get
@@ -85,15 +88,6 @@ namespace Nrws.Web.IncludeHandling.Configuration
 		public bool Minify
 		{
 			get { return (bool) this[MINIFY]; }
-		}
-
-		[ConfigurationProperty(CACHEFOR, DefaultValue = DEFAULTCACHEFOR)]
-		public string cacheFor
-		{
-			get
-			{
-				return this[CACHEFOR].ToString();
-			}
 		}
 
 		public TimeSpan? CacheFor

@@ -43,7 +43,7 @@ namespace Nrws.Integration.Tests.Web.IncludeHandling.Configuration
 		[Fact]
 		public void CanSetAllowDebug()
 		{
-			var section = (IIncludeHandlingSettings)ConfigurationManager.GetSection("canSetAllowDebug");
+			var section = (IIncludeHandlingSettings) ConfigurationManager.GetSection("canSetAllowDebug");
 			Assert.True(section.AllowDebug);
 		}
 
@@ -54,15 +54,15 @@ namespace Nrws.Integration.Tests.Web.IncludeHandling.Configuration
 			Assert.True(section.AllowDebug);
 
 			Assert.Equal("~/foo/{0}/{1}", section.Css.Path);
-			Assert.Equal(new TimeSpan(10,10,10), section.Css.CacheFor);
+			Assert.Equal(new TimeSpan(10, 10, 10), section.Css.CacheFor);
 			var cssRCs = new List<ResponseCompression> { ResponseCompression.Gzip };
 			Assert.Equal(cssRCs[0], section.Css.CompressionOrder[0]);
 			Assert.Equal(180, section.Css.LineBreakAt);
 			Assert.Equal(false, section.Css.Minify);
 
 			Assert.Equal("~/bar/{0}/{1}", section.Js.Path);
-			Assert.Equal(new TimeSpan(11,11,11,11,100), section.Js.CacheFor);
-			var jsRCs = new []{ ResponseCompression.Deflate, ResponseCompression.Gzip};
+			Assert.Equal(new TimeSpan(11, 11, 11, 11, 100), section.Js.CacheFor);
+			var jsRCs = new[] { ResponseCompression.Deflate, ResponseCompression.Gzip };
 			Assert.Equal(jsRCs[0], section.Js.CompressionOrder[0]);
 			Assert.Equal(jsRCs[1], section.Js.CompressionOrder[1]);
 			Assert.Equal(int.MaxValue, section.Js.LineBreakAt);

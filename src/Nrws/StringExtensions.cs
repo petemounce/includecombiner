@@ -12,9 +12,9 @@ namespace Nrws
 
 		public static IList<TEnum> CastToEnum<TEnum>(this IEnumerable<string> strings, bool ignoreCase)
 		{
-			if (typeof(TEnum).BaseType != typeof(Enum))
+			if (typeof (TEnum).BaseType != typeof (Enum))
 			{
-				throw new ArgumentException("Must be called on Enum type; actual type: " + typeof(TEnum), "strings");
+				throw new ArgumentException("Must be called on Enum type; actual type: " + typeof (TEnum), "strings");
 			}
 			var enums = new List<TEnum>();
 			foreach (var s in strings)

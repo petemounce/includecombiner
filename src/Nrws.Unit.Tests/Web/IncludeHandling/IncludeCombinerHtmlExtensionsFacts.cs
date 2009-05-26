@@ -5,6 +5,7 @@ using Demo.Site;
 using Microsoft.Practices.ServiceLocation;
 using Nrws.Web;
 using Nrws.Web.IncludeHandling;
+using Nrws.Web.IncludeHandling.Configuration;
 using Rhino.Mocks;
 using Xunit;
 
@@ -16,6 +17,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly IHttpContextProvider _mockHttpContextProvider;
 		private readonly MockRepository _mocks;
 		private readonly ViewDataDictionary _viewData;
+		private readonly IIncludeHandlingSettings _mockSettings;
 
 		public IncludeCombinerHtmlExtensionsFacts()
 		{
@@ -23,7 +25,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 
 			_mockHttpContextProvider = _mocks.Stub<IHttpContextProvider>();
 			_mockHttpContextProvider.Expect(hcp => hcp.Request).Return(_mocks.Stub<HttpRequestBase>()).Repeat.Twice();
-			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(_mockHttpContextProvider, new Controller[] { }));
+			_mockSettings = _mocks.Stub<IIncludeHandlingSettings>();
+			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(_mockHttpContextProvider, _mockSettings, new Controller[] { }));
 
 			_viewData = new ViewDataDictionary();
 
@@ -113,6 +116,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void RenderCss_ShouldFlushTheSet()
 		{
+			_mockSettings.Expect(s => s.AllowDebug).Return(true);
 			_html.IncludeCss("/foo.css");
 			var before = _viewData[getViewDataKey(IncludeType.Css)] as IList<string>;
 			Assert.Equal(1, before.Count);
@@ -126,6 +130,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void RenderJs_ShouldFlushTheSet()
 		{
+			_mockSettings.Expect(s => s.AllowDebug).Return(true);
 			_html.IncludeJs("/foo.js");
 			var before = _viewData[getViewDataKey(IncludeType.Js)] as IList<string>;
 			Assert.Equal(1, before.Count);

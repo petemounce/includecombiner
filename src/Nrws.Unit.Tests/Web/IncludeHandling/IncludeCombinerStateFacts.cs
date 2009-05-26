@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Nrws.Web.IncludeHandling;
+using Nrws.Web.IncludeHandling.Configuration;
 using Rhino.Mocks;
 using Xunit;
 using Xunit.Extensions;
@@ -13,13 +14,15 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly IIncludeReader _mockReader;
 		private readonly MockRepository _mocks;
 		private readonly IIncludeStorage _mockStorage;
+		private IIncludeHandlingSettings _mockSettings;
 
 		public IncludeCombinerStateFacts()
 		{
 			_mocks = new MockRepository();
+			_mockSettings = _mocks.DynamicMock<IIncludeHandlingSettings>();
 			_mockReader = _mocks.DynamicMock<IIncludeReader>();
 			_mockStorage = _mocks.DynamicMock<IIncludeStorage>();
-			_combiner = new IncludeCombiner(_mockReader, _mockStorage);
+			_combiner = new IncludeCombiner(_mockSettings, _mockReader, _mockStorage);
 			_mocks.ReplayAll();
 		}
 
@@ -103,6 +106,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[PropertyData("RenderingInDebug")]
 		public void RenderIncludes_ShouldWriteOutEachIncludeSeparately_WhenInDebugMode(IDictionary<string, string> includes, IncludeType type, string expected)
 		{
+			_mockSettings.Expect(s => s.AllowDebug).Return(true);
 			foreach (var kvp in includes)
 			{
 				_mockReader.Expect(sr => sr.ToAbsolute(kvp.Key)).Return(kvp.Value);
@@ -113,11 +117,13 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			Assert.Equal(rendered, expected);
 		}
 
+		private class FakeIncludeTypeElement : IncludeTypeElement { }
 		[Theory]
 		[FreezeClock]
 		[PropertyData("RenderingInRelease")]
 		public void RenderIncludes_ShouldWriteOutASingleReferenceToTheCompressorController_WhenInReleaseMode(IDictionary<string, string> includes, IncludeType type, string key, string expected)
 		{
+			_mockSettings.Expect(s => s.Types[type]).Return(new FakeIncludeTypeElement());
 			foreach (var kvp in includes)
 			{
 				var include = new Include(type, kvp.Key, "foo", Clock.UtcNow);

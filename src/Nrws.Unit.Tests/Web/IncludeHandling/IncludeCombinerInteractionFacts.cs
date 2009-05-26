@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Nrws.Web.IncludeHandling;
+using Nrws.Web.IncludeHandling.Configuration;
 using Rhino.Mocks;
 using Xunit;
 using Xunit.Extensions;
@@ -12,13 +13,15 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly IIncludeReader _mockReader;
 		private readonly MockRepository _mocks;
 		private readonly IIncludeStorage _mockStorage;
+		private readonly IIncludeHandlingSettings _mockSettings;
 
 		public IncludeCombinerInteractionFacts()
 		{
 			_mocks = new MockRepository();
+			_mockSettings = _mocks.StrictMock<IIncludeHandlingSettings>();
 			_mockReader = _mocks.StrictMock<IIncludeReader>();
 			_mockStorage = _mocks.StrictMock<IIncludeStorage>();
-			_combiner = new IncludeCombiner(_mockReader, _mockStorage);
+			_combiner = new IncludeCombiner(_mockSettings, _mockReader, _mockStorage);
 			_mocks.ReplayAll();
 		}
 
@@ -75,6 +78,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void RenderIncludes_InDebugMode_ShouldClearStorage()
 		{
+			_mockSettings.Expect(s => s.AllowDebug).Return(true);
 			_mockReader.Expect(r => r.ToAbsolute("foo.js")).Return("/foo.js");
 			_mockStorage.Expect(s => s.Clear());
 			string rendered = null;

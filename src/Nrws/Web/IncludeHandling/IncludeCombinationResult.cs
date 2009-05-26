@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Nrws.Web.IncludeHandling.Configuration;
 
 namespace Nrws.Web.IncludeHandling
 {
@@ -28,7 +29,7 @@ namespace Nrws.Web.IncludeHandling
 		private DateTime _now;
 
 		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now)
-			: this(combiner, key, now, null)
+			: this(combiner, key, now, (TimeSpan?)null)
 		{
 		}
 
@@ -47,6 +48,12 @@ namespace Nrws.Web.IncludeHandling
 			_now = now;
 			_cacheFor = cacheFor;
 			Combination = combiner.GetCombination(_key);
+		}
+
+		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now, IIncludeHandlingSettings settings)
+			: this(combiner, key, now, (TimeSpan?)null)
+		{
+			_cacheFor = settings.Types[Combination.Type].CacheFor;
 		}
 
 		public IncludeCombination Combination { get; private set; }

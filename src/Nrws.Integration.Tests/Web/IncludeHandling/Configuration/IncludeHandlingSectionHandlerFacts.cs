@@ -24,6 +24,7 @@ namespace Nrws.Integration.Tests.Web.IncludeHandling.Configuration
 			Assert.Equal(expected[1], section.Css.CompressionOrder[1]);
 			Assert.Equal(int.MaxValue, section.Css.LineBreakAt);
 			Assert.Equal(true, section.Css.Minify);
+			Assert.Equal(true, section.Css.Compress);
 
 			Assert.Equal("~/include/{0}/{1}", section.Js.Path);
 			Assert.Equal(TimeSpan.FromDays(365), section.Js.CacheFor);
@@ -31,6 +32,7 @@ namespace Nrws.Integration.Tests.Web.IncludeHandling.Configuration
 			Assert.Equal(expected[1], section.Js.CompressionOrder[1]);
 			Assert.Equal(int.MaxValue, section.Js.LineBreakAt);
 			Assert.Equal(true, section.Js.Minify);
+			Assert.Equal(true, section.Js.Compress);
 
 			Assert.Equal(CssCompressionType.StockYuiCompressor, section.Css.CompressionType);
 

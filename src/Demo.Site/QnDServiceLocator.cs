@@ -5,6 +5,7 @@ using Microsoft.Practices.ServiceLocation;
 using Nrws;
 using Nrws.Web;
 using Nrws.Web.IncludeHandling;
+using Nrws.Web.IncludeHandling.Configuration;
 
 namespace Demo.Site
 {
@@ -56,12 +57,13 @@ namespace Demo.Site
 
 		#endregion
 
-		public static QnDServiceLocator Create(IHttpContextProvider http, Controller[] controllers)
+		public static QnDServiceLocator Create(IHttpContextProvider http, IIncludeHandlingSettings settings, Controller[] controllers)
 		{
 			var types = new Dictionary<Type, object>
 			{
 				{ typeof (IHttpContextProvider), http },
 				{ typeof (IKeyGenerator), new KeyGenerator() },
+				{ typeof (IIncludeHandlingSettings), settings }
 			};
 			types.Add(typeof (IIncludeReader), new FileSystemIncludeReader((IHttpContextProvider) types[typeof (IHttpContextProvider)]));
 
@@ -71,10 +73,10 @@ namespace Demo.Site
 
 			var includeReader = (IIncludeReader) types[typeof (IIncludeReader)];
 			var storage = (IIncludeStorage) types[typeof (IIncludeStorage)];
-			var combiner = new IncludeCombiner(includeReader, storage);
+			var combiner = new IncludeCombiner(settings, includeReader, storage);
 			types.Add(typeof (IIncludeCombiner), combiner);
 
-			types.Add(typeof (IncludeController), new IncludeController(combiner));
+			types.Add(typeof (IncludeController), new IncludeController(settings, combiner));
 			foreach (var controller in controllers)
 			{
 				types.Add(controller.GetType(), controller);

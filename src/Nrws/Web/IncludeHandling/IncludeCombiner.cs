@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
+using Nrws.Web.IncludeHandling.Configuration;
 
 namespace Nrws.Web.IncludeHandling
 {
@@ -19,11 +20,13 @@ namespace Nrws.Web.IncludeHandling
 				}
 		};
 
+		private readonly IIncludeHandlingSettings _settings;
 		private readonly IIncludeReader _reader;
 		private readonly IIncludeStorage _storage;
 
-		public IncludeCombiner(IIncludeReader reader, IIncludeStorage storage)
+		public IncludeCombiner(IIncludeHandlingSettings settings, IIncludeReader reader, IIncludeStorage storage)
 		{
+			_settings = settings;
 			_reader = reader;
 			_storage = storage;
 		}
@@ -35,7 +38,7 @@ namespace Nrws.Web.IncludeHandling
 			var toRender = new StringBuilder();
 			if (sources.Count > 0)
 			{
-				if (isInDebugMode)
+				if (_settings.AllowDebug && isInDebugMode)
 				{
 					Clear();
 					foreach (var source in sources)
@@ -47,7 +50,7 @@ namespace Nrws.Web.IncludeHandling
 				else
 				{
 					var hash = RegisterCombination(sources, type, DateTime.UtcNow);
-					var outputUrl = _reader.ToAbsolute(string.Format("~/include/{0}/{1}", type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
+					var outputUrl = _reader.ToAbsolute(string.Format(_settings.Types[type].Path, type.ToString().ToLowerInvariant(), HttpUtility.UrlEncode(hash)));
 					toRender.AppendFormat(_includeFormatStrings[type], outputUrl);
 				}
 			}

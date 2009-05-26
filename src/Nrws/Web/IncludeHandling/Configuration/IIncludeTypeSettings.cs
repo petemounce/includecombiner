@@ -9,6 +9,7 @@ namespace Nrws.Web.IncludeHandling.Configuration
 		string Path { get; }
 		IList<ResponseCompression> CompressionOrder { get; }
 		bool Minify { get; }
+		bool Compress { get; }
 		TimeSpan? CacheFor { get; }
 	}
 }

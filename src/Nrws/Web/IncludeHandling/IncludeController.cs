@@ -1,29 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using Nrws.Web.IncludeHandling.Configuration;
 
 namespace Nrws.Web.IncludeHandling
 {
 	[DebugFilter]
 	public class IncludeController : Controller
 	{
+		private readonly IIncludeHandlingSettings _settings;
 		private readonly IIncludeCombiner _combiner;
 
-		public IncludeController(IIncludeCombiner combiner)
+		public IncludeController(IIncludeHandlingSettings settings, IIncludeCombiner combiner)
 		{
+			_settings = settings;
 			_combiner = combiner;
 		}
 
 		[AcceptVerbs(HttpVerbs.Get)]
 		public ActionResult Css(string id)
 		{
-			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, TimeSpan.FromDays(365));
+			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, _settings.Css.CacheFor);
 		}
 
 		[AcceptVerbs(HttpVerbs.Get)]
 		public ActionResult Js(string id)
 		{
-			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, TimeSpan.FromDays(365));
+			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, _settings.Js.CacheFor);
 		}
 
 		[AcceptVerbs(HttpVerbs.Get)]

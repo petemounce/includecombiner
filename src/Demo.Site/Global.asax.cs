@@ -1,9 +1,11 @@
-﻿using System.Web;
+﻿using System.Configuration;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Demo.Site.Controllers;
 using Microsoft.Practices.ServiceLocation;
 using Nrws.Web;
+using Nrws.Web.IncludeHandling.Configuration;
 
 namespace Demo.Site
 {
@@ -28,7 +30,8 @@ namespace Demo.Site
 			RegisterRoutes(RouteTable.Routes);
 			var httpContextProvider = new HttpContextProvider(HttpContext.Current);
 			var controllers = new Controller[] { new HomeController(), new AccountController() };
-			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(httpContextProvider, controllers));
+			var includeHandlingSettings = (IIncludeHandlingSettings) ConfigurationManager.GetSection("includeHandling");
+			ServiceLocator.SetLocatorProvider(() => QnDServiceLocator.Create(httpContextProvider, includeHandlingSettings, controllers));
 			ControllerBuilder.Current.SetControllerFactory(new CommonServiceLocatorControllerFactory());
 		}
 	}

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Nrws.Web.IncludeHandling;
+using Nrws.Web.IncludeHandling.Configuration;
 using Rhino.Mocks;
 using Xunit;
 
@@ -12,12 +13,14 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly IncludeController _controller;
 		private readonly IIncludeCombiner _mockCombiner;
 		private readonly MockRepository _mocks;
+		private IIncludeHandlingSettings _mockSettings;
 
 		public IncludeControllerFacts()
 		{
 			_mocks = new MockRepository();
+			_mockSettings = _mocks.StrictMock<IIncludeHandlingSettings>();
 			_mockCombiner = _mocks.StrictMock<IIncludeCombiner>();
-			_controller = new IncludeController(_mockCombiner);
+			_controller = new IncludeController(_mockSettings, _mockCombiner);
 			_mocks.ReplayAll();
 		}
 
@@ -25,6 +28,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		public void Css_ShouldAskCombinerForCombinationMatchingKey()
 		{
 			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", DateTime.UtcNow);
+			_mockSettings.Expect(s => s.Css).Return(new CssElement());
 			_mockCombiner.Expect(c => c.GetCombination("foo")).Return(combination);
 			ActionResult result = null;
 			Assert.DoesNotThrow(() => result = _controller.Css("foo"));
@@ -38,6 +42,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		public void Js_ShouldAskCombinerForCombinationMatchingKey()
 		{
 			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo!');", DateTime.UtcNow);
+			_mockSettings.Expect(s => s.Js).Return(new JsElement());
 			_mockCombiner.Expect(c => c.GetCombination("foo")).Return(combination);
 			ActionResult result = null;
 			Assert.DoesNotThrow(() => result = _controller.Js("foo"));

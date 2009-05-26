@@ -14,6 +14,7 @@ namespace Nrws.Web.IncludeHandling.Configuration
 		private const string DEFAULTPATH = "~/include/{0}/{1}";
 		private const string LINEBREAKAT = "lineBreakAt";
 		private const string MINIFY = "minify";
+		private const string COMPRESS = "compress";
 		private const string PATH = "path";
 
 		private IList<ResponseCompression> _compressionOrderList;
@@ -88,6 +89,12 @@ namespace Nrws.Web.IncludeHandling.Configuration
 		public bool Minify
 		{
 			get { return (bool) this[MINIFY]; }
+		}
+
+		[ConfigurationProperty(COMPRESS, DefaultValue = true)]
+		public bool Compress
+		{
+			get { return (bool) this[COMPRESS]; }
 		}
 
 		public TimeSpan? CacheFor

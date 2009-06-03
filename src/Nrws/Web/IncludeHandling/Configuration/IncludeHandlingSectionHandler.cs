@@ -21,12 +21,6 @@ namespace Nrws.Web.IncludeHandling.Configuration
 
 		#region IIncludeHandlingSettings Members
 
-		[ConfigurationProperty(ALLOWDEBUG)]
-		public bool AllowDebug
-		{
-			get { return (bool) this[ALLOWDEBUG]; }
-		}
-
 		[ConfigurationProperty(CSS)]
 		public CssElement Css
 		{

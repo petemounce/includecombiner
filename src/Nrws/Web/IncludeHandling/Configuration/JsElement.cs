@@ -4,8 +4,6 @@ namespace Nrws.Web.IncludeHandling.Configuration
 {
 	public class JsElement : IncludeTypeElement, IJsSettings
 	{
-		private const string OPTIONS = "options";
-
 		[ConfigurationProperty(OPTIONS)]
 		private JsOptionsElement jsOptions
 		{

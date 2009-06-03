@@ -5,8 +5,6 @@ namespace Nrws.Web.IncludeHandling.Configuration
 {
 	public class CssElement : IncludeTypeElement, ICssSettings
 	{
-		private const string OPTIONS = "options";
-
 		[ConfigurationProperty(OPTIONS)]
 		private CssOptionsElement cssOptions
 		{

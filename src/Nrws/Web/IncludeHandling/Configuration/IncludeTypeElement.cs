@@ -16,20 +16,41 @@ namespace Nrws.Web.IncludeHandling.Configuration
 		private const string MINIFY = "minify";
 		private const string COMPRESS = "compress";
 		private const string PATH = "path";
+		protected const string OPTIONS = "options";
 
 		private IList<ResponseCompression> _compressionOrderList;
 		private string _path;
 
 		[ConfigurationProperty(COMPRESSIONORDER, DefaultValue = DEFAULTCOMPRESSIONORDER)]
-		public string compressionOrder
+		protected string compressionOrder
 		{
-			get { return this[COMPRESSIONORDER].ToString(); }
+			get
+			{
+				try
+				{
+					return this[COMPRESSIONORDER].ToString();
+				}
+				catch
+				{
+					return DEFAULTCOMPRESSIONORDER;
+				}
+			}
 		}
 
 		[ConfigurationProperty(CACHEFOR, DefaultValue = DEFAULTCACHEFOR)]
-		public string cacheFor
+		protected string cacheFor
 		{
-			get { return this[CACHEFOR].ToString(); }
+			get
+			{
+				try
+				{
+					return this[CACHEFOR].ToString();
+				}
+				catch
+				{
+					return DEFAULTCACHEFOR;
+				}
+			}
 		}
 
 		#region IIncludeTypeSettings Members

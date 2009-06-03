@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Web;
+using Nrws.Web;
 using Nrws.Web.IncludeHandling;
 using Nrws.Web.IncludeHandling.Configuration;
 using Rhino.Mocks;
@@ -14,6 +16,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly MockRepository _mocks;
 		private readonly IIncludeStorage _mockStorage;
 		private readonly IIncludeHandlingSettings _mockSettings;
+		private readonly IHttpContextProvider _mockHttp;
 
 		public IncludeCombinerInteractionFacts()
 		{
@@ -21,7 +24,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockSettings = _mocks.StrictMock<IIncludeHandlingSettings>();
 			_mockReader = _mocks.StrictMock<IIncludeReader>();
 			_mockStorage = _mocks.StrictMock<IIncludeStorage>();
-			_combiner = new IncludeCombiner(_mockSettings, _mockReader, _mockStorage);
+			_mockHttp = _mocks.StrictMock<IHttpContextProvider>();
+			_combiner = new IncludeCombiner(_mockSettings, _mockReader, _mockStorage, _mockHttp);
 			_mocks.ReplayAll();
 		}
 
@@ -38,7 +42,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void GetCombination_ShouldAskStorageForCombination()
 		{
-			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination(IncludeType.Css, new[] { "~/content/css/foo.css" }, ".foo{}", Clock.UtcNow));
+			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination(IncludeType.Css, new[] { "~/content/css/foo.css" }, ".foo{}", Clock.UtcNow, new CssElement()));
 			IncludeCombination combination = null;
 			Assert.DoesNotThrow(() => combination = _combiner.GetCombination("foo"));
 			Assert.NotNull(combination);
@@ -48,7 +52,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void SetCombination_ShouldTellStorageToStore()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert();", Clock.UtcNow);
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert();", Clock.UtcNow, new JsElement());
 			_mockStorage.Expect(s => s.Store(combination)).Return("foo");
 
 			Assert.DoesNotThrow(() => _combiner.UpdateCombination(combination));
@@ -78,7 +82,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void RenderIncludes_InDebugMode_ShouldClearStorage()
 		{
-			_mockSettings.Expect(s => s.AllowDebug).Return(true);
+			var stubContext = _mocks.Stub<HttpContextBase>();
+			stubContext.Replay();
+			stubContext.Expect(c => c.IsDebuggingEnabled).Return(true);
+			_mockHttp.Expect(s => s.Context).Return(stubContext);
 			_mockReader.Expect(r => r.ToAbsolute("foo.js")).Return("/foo.js");
 			_mockStorage.Expect(s => s.Clear());
 			string rendered = null;

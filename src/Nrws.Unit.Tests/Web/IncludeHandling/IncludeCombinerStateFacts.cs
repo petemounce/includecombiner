@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Web;
+using Nrws.Web;
 using Nrws.Web.IncludeHandling;
 using Nrws.Web.IncludeHandling.Configuration;
 using Rhino.Mocks;
@@ -14,7 +16,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly IIncludeReader _mockReader;
 		private readonly MockRepository _mocks;
 		private readonly IIncludeStorage _mockStorage;
-		private IIncludeHandlingSettings _mockSettings;
+		private readonly IIncludeHandlingSettings _mockSettings;
+		private readonly IHttpContextProvider _mockHttp;
 
 		public IncludeCombinerStateFacts()
 		{
@@ -22,7 +25,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockSettings = _mocks.DynamicMock<IIncludeHandlingSettings>();
 			_mockReader = _mocks.DynamicMock<IIncludeReader>();
 			_mockStorage = _mocks.DynamicMock<IIncludeStorage>();
-			_combiner = new IncludeCombiner(_mockSettings, _mockReader, _mockStorage);
+			_mockHttp = _mocks.DynamicMock<IHttpContextProvider>();
+			_combiner = new IncludeCombiner(_mockSettings, _mockReader, _mockStorage, _mockHttp);
 			_mocks.ReplayAll();
 		}
 
@@ -60,21 +64,24 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 					new Dictionary<string, string> { { "~/content/js/foo.js", "/content/js/foo.js" }, { "/bar.js", "/bar.js" } },
 					IncludeType.Js,
 					"hashed",
-					"<script type='text/javascript' src='/content/js/hashed.js'></script>"
+					"<script type='text/javascript' src='/content/js/hashed.js'></script>",
+					new JsElement()
 				};
 				yield return new object[]
 				{
 					new Dictionary<string, string> { { "~/content/css/foo.css", "/content/css/foo.css" }, { "/bar.css", "/bar.css" } },
 					IncludeType.Css,
 					"hashed==",
-					"<link rel='stylesheet' type='text/css' href='/content/css/hashed==.css'/>"
+					"<link rel='stylesheet' type='text/css' href='/content/css/hashed==.css'/>",
+					new CssElement()
 				};
 				yield return new object[]
 				{
 					new Dictionary<string, string> { { "~/content/css/foo.css", "/content/css/foo.css" }, { "/bar.css", "/bar.css" } },
 					IncludeType.Css,
 					"really/nasty%20url=",
-					"<link rel='stylesheet' type='text/css' href='/content/css/really/nasty%20url=.css'/>"
+					"<link rel='stylesheet' type='text/css' href='/content/css/really/nasty%20url=.css'/>",
+					new CssElement()
 				};
 			}
 		}
@@ -89,7 +96,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 					new Dictionary<string, Include>
 					{
 						{ "~/content/js/foo.js", new Include(IncludeType.Js, "/content/js/foo.js", "alert('hello world!');", Clock.UtcNow) }
-					}
+					},
+					new JsElement()
 				};
 			}
 		}
@@ -106,7 +114,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[PropertyData("RenderingInDebug")]
 		public void RenderIncludes_ShouldWriteOutEachIncludeSeparately_WhenInDebugMode(IDictionary<string, string> includes, IncludeType type, string expected)
 		{
-			_mockSettings.Expect(s => s.AllowDebug).Return(true);
+			var stubContext = _mocks.Stub<HttpContextBase>();
+			stubContext.Replay();
+			stubContext.Expect(c => c.IsDebuggingEnabled).Return(true);
+			_mockHttp.Expect(s => s.Context).Return(stubContext);
 			foreach (var kvp in includes)
 			{
 				_mockReader.Expect(sr => sr.ToAbsolute(kvp.Key)).Return(kvp.Value);
@@ -117,13 +128,16 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			Assert.Equal(rendered, expected);
 		}
 
-		private class FakeIncludeTypeElement : IncludeTypeElement { }
 		[Theory]
 		[FreezeClock]
 		[PropertyData("RenderingInRelease")]
-		public void RenderIncludes_ShouldWriteOutASingleReferenceToTheCompressorController_WhenInReleaseMode(IDictionary<string, string> includes, IncludeType type, string key, string expected)
+		public void RenderIncludes_ShouldWriteOutASingleReferenceToTheCompressorController_WhenInReleaseMode(IDictionary<string, string> includes, IncludeType type, string key, string expected, IncludeTypeElement settings)
 		{
-			_mockSettings.Expect(s => s.Types[type]).Return(new FakeIncludeTypeElement());
+			var stubContext = _mocks.Stub<HttpContextBase>();
+			stubContext.Replay();
+			stubContext.Expect(c => c.IsDebuggingEnabled).Return(false);
+			_mockHttp.Expect(s => s.Context).Return(stubContext);
+			_mockSettings.Expect(s => s.Types[type]).Return(settings);
 			foreach (var kvp in includes)
 			{
 				var include = new Include(type, kvp.Key, "foo", Clock.UtcNow);
@@ -142,14 +156,15 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Theory]
 		[FreezeClock]
 		[PropertyData("RegisterCombination")]
-		public void RegisterCombination_ShouldReadAllSourcesToAddEachToTheCombination_AndReturnAHash(IncludeType type, IDictionary<string, Include> sources)
+		public void RegisterCombination_ShouldReadAllSourcesToAddEachToTheCombination_AndReturnAHash(IncludeType type, IDictionary<string, Include> sources, IncludeTypeElement settings)
 		{
 			foreach (var kvp in sources)
 			{
 				_mockReader.Expect(r => r.Read(kvp.Key, kvp.Value.Type)).Return(kvp.Value);
 				_mockStorage.Expect(s => s.Store(kvp.Value));
 			}
-			_mockStorage.Expect(s => s.Store(new IncludeCombination(type, sources.Keys, "content", Clock.UtcNow))).IgnoreArguments().Return("foo");
+			_mockStorage.Expect(s => s.Store(new IncludeCombination(type, sources.Keys, "content", Clock.UtcNow, settings))).IgnoreArguments().Return("foo");
+			_mockSettings.Expect(s => s.Types).Return(new Dictionary<IncludeType, IncludeTypeElement>() {{type,settings }});
 			string key = null;
 			Assert.DoesNotThrow(() => key = _combiner.RegisterCombination(sources.Keys, IncludeType.Js, Clock.UtcNow));
 			Assert.Equal("foo", key);

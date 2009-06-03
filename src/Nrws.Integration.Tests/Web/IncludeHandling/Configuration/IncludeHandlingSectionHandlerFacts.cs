@@ -15,7 +15,6 @@ namespace Nrws.Integration.Tests.Web.IncludeHandling.Configuration
 		public void DefaultsAreCorrect()
 		{
 			var section = (IIncludeHandlingSettings) ConfigurationManager.GetSection("defaultsAreCorrect");
-			Assert.False(section.AllowDebug);
 
 			Assert.Equal("~/include/{0}/{1}", section.Css.Path);
 			Assert.Equal(TimeSpan.FromDays(365), section.Css.CacheFor);
@@ -43,17 +42,9 @@ namespace Nrws.Integration.Tests.Web.IncludeHandling.Configuration
 		}
 
 		[Fact]
-		public void CanSetAllowDebug()
-		{
-			var section = (IIncludeHandlingSettings) ConfigurationManager.GetSection("canSetAllowDebug");
-			Assert.True(section.AllowDebug);
-		}
-
-		[Fact]
 		public void CanChangeAllTheDefaultsEvenThoughIShouldntWriteATestWithABigSurfaceAreaLikeThisNaughtyPete()
 		{
 			var section = (IIncludeHandlingSettings) ConfigurationManager.GetSection("canChangeDefaults");
-			Assert.True(section.AllowDebug);
 
 			Assert.Equal("~/foo/{0}/{1}", section.Css.Path);
 			Assert.Equal(new TimeSpan(10, 10, 10), section.Css.CacheFor);

@@ -3,27 +3,40 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using Nrws.Web.IncludeHandling.Configuration;
 using Yahoo.Yui.Compressor;
 
 namespace Nrws.Web.IncludeHandling
 {
 	public class IncludeCombination : IEquatable<IncludeCombination>
 	{
+		private readonly IDictionary<ResponseCompression, byte[]> _bytes;
 		private readonly string _minified;
 
-		public IncludeCombination(IncludeType type, IEnumerable<string> sources, string content, DateTime now)
+		public IncludeCombination(IncludeType type, IEnumerable<string> sources, string content, DateTime now, IncludeTypeElement settings)
 		{
 			Type = type;
 			Sources = sources;
 			Content = content;
 			LastModifiedAt = now;
-			_minified = minify();
+			_minified = minify(settings);
+			_bytes = new Dictionary<ResponseCompression, byte[]>
+			{
+				{ ResponseCompression.None, generateResponseBody(ResponseCompression.None) },
+				{ ResponseCompression.Gzip, generateResponseBody(ResponseCompression.Gzip) },
+				{ ResponseCompression.Deflate, generateResponseBody(ResponseCompression.Deflate) }
+			};
 		}
 
 		public IncludeType Type { get; private set; }
 		public IEnumerable<string> Sources { get; private set; }
 		public string Content { get; private set; }
 		public DateTime LastModifiedAt { get; private set; }
+
+		public IDictionary<ResponseCompression, byte[]> Bytes
+		{
+			get { return _bytes; }
+		}
 
 		#region IEquatable<IncludeCombination> Members
 
@@ -42,7 +55,7 @@ namespace Nrws.Web.IncludeHandling
 
 		#endregion
 
-		public byte[] GetResponseBodyBytes(ResponseCompression compressionType)
+		private byte[] generateResponseBody(ResponseCompression compressionType)
 		{
 			using (var memoryStream = new MemoryStream(8092))
 			{
@@ -108,7 +121,7 @@ namespace Nrws.Web.IncludeHandling
 			}
 		}
 
-		private string minify()
+		private string minify(IncludeTypeElement settings)
 		{
 			if (Content == "")
 			{
@@ -118,11 +131,13 @@ namespace Nrws.Web.IncludeHandling
 			{
 				case IncludeType.Js:
 					var compressor = new JavaScriptCompressor(Content);
-					var minifiedJs = compressor.Compress(false, false, true, false, 80);
+					var jsSettings = (JsElement) settings;
+					var minifiedJs = compressor.Compress(jsSettings.Verbose, jsSettings.Obfuscate, jsSettings.PreserveSemiColons, jsSettings.DisableOptimizations, jsSettings.LineBreakAt);
 					return minifiedJs;
 
 				case IncludeType.Css:
-					var minifiedCss = CssCompressor.Compress(Content, int.MaxValue, CssCompressionType.Hybrid);
+					var cssSettings = (CssElement) settings;
+					var minifiedCss = CssCompressor.Compress(Content, cssSettings.LineBreakAt, cssSettings.CompressionType);
 					return minifiedCss;
 
 				default:

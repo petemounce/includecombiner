@@ -23,12 +23,14 @@ namespace Nrws.Web.IncludeHandling
 		private readonly IIncludeHandlingSettings _settings;
 		private readonly IIncludeReader _reader;
 		private readonly IIncludeStorage _storage;
+		private readonly IHttpContextProvider _http;
 
-		public IncludeCombiner(IIncludeHandlingSettings settings, IIncludeReader reader, IIncludeStorage storage)
+		public IncludeCombiner(IIncludeHandlingSettings settings, IIncludeReader reader, IIncludeStorage storage, IHttpContextProvider http)
 		{
 			_settings = settings;
 			_reader = reader;
 			_storage = storage;
+			_http = http;
 		}
 
 		#region IIncludeCombiner Members
@@ -38,7 +40,7 @@ namespace Nrws.Web.IncludeHandling
 			var toRender = new StringBuilder();
 			if (sources.Count > 0)
 			{
-				if (_settings.AllowDebug && isInDebugMode)
+				if (_http.Context.IsDebuggingEnabled && isInDebugMode)
 				{
 					Clear();
 					foreach (var source in sources)
@@ -65,7 +67,7 @@ namespace Nrws.Web.IncludeHandling
 				var include = RegisterInclude(source, type);
 				combinedContent.Append(include.Content).AppendLine();
 			}
-			var combination = new IncludeCombination(type, sources, combinedContent.ToString(), now);
+			var combination = new IncludeCombination(type, sources, combinedContent.ToString(), now, _settings.Types[type]);
 			var key = _storage.Store(combination);
 			return key;
 		}

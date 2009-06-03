@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Nrws.Web;
 using Nrws.Web.IncludeHandling;
+using Nrws.Web.IncludeHandling.Configuration;
 using Rhino.Mocks;
 using Xunit;
 using Xunit.Extensions;
@@ -36,7 +37,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_controllerContext = new ControllerContext(_mockHttpContext, new RouteData(), _mockController);
 			_stubCombiner = _mocks.Stub<IIncludeCombiner>();
 			_mocks.ReplayAll();
-			_cssCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red}", Clock.UtcNow);
+			_cssCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red}", Clock.UtcNow, new CssElement());
 		}
 
 		[Fact]
@@ -61,7 +62,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockRequest.Expect(r => r.Headers[HttpHeaders.AcceptEncoding]).Return("");
 			_mockResponse.Expect(r => r.ContentEncoding = Encoding.UTF8);
 			_mockResponse.Expect(r => r.ContentType = MimeTypes.TextCss);
-			_mockResponse.Expect(r => r.AddHeader(HttpHeaders.ContentLength, "15"));
+			_mockResponse.Expect(r => r.AddHeader(HttpHeaders.ContentLength, "16"));
 			_mockResponse.Expect(r => r.OutputStream).Return(new MemoryStream(8092)).Repeat.Twice();
 			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy);
 			_mockCachePolicy.Expect(cp => cp.SetETag(Arg<string>.Matches(etag => etag.StartsWith("foo") && etag.EndsWith(_cssCombination.LastModifiedAt.Ticks.ToString()))));
@@ -117,13 +118,13 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		public void WhenCacheForIsSet_ShouldAppendCacheHeaders()
 		{
 			var lastModifiedAt = Clock.UtcNow;
-			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", lastModifiedAt);
+			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", lastModifiedAt, new CssElement());
 			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(6);
 			_mockHttpContext.Expect(hc => hc.Request).Return(_mockRequest);
 			_mockRequest.Expect(r => r.Headers[HttpHeaders.AcceptEncoding]).Return("");
 			_mockResponse.Expect(r => r.ContentEncoding = Encoding.UTF8);
 			_mockResponse.Expect(r => r.ContentType = MimeTypes.TextCss);
-			_mockResponse.Expect(r => r.AddHeader(HttpHeaders.ContentLength, "15"));
+			_mockResponse.Expect(r => r.AddHeader(HttpHeaders.ContentLength, "16"));
 			_mockResponse.Expect(r => r.OutputStream).Return(new MemoryStream(8092)).Repeat.Twice();
 			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy);
 			_mockCachePolicy.Expect(cp => cp.SetETag(Arg<string>.Matches(etag => etag.StartsWith("foo") && etag.EndsWith(combination.LastModifiedAt.Ticks.ToString()))));

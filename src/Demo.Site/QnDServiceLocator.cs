@@ -73,7 +73,7 @@ namespace Demo.Site
 
 			var includeReader = (IIncludeReader) types[typeof (IIncludeReader)];
 			var storage = (IIncludeStorage) types[typeof (IIncludeStorage)];
-			var combiner = new IncludeCombiner(settings, includeReader, storage);
+			var combiner = new IncludeCombiner(settings, includeReader, storage, (IHttpContextProvider)types[typeof(IHttpContextProvider)]);
 			types.Add(typeof (IIncludeCombiner), combiner);
 
 			types.Add(typeof (IncludeController), new IncludeController(settings, combiner));

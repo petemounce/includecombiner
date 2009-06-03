@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Nrws.Web.IncludeHandling;
+using Nrws.Web.IncludeHandling.Configuration;
 using Rhino.Mocks;
 using Xunit;
 using Xunit.Extensions;
@@ -19,7 +20,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mocks = new MockRepository();
 			_stubKeyGen = _mocks.Stub<IKeyGenerator>();
 			_storage = new StaticIncludeStorage(_stubKeyGen);
-			_combination = new IncludeCombination(IncludeType.Css, new[] { "~/content/css/foo.css" }, "#foo {color:red}", Clock.UtcNow);
+			_combination = new IncludeCombination(IncludeType.Css, new[] { "~/content/css/foo.css" }, "#foo {color:red}", Clock.UtcNow, new CssElement());
 			_mocks.ReplayAll();
 		}
 

@@ -116,7 +116,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void RenderCss_ShouldFlushTheSet()
 		{
-			_mockSettings.Expect(s => s.AllowDebug).Return(true);
+			var stubContext = _mocks.Stub<HttpContextBase>();
+			stubContext.Replay();
+			stubContext.Expect(c => c.IsDebuggingEnabled).Return(true);
+			_mockHttpContextProvider.Expect(s => s.Context).Return(stubContext);
 			_html.IncludeCss("/foo.css");
 			var before = _viewData[getViewDataKey(IncludeType.Css)] as IList<string>;
 			Assert.Equal(1, before.Count);
@@ -130,7 +133,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void RenderJs_ShouldFlushTheSet()
 		{
-			_mockSettings.Expect(s => s.AllowDebug).Return(true);
+			var stubContext = _mocks.Stub<HttpContextBase>();
+			stubContext.Replay();
+			stubContext.Expect(c => c.IsDebuggingEnabled).Return(true);
+			_mockHttpContextProvider.Expect(s => s.Context).Return(stubContext);
 			_html.IncludeJs("/foo.js");
 			var before = _viewData[getViewDataKey(IncludeType.Js)] as IList<string>;
 			Assert.Equal(1, before.Count);

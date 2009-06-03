@@ -27,7 +27,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Css_ShouldAskCombinerForCombinationMatchingKey()
 		{
-			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", DateTime.UtcNow);
+			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", DateTime.UtcNow, new CssElement());
 			_mockSettings.Expect(s => s.Css).Return(new CssElement());
 			_mockCombiner.Expect(c => c.GetCombination("foo")).Return(combination);
 			ActionResult result = null;
@@ -41,7 +41,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Js_ShouldAskCombinerForCombinationMatchingKey()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo!');", DateTime.UtcNow);
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo!');", DateTime.UtcNow, new JsElement());
 			_mockSettings.Expect(s => s.Js).Return(new JsElement());
 			_mockCombiner.Expect(c => c.GetCombination("foo")).Return(combination);
 			ActionResult result = null;

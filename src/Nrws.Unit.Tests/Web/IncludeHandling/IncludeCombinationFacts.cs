@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Nrws.Web.IncludeHandling;
+using Nrws.Web.IncludeHandling.Configuration;
 using Xunit;
 using Xunit.Extensions;
 
@@ -37,11 +38,11 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 				var sources = new[] { "foo.js" };
 				yield return new object[]
 				{
-					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now),
-					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now),
+					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsElement()),
+					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsElement()),
 					true
 				};
-				var ic = new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now);
+				var ic = new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsElement());
 				yield return new object[]
 				{
 					ic,
@@ -50,8 +51,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 				};
 				yield return new object[]
 				{
-					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now),
-					new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red;}", now),
+					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsElement()),
+					new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red;}", now, new CssElement()),
 					false
 				};
 			}
@@ -62,9 +63,9 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[PropertyData("GetResponseBodyBytes_Data")]
 		public void GetResponseBodyBytes_CorrectlyCompressesCombination(ResponseCompression compression, string content, byte[] expected)
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, content, Clock.UtcNow);
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, content, Clock.UtcNow, new JsElement());
 			byte[] result = null;
-			Assert.DoesNotThrow(() => result = combination.GetResponseBodyBytes(compression));
+			Assert.DoesNotThrow(() => result = combination.Bytes[compression]);
 			Assert.Equal(expected, result);
 		}
 
@@ -98,7 +99,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Equals_CorrectlyHandlesNullCombination()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow);
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow, new JsElement());
 			var result = combination.Equals(null);
 			Assert.False(result);
 		}
@@ -106,7 +107,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Equals_CorrectlyHandlesNullObject()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow);
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow, new JsElement());
 			var result = combination.Equals((object) null);
 			Assert.False(result);
 		}
@@ -114,7 +115,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Equals_CorrectlyHandlesComparisonToDifferentType()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow);
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow, new JsElement());
 			var result = combination.Equals(new string[1]);
 			Assert.False(result);
 		}

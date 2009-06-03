@@ -23,13 +23,19 @@ namespace Nrws.Web.IncludeHandling
 			, { IncludeType.Js, MimeTypes.ApplicationJavaScript }
 		};
 
-		private readonly IIncludeCombiner _combiner;
+		private static readonly IDictionary<ResponseCompression, Func<string, bool>> _compressionOrder = new Dictionary<ResponseCompression, Func<string, bool>>
+		{
+			{ ResponseCompression.Gzip, header => header.Contains("gzip") },
+			{ ResponseCompression.Deflate, header => header.Contains("deflate") },
+			{ ResponseCompression.None, header => true }
+		};
+
 		private readonly string _key;
-		private TimeSpan? _cacheFor;
 		private DateTime _now;
+		private TimeSpan? _cacheFor;
 
 		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now)
-			: this(combiner, key, now, (TimeSpan?)null)
+			: this(combiner, key, now, (TimeSpan?) null)
 		{
 		}
 
@@ -43,7 +49,6 @@ namespace Nrws.Web.IncludeHandling
 			{
 				throw new ArgumentException("key");
 			}
-			_combiner = combiner;
 			_key = key;
 			_now = now;
 			_cacheFor = cacheFor;
@@ -51,7 +56,7 @@ namespace Nrws.Web.IncludeHandling
 		}
 
 		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now, IIncludeHandlingSettings settings)
-			: this(combiner, key, now, (TimeSpan?)null)
+			: this(combiner, key, now, (TimeSpan?) null)
 		{
 			_cacheFor = settings.Types[Combination.Type].CacheFor;
 		}
@@ -77,8 +82,8 @@ namespace Nrws.Web.IncludeHandling
 			}
 			context.HttpContext.Response.Cache.SetETag(_key + "-" + Combination.LastModifiedAt.Ticks);
 			var compressionAccepted = figureOutCompression(context.HttpContext.Request);
-			var responseBodyBytes = Combination.GetResponseBodyBytes(compressionAccepted);
-			_combiner.UpdateCombination(Combination);
+			var responseBodyBytes = Combination.Bytes[compressionAccepted];
+
 			if (responseBodyBytes.Length <= 0)
 			{
 				context.HttpContext.Response.StatusCode = (int) HttpStatusCode.NoContent;

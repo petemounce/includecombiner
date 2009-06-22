@@ -127,6 +127,10 @@ namespace Nrws.Web.IncludeHandling
 			{
 				return "";
 			}
+			if (!settings.Minify)
+			{
+				return Content;
+			}
 			switch (Type)
 			{
 				case IncludeType.Js:

@@ -57,7 +57,14 @@ namespace Nrws.Web.IncludeHandling
 		{
 			var typeSettings = settings.Types[Combination.Type];
 			_cacheFor = typeSettings.CacheFor;
-			_preferredCompressionOrder = typeSettings.CompressionOrder;
+			if (typeSettings.Compress)
+			{
+				_preferredCompressionOrder = typeSettings.CompressionOrder;
+			}
+			else
+			{
+				_preferredCompressionOrder = new List<ResponseCompression> { ResponseCompression.None };
+			}
 		}
 
 		public override void ExecuteResult(ControllerContext context)

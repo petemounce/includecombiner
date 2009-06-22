@@ -3,11 +3,11 @@ using Yahoo.Yui.Compressor;
 
 namespace Nrws.Web.IncludeHandling.Configuration
 {
-	public class CssOptionsElement : ConfigurationElement, ICssSettings
+	public class CssOptionsElement : ConfigurationElement, ICssMinifySettings
 	{
 		private const string COMPRESSIONTYPE = "compressionType";
 
-		#region ICssSettings Members
+		#region ICssMinifySettings Members
 
 		[ConfigurationProperty(COMPRESSIONTYPE, DefaultValue = CssCompressionType.StockYuiCompressor)]
 		public CssCompressionType CompressionType

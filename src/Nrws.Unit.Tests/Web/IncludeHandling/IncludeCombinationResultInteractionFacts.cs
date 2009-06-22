@@ -37,7 +37,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_controllerContext = new ControllerContext(_mockHttpContext, new RouteData(), _mockController);
 			_stubCombiner = _mocks.Stub<IIncludeCombiner>();
 			_mocks.ReplayAll();
-			_cssCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red}", Clock.UtcNow, new CssElement());
+			_cssCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red}", Clock.UtcNow, new CssTypeElement());
 		}
 
 		[Fact]
@@ -75,15 +75,18 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		}
 
 		[Theory]
+		[FreezeClock(2009,10,1,1,1,1)]
 		[InlineData("gzip", "gzip", "AnActualBrowser", 3)]
 		[InlineData("gzip,deflate", "gzip", "AnActualBrowser", 3)]
 		[InlineData("deflate,gzip", "gzip", "AnActualBrowser", 3)]
 		[InlineData("deflate", "deflate", "AnActualBrowser", 3)]
 		[InlineData("gzip", null, "IE", 5)]
 		[InlineData("mangled", null, "Anything", 3)]
+		// TODO: Refactor code-under-test to use more SOLID!!
 		public void WhenRequestAcceptsCompression_ShouldAppendContentEncodingHeader(string acceptEncoding, string expectedContentEncoding, string browser, int browserMajorVersion)
 		{
-			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(6);
+			var lastModifiedAt = Clock.UtcNow;
+			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(11);
 			if (expectedContentEncoding != null)
 			{
 				_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse);
@@ -99,15 +102,24 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockResponse.Expect(r => r.ContentType = MimeTypes.TextCss);
 			_mockResponse.Expect(r => r.AddHeader(Arg<string>.Is.Equal(HttpHeaders.ContentLength), Arg<string>.Is.NotNull));
 			_mockResponse.Expect(r => r.OutputStream).Return(new MemoryStream(8092)).Repeat.Twice();
-			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy);
+			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy).Repeat.Times(6);
 			if (expectedContentEncoding != null)
 			{
 				_mockResponse.Expect(r => r.AppendHeader(HttpHeaders.ContentEncoding, expectedContentEncoding));
 			}
 			_mockCachePolicy.Expect(cp => cp.SetETag(Arg<string>.Matches(etag => etag.StartsWith("foo") && etag.EndsWith(_cssCombination.LastModifiedAt.Ticks.ToString()))));
+			var cacheFor = TimeSpan.FromMinutes(30);
+			_mockCachePolicy.Expect(cp => cp.SetCacheability(HttpCacheability.Public));
+			_mockCachePolicy.Expect(cp => cp.SetExpires(Clock.UtcNow.Add(cacheFor))).IgnoreArguments();
+			_mockCachePolicy.Expect(cp => cp.SetMaxAge(cacheFor)).IgnoreArguments();
+			_mockCachePolicy.Expect(cp => cp.SetValidUntilExpires(true));
+			_mockCachePolicy.Expect(cp => cp.SetLastModified(lastModifiedAt)).IgnoreArguments();
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(_cssCombination);
 
-			var result = new IncludeCombinationResult(_stubCombiner, "foo", Clock.UtcNow);
+			var stubSettings = _mocks.Stub<IIncludeHandlingSettings>();
+			stubSettings.Expect(x => x.Types[IncludeType.Css]).Return(new CssTypeElement());
+			stubSettings.Replay();
+			var result = new IncludeCombinationResult(_stubCombiner, "foo", Clock.UtcNow, stubSettings);
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
 
 			_mocks.VerifyAll();
@@ -115,10 +127,11 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 
 		[Fact]
 		[FreezeClock(2009, 10, 1, 1, 1, 1)]
+		// TODO: Refactor code-under-test to use more SOLID!!
 		public void WhenCacheForIsSet_ShouldAppendCacheHeaders()
 		{
 			var lastModifiedAt = Clock.UtcNow;
-			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", lastModifiedAt, new CssElement());
+			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", lastModifiedAt, new CssTypeElement());
 			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(6);
 			_mockHttpContext.Expect(hc => hc.Request).Return(_mockRequest);
 			_mockRequest.Expect(r => r.Headers[HttpHeaders.AcceptEncoding]).Return("");
@@ -138,8 +151,14 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockCachePolicy.Expect(cp => cp.SetMaxAge(cacheFor));
 			_mockCachePolicy.Expect(cp => cp.SetValidUntilExpires(true));
 			_mockCachePolicy.Expect(cp => cp.SetLastModified(lastModifiedAt));
+			var stubSettings = _mocks.Stub<IIncludeHandlingSettings>();
+			var stubCss = _mocks.Stub<IIncludeTypeSettings>();
+			stubSettings.Replay();
+			stubCss.Replay();
+			stubSettings.Expect(s => s.Types[IncludeType.Css]).Return(stubCss);
+			stubCss.Expect(s => s.CacheFor).Return(cacheFor);
 
-			var result = new IncludeCombinationResult(_stubCombiner, "foo", lastModifiedAt, cacheFor);
+			var result = new IncludeCombinationResult(_stubCombiner, "foo", lastModifiedAt, stubSettings);
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));
 
 			_mocks.VerifyAll();

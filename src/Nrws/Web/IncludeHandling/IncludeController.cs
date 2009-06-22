@@ -20,13 +20,13 @@ namespace Nrws.Web.IncludeHandling
 		[AcceptVerbs(HttpVerbs.Get)]
 		public ActionResult Css(string id)
 		{
-			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, _settings.Css.CacheFor);
+			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, _settings);
 		}
 
 		[AcceptVerbs(HttpVerbs.Get)]
 		public ActionResult Js(string id)
 		{
-			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, _settings.Js.CacheFor);
+			return new IncludeCombinationResult(_combiner, id, DateTime.UtcNow, _settings);
 		}
 
 		[AcceptVerbs(HttpVerbs.Get)]

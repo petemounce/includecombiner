@@ -2,14 +2,14 @@ using System.Configuration;
 
 namespace Nrws.Web.IncludeHandling.Configuration
 {
-	public class JsOptionsElement : ConfigurationElement, IJsSettings
+	public class JsOptionsElement : ConfigurationElement, IJsMinifySettings
 	{
 		private const string DISABLEOPTIMIZATIONS = "disableOptimizations";
 		private const string OBFUSCATE = "obfuscate";
 		private const string PRESERVESEMICOLONS = "preserveSemiColons";
 		private const string VERBOSE = "verbose";
 
-		#region IJsSettings Members
+		#region IJsMinifySettings Members
 
 		[ConfigurationProperty(VERBOSE, DefaultValue = false)]
 		public bool Verbose

@@ -13,7 +13,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		private readonly IncludeController _controller;
 		private readonly IIncludeCombiner _mockCombiner;
 		private readonly MockRepository _mocks;
-		private IIncludeHandlingSettings _mockSettings;
+		private readonly IIncludeHandlingSettings _mockSettings;
 
 		public IncludeControllerFacts()
 		{
@@ -27,8 +27,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Css_ShouldAskCombinerForCombinationMatchingKey()
 		{
-			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", DateTime.UtcNow, new CssElement());
-			_mockSettings.Expect(s => s.Css).Return(new CssElement());
+			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", DateTime.UtcNow, new CssTypeElement());
+			_mockSettings.Expect(s => s.Types[IncludeType.Css]).Return(new CssTypeElement());
 			_mockCombiner.Expect(c => c.GetCombination("foo")).Return(combination);
 			ActionResult result = null;
 			Assert.DoesNotThrow(() => result = _controller.Css("foo"));
@@ -41,8 +41,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Js_ShouldAskCombinerForCombinationMatchingKey()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo!');", DateTime.UtcNow, new JsElement());
-			_mockSettings.Expect(s => s.Js).Return(new JsElement());
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo!');", DateTime.UtcNow, new JsTypeElement());
+			_mockSettings.Expect(s => s.Types[IncludeType.Js]).Return(new JsTypeElement());
 			_mockCombiner.Expect(c => c.GetCombination("foo")).Return(combination);
 			ActionResult result = null;
 			Assert.DoesNotThrow(() => result = _controller.Js("foo"));

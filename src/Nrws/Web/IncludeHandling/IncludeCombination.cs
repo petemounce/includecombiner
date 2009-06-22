@@ -13,7 +13,7 @@ namespace Nrws.Web.IncludeHandling
 		private readonly IDictionary<ResponseCompression, byte[]> _bytes;
 		private readonly string _minified;
 
-		public IncludeCombination(IncludeType type, IEnumerable<string> sources, string content, DateTime now, IncludeTypeElement settings)
+		public IncludeCombination(IncludeType type, IEnumerable<string> sources, string content, DateTime now, IIncludeTypeSettings settings)
 		{
 			Type = type;
 			Sources = sources;
@@ -121,7 +121,7 @@ namespace Nrws.Web.IncludeHandling
 			}
 		}
 
-		private string minify(IncludeTypeElement settings)
+		private string minify(IIncludeTypeSettings settings)
 		{
 			if (Content == "")
 			{
@@ -131,13 +131,12 @@ namespace Nrws.Web.IncludeHandling
 			{
 				case IncludeType.Js:
 					var compressor = new JavaScriptCompressor(Content);
-					var jsSettings = (JsElement) settings;
-					var minifiedJs = compressor.Compress(jsSettings.Verbose, jsSettings.Obfuscate, jsSettings.PreserveSemiColons, jsSettings.DisableOptimizations, jsSettings.LineBreakAt);
+					var jsSettings = (JsTypeElement) settings;
+					var minifiedJs = compressor.Compress(jsSettings.Verbose, jsSettings.Obfuscate, jsSettings.PreserveSemiColons, jsSettings.DisableOptimizations, settings.LineBreakAt);
 					return minifiedJs;
 
 				case IncludeType.Css:
-					var cssSettings = (CssElement) settings;
-					var minifiedCss = CssCompressor.Compress(Content, cssSettings.LineBreakAt, cssSettings.CompressionType);
+					var minifiedCss = CssCompressor.Compress(Content, settings.LineBreakAt, ((CssTypeElement)settings).CompressionType);
 					return minifiedCss;
 
 				default:

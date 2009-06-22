@@ -38,7 +38,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_stubCombiner = _mocks.Stub<IIncludeCombiner>();
 
 			_mocks.ReplayAll();
-			_cssCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red;}", Clock.UtcNow, new CssElement());
+			_cssCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red;}", Clock.UtcNow, new CssTypeElement());
 		}
 
 		[Fact]
@@ -78,7 +78,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_stubResponse.Expect(r => r.OutputStream).Return(new MemoryStream(8092)).Repeat.Twice();
 			_stubResponse.Expect(r => r.Cache).Return(_stubCache);
 
-			var emptyCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "", Clock.UtcNow, new CssElement());
+			var emptyCombination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "", Clock.UtcNow, new CssTypeElement());
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(emptyCombination);
 			var result = new IncludeCombinationResult(_stubCombiner, "foo", Clock.UtcNow);
 			Assert.DoesNotThrow(() => result.ExecuteResult(_controllerContext));

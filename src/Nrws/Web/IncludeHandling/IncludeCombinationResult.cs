@@ -33,13 +33,11 @@ namespace Nrws.Web.IncludeHandling
 		private readonly string _key;
 		private DateTime _now;
 		private TimeSpan? _cacheFor;
+		private readonly IList<ResponseCompression> _preferredCompressionOrder;
+
+		public IncludeCombination Combination { get; private set; }
 
 		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now)
-			: this(combiner, key, now, (TimeSpan?) null)
-		{
-		}
-
-		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now, TimeSpan? cacheFor)
 		{
 			if (combiner == null)
 			{
@@ -51,17 +49,16 @@ namespace Nrws.Web.IncludeHandling
 			}
 			_key = key;
 			_now = now;
-			_cacheFor = cacheFor;
 			Combination = combiner.GetCombination(_key);
 		}
 
 		public IncludeCombinationResult(IIncludeCombiner combiner, string key, DateTime now, IIncludeHandlingSettings settings)
-			: this(combiner, key, now, (TimeSpan?) null)
+			: this(combiner, key, now)
 		{
-			_cacheFor = settings.Types[Combination.Type].CacheFor;
+			var typeSettings = settings.Types[Combination.Type];
+			_cacheFor = typeSettings.CacheFor;
+			_preferredCompressionOrder = typeSettings.CompressionOrder;
 		}
-
-		public IncludeCombination Combination { get; private set; }
 
 		public override void ExecuteResult(ControllerContext context)
 		{
@@ -106,7 +103,7 @@ namespace Nrws.Web.IncludeHandling
 			context.HttpContext.Response.OutputStream.Flush();
 		}
 
-		private static ResponseCompression figureOutCompression(HttpRequestBase request)
+		private ResponseCompression figureOutCompression(HttpRequestBase request)
 		{
 			var acceptEncoding = request.Headers[HttpHeaders.AcceptEncoding];
 			if (string.IsNullOrEmpty(acceptEncoding) || isIe6OrLess(request.Browser))
@@ -114,15 +111,13 @@ namespace Nrws.Web.IncludeHandling
 				return ResponseCompression.None;
 			}
 			acceptEncoding = acceptEncoding.Trim().ToLowerInvariant();
-			// NOTE: Firefox will send "gzip,deflate".  Search for "gzip" first because it compresses smaller - though deflate uses less CPU.
-			// TODO: Make this preference configurable...?
-			if (acceptEncoding.Contains("gzip"))
+
+			foreach(var compression in _preferredCompressionOrder)
 			{
-				return ResponseCompression.Gzip;
-			}
-			if (acceptEncoding.Contains("deflate"))
-			{
-				return ResponseCompression.Deflate;
+				if (_compressionOrder[compression](acceptEncoding))
+				{
+					return compression;
+				}
 			}
 			return ResponseCompression.None;
 		}

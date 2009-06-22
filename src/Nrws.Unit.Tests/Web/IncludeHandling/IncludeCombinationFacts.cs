@@ -38,11 +38,11 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 				var sources = new[] { "foo.js" };
 				yield return new object[]
 				{
-					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsElement()),
-					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsElement()),
+					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsTypeElement()),
+					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsTypeElement()),
 					true
 				};
-				var ic = new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsElement());
+				var ic = new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsTypeElement());
 				yield return new object[]
 				{
 					ic,
@@ -51,8 +51,8 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 				};
 				yield return new object[]
 				{
-					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsElement()),
-					new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red;}", now, new CssElement()),
+					new IncludeCombination(IncludeType.Js, sources, "alert('foo');", now, new JsTypeElement()),
+					new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#foo{color:red;}", now, new CssTypeElement()),
 					false
 				};
 			}
@@ -63,7 +63,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[PropertyData("GetResponseBodyBytes_Data")]
 		public void GetResponseBodyBytes_CorrectlyCompressesCombination(ResponseCompression compression, string content, byte[] expected)
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, content, Clock.UtcNow, new JsElement());
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, content, Clock.UtcNow, new JsTypeElement());
 			byte[] result = null;
 			Assert.DoesNotThrow(() => result = combination.Bytes[compression]);
 			Assert.Equal(expected, result);
@@ -99,7 +99,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Equals_CorrectlyHandlesNullCombination()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow, new JsElement());
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow, new JsTypeElement());
 			var result = combination.Equals(null);
 			Assert.False(result);
 		}
@@ -107,7 +107,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Equals_CorrectlyHandlesNullObject()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow, new JsElement());
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow, new JsTypeElement());
 			var result = combination.Equals((object) null);
 			Assert.False(result);
 		}
@@ -115,7 +115,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void Equals_CorrectlyHandlesComparisonToDifferentType()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow, new JsElement());
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert('foo');", Clock.UtcNow, new JsTypeElement());
 			var result = combination.Equals(new string[1]);
 			Assert.False(result);
 		}

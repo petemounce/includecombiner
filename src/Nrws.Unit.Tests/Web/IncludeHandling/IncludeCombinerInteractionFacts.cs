@@ -42,7 +42,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void GetCombination_ShouldAskStorageForCombination()
 		{
-			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination(IncludeType.Css, new[] { "~/content/css/foo.css" }, ".foo{}", Clock.UtcNow, new CssElement()));
+			_mockStorage.Expect(s => s.GetCombination("foo")).Return(new IncludeCombination(IncludeType.Css, new[] { "~/content/css/foo.css" }, ".foo{}", Clock.UtcNow, new CssTypeElement()));
 			IncludeCombination combination = null;
 			Assert.DoesNotThrow(() => combination = _combiner.GetCombination("foo"));
 			Assert.NotNull(combination);
@@ -52,7 +52,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void SetCombination_ShouldTellStorageToStore()
 		{
-			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert();", Clock.UtcNow, new JsElement());
+			var combination = new IncludeCombination(IncludeType.Js, new[] { "foo.js" }, "alert();", Clock.UtcNow, new JsTypeElement());
 			_mockStorage.Expect(s => s.Store(combination)).Return("foo");
 
 			Assert.DoesNotThrow(() => _combiner.UpdateCombination(combination));

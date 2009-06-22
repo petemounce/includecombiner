@@ -4,8 +4,8 @@ namespace Nrws.Web.IncludeHandling.Configuration
 {
 	public interface IIncludeHandlingSettings
 	{
-		CssElement Css { get; }
-		JsElement Js { get; }
-		IDictionary<IncludeType, IncludeTypeElement> Types { get; }
+		CssTypeElement Css { get; }
+		JsTypeElement Js { get; }
+		IDictionary<IncludeType, IIncludeTypeSettings> Types { get; }
 	}
 }

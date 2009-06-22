@@ -65,7 +65,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 					IncludeType.Js,
 					"hashed",
 					"<script type='text/javascript' src='/content/js/hashed.js'></script>",
-					new JsElement()
+					new JsTypeElement()
 				};
 				yield return new object[]
 				{
@@ -73,7 +73,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 					IncludeType.Css,
 					"hashed==",
 					"<link rel='stylesheet' type='text/css' href='/content/css/hashed==.css'/>",
-					new CssElement()
+					new CssTypeElement()
 				};
 				yield return new object[]
 				{
@@ -81,7 +81,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 					IncludeType.Css,
 					"really/nasty%20url=",
 					"<link rel='stylesheet' type='text/css' href='/content/css/really/nasty%20url=.css'/>",
-					new CssElement()
+					new CssTypeElement()
 				};
 			}
 		}
@@ -97,7 +97,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 					{
 						{ "~/content/js/foo.js", new Include(IncludeType.Js, "/content/js/foo.js", "alert('hello world!');", Clock.UtcNow) }
 					},
-					new JsElement()
+					new JsTypeElement()
 				};
 			}
 		}
@@ -164,7 +164,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 				_mockStorage.Expect(s => s.Store(kvp.Value));
 			}
 			_mockStorage.Expect(s => s.Store(new IncludeCombination(type, sources.Keys, "content", Clock.UtcNow, settings))).IgnoreArguments().Return("foo");
-			_mockSettings.Expect(s => s.Types).Return(new Dictionary<IncludeType, IncludeTypeElement>() {{type,settings }});
+			_mockSettings.Expect(s => s.Types).Return(new Dictionary<IncludeType, IIncludeTypeSettings> {{type,settings }});
 			string key = null;
 			Assert.DoesNotThrow(() => key = _combiner.RegisterCombination(sources.Keys, IncludeType.Js, Clock.UtcNow));
 			Assert.Equal("foo", key);

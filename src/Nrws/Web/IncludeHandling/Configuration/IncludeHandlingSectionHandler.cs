@@ -5,14 +5,13 @@ namespace Nrws.Web.IncludeHandling.Configuration
 {
 	public class IncludeHandlingSectionHandler : ConfigurationSection, IIncludeHandlingSettings
 	{
-		private const string ALLOWDEBUG = "allowDebug";
 		private const string CSS = "css";
 		private const string JS = "js";
-		private IDictionary<IncludeType, IncludeTypeElement> _types;
+		private readonly IDictionary<IncludeType, IIncludeTypeSettings> _types;
 
 		public IncludeHandlingSectionHandler()
 		{
-			_types = new Dictionary<IncludeType, IncludeTypeElement>
+			_types = new Dictionary<IncludeType, IIncludeTypeSettings>
 			{
 				{ IncludeType.Css, Css },
 				{ IncludeType.Js, Js }
@@ -22,18 +21,18 @@ namespace Nrws.Web.IncludeHandling.Configuration
 		#region IIncludeHandlingSettings Members
 
 		[ConfigurationProperty(CSS)]
-		public CssElement Css
+		public CssTypeElement Css
 		{
-			get { return (CssElement) this[CSS] ?? new CssElement(); }
+			get { return (CssTypeElement) this[CSS] ?? new CssTypeElement(); }
 		}
 
 		[ConfigurationProperty(JS)]
-		public JsElement Js
+		public JsTypeElement Js
 		{
-			get { return (JsElement) this[JS] ?? new JsElement(); }
+			get { return (JsTypeElement) this[JS] ?? new JsTypeElement(); }
 		}
 
-		public IDictionary<IncludeType, IncludeTypeElement> Types
+		public IDictionary<IncludeType, IIncludeTypeSettings> Types
 		{
 			get { return _types; }
 		}

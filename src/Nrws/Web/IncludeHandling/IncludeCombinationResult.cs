@@ -62,28 +62,30 @@ namespace Nrws.Web.IncludeHandling
 
 		public override void ExecuteResult(ControllerContext context)
 		{
-			context.HttpContext.Response.ContentEncoding = Encoding.UTF8;
+			var response = context.HttpContext.Response;
+			response.ContentEncoding = Encoding.UTF8;
 			if (Combination == null || Combination.Content == null)
 			{
-				context.HttpContext.Response.StatusCode = (int) HttpStatusCode.NotFound;
+				response.StatusCode = (int) HttpStatusCode.NotFound;
 				return;
 			}
-			context.HttpContext.Response.ContentType = _contentTypes[Combination.Type];
+			response.ContentType = _contentTypes[Combination.Type];
+			var cache = response.Cache;
 			if (_cacheFor.HasValue)
 			{
-				context.HttpContext.Response.Cache.SetCacheability(HttpCacheability.Public);
-				context.HttpContext.Response.Cache.SetExpires(_now.Add(_cacheFor.Value));
-				context.HttpContext.Response.Cache.SetMaxAge(_cacheFor.Value);
-				context.HttpContext.Response.Cache.SetValidUntilExpires(true);
-				context.HttpContext.Response.Cache.SetLastModified(Combination.LastModifiedAt);
+				cache.SetCacheability(HttpCacheability.Public);
+				cache.SetExpires(_now.Add(_cacheFor.Value));
+				cache.SetMaxAge(_cacheFor.Value);
+				cache.SetValidUntilExpires(true);
+				cache.SetLastModified(Combination.LastModifiedAt);
 			}
-			context.HttpContext.Response.Cache.SetETag(_key + "-" + Combination.LastModifiedAt.Ticks);
+			cache.SetETag(_key + "-" + Combination.LastModifiedAt.Ticks);
 			var compressionAccepted = figureOutCompression(context.HttpContext.Request);
 			var responseBodyBytes = Combination.Bytes[compressionAccepted];
 
 			if (responseBodyBytes.Length <= 0)
 			{
-				context.HttpContext.Response.StatusCode = (int) HttpStatusCode.NoContent;
+				response.StatusCode = (int) HttpStatusCode.NoContent;
 				return;
 			}
 			switch (compressionAccepted)
@@ -92,15 +94,15 @@ namespace Nrws.Web.IncludeHandling
 					break;
 				case ResponseCompression.Gzip:
 				case ResponseCompression.Deflate:
-					context.HttpContext.Response.AppendHeader(HttpHeaders.ContentEncoding, compressionAccepted.ToString().ToLowerInvariant());
+					response.AppendHeader(HttpHeaders.ContentEncoding, compressionAccepted.ToString().ToLowerInvariant());
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
 
-			context.HttpContext.Response.AddHeader(HttpHeaders.ContentLength, responseBodyBytes.Length.ToString());
-			context.HttpContext.Response.OutputStream.Write(responseBodyBytes, 0, responseBodyBytes.Length);
-			context.HttpContext.Response.OutputStream.Flush();
+			response.AddHeader(HttpHeaders.ContentLength, responseBodyBytes.Length.ToString());
+			response.OutputStream.Write(responseBodyBytes, 0, responseBodyBytes.Length);
+			response.OutputStream.Flush();
 		}
 
 		private ResponseCompression figureOutCompression(HttpRequestBase request)

@@ -43,7 +43,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void WhenNoCombinationExists_ResponseCodeShouldBe404()
 		{
-			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Twice();
+			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse);
 			_mockResponse.Expect(r => r.ContentEncoding = Encoding.UTF8);
 			_mockResponse.Expect(r => r.StatusCode = (int) HttpStatusCode.NotFound);
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(null);
@@ -57,7 +57,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[Fact]
 		public void WhenCombinationExists_ShouldCorrectlySetUpResponse()
 		{
-			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(6);
+			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse);
 			_mockHttpContext.Expect(hc => hc.Request).Return(_mockRequest);
 			_mockRequest.Expect(r => r.Headers[HttpHeaders.AcceptEncoding]).Return("");
 			_mockResponse.Expect(r => r.ContentEncoding = Encoding.UTF8);
@@ -82,15 +82,10 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 		[InlineData("deflate", "deflate", "AnActualBrowser", 3)]
 		[InlineData("gzip", null, "IE", 5)]
 		[InlineData("mangled", null, "Anything", 3)]
-		// TODO: Refactor code-under-test to use more SOLID!!
 		public void WhenRequestAcceptsCompression_ShouldAppendContentEncodingHeader(string acceptEncoding, string expectedContentEncoding, string browser, int browserMajorVersion)
 		{
 			var lastModifiedAt = Clock.UtcNow;
-			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(11);
-			if (expectedContentEncoding != null)
-			{
-				_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse);
-			}
+			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse);
 			_mockHttpContext.Expect(hc => hc.Request).Return(_mockRequest);
 			_mockRequest.Expect(r => r.Headers[HttpHeaders.AcceptEncoding]).Return(acceptEncoding);
 			var stubBrowser = MockRepository.GenerateStub<HttpBrowserCapabilitiesBase>();
@@ -102,7 +97,7 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockResponse.Expect(r => r.ContentType = MimeTypes.TextCss);
 			_mockResponse.Expect(r => r.AddHeader(Arg<string>.Is.Equal(HttpHeaders.ContentLength), Arg<string>.Is.NotNull));
 			_mockResponse.Expect(r => r.OutputStream).Return(new MemoryStream(8092)).Repeat.Twice();
-			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy).Repeat.Times(6);
+			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy);
 			if (expectedContentEncoding != null)
 			{
 				_mockResponse.Expect(r => r.AppendHeader(HttpHeaders.ContentEncoding, expectedContentEncoding));
@@ -127,12 +122,11 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 
 		[Fact]
 		[FreezeClock(2009, 10, 1, 1, 1, 1)]
-		// TODO: Refactor code-under-test to use more SOLID!!
 		public void WhenCacheForIsSet_ShouldAppendCacheHeaders()
 		{
 			var lastModifiedAt = Clock.UtcNow;
 			var combination = new IncludeCombination(IncludeType.Css, new[] { "foo.css" }, "#Foo{color:red;}", lastModifiedAt, new CssTypeElement());
-			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(6);
+			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse);
 			_mockHttpContext.Expect(hc => hc.Request).Return(_mockRequest);
 			_mockRequest.Expect(r => r.Headers[HttpHeaders.AcceptEncoding]).Return("");
 			_mockResponse.Expect(r => r.ContentEncoding = Encoding.UTF8);
@@ -143,8 +137,6 @@ namespace Nrws.Unit.Tests.Web.IncludeHandling
 			_mockCachePolicy.Expect(cp => cp.SetETag(Arg<string>.Matches(etag => etag.StartsWith("foo") && etag.EndsWith(combination.LastModifiedAt.Ticks.ToString()))));
 			_stubCombiner.Expect(c => c.GetCombination("foo")).Return(combination);
 
-			_mockHttpContext.Expect(hc => hc.Response).Return(_mockResponse).Repeat.Times(5);
-			_mockResponse.Expect(r => r.Cache).Return(_mockCachePolicy).Repeat.Times(5);
 			var cacheFor = TimeSpan.FromMinutes(30);
 			_mockCachePolicy.Expect(cp => cp.SetCacheability(HttpCacheability.Public));
 			_mockCachePolicy.Expect(cp => cp.SetExpires(Clock.UtcNow.Add(cacheFor)));

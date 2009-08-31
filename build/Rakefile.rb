@@ -5,7 +5,6 @@ require 'rake_dotnet'
 
 PRODUCT_NAME = ENV['PRODUCT_NAME'] ? ENV['PRODUCT_NAME'] : 'Nrws'
 COMPANY_NAME = ENV['COMPANY_NAME'] ? ENV['COMPANY_NAME'] : 'NeverRunWithScissors.com'
-RDNVERSION = Versioner.new.get
 
 Rake::AssemblyInfoTask.new
 

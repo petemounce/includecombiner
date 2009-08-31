@@ -11,12 +11,12 @@ namespace Nrws.Web.IncludeHandling
 			return helper.RenderIncludes(type, helper.IsInDebugMode());
 		}
 		
-		public static string RenderIncludes(this HtmlHelper helper, IList<string> includes, IncludeType type)
+		public static string RenderIncludes(this HtmlHelper helper, IEnumerable<string> includes, IncludeType type)
 		{
 			return helper.RenderIncludes(includes, type, helper.IsInDebugMode());
 		}
 
-		public static string RenderIncludes(this HtmlHelper helper, IList<string> includes, IncludeType type, bool isInDebugMode) 
+		public static string RenderIncludes(this HtmlHelper helper, IEnumerable<string> includes, IncludeType type, bool isInDebugMode) 
 		{
 			var combiner = ServiceLocator.Current.GetInstance<IIncludeCombiner>();
 			var toRender = combiner.RenderIncludes(includes, type, isInDebugMode);
@@ -41,6 +41,16 @@ namespace Nrws.Web.IncludeHandling
 			return helper.RenderIncludes(IncludeType.Css, isInDebugMode);
 		}
 
+		public static string RenderCss(this HtmlHelper helper, IEnumerable<string> includes)
+		{
+			return helper.RenderIncludes(includes, IncludeType.Css, helper.IsInDebugMode());
+		}
+
+		public static string RenderCss(this HtmlHelper helper, IEnumerable<string> includes, bool isInDebugMode)
+		{
+			return helper.RenderIncludes(includes, IncludeType.Css, isInDebugMode);
+		}
+
 		public static string RenderJs(this HtmlHelper helper)
 		{
 			return helper.RenderJs(helper.IsInDebugMode());
@@ -49,6 +59,16 @@ namespace Nrws.Web.IncludeHandling
 		public static string RenderJs(this HtmlHelper helper, bool isInDebugMode)
 		{
 			return helper.RenderIncludes(IncludeType.Js, isInDebugMode);
+		}
+
+		public static string RenderJs(this HtmlHelper helper, IEnumerable<string> includes)
+		{
+			return helper.RenderIncludes(includes, IncludeType.Js, helper.IsInDebugMode());
+		}
+
+		public static string RenderJs(this HtmlHelper helper, IEnumerable<string> includes, bool isInDebugMode)
+		{
+			return helper.RenderIncludes(includes, IncludeType.Js, isInDebugMode);
 		}
 
 		public static void Include(this HtmlHelper helper, IncludeType type, string source)

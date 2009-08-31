@@ -5,8 +5,8 @@ namespace Nrws.Web.IncludeHandling
 {
 	public interface IIncludeCombiner
 	{
-		string RenderIncludes(ICollection<string> sources, IncludeType type, bool isInDebugMode);
-		string RegisterCombination(ICollection<string> sources, IncludeType type, DateTime now);
+		string RenderIncludes(IEnumerable<string> sources, IncludeType type, bool isInDebugMode);
+		string RegisterCombination(IEnumerable<string> sources, IncludeType type, DateTime now);
 		Include RegisterInclude(string source, IncludeType type);
 		IncludeCombination GetCombination(string key);
 		IEnumerable<Include> GetAllIncludes();

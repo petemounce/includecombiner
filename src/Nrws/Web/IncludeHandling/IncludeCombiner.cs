@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web;
 using Nrws.Web.IncludeHandling.Configuration;
@@ -35,10 +36,10 @@ namespace Nrws.Web.IncludeHandling
 
 		#region IIncludeCombiner Members
 
-		public string RenderIncludes(ICollection<string> sources, IncludeType type, bool isInDebugMode)
+		public string RenderIncludes(IEnumerable<string> sources, IncludeType type, bool isInDebugMode)
 		{
 			var toRender = new StringBuilder();
-			if (sources.Count > 0)
+			if (sources.Count() > 0)
 			{
 				if (_http.Context.IsDebuggingEnabled && isInDebugMode)
 				{
@@ -59,7 +60,7 @@ namespace Nrws.Web.IncludeHandling
 			return toRender.ToString();
 		}
 
-		public string RegisterCombination(ICollection<string> sources, IncludeType type, DateTime now)
+		public string RegisterCombination(IEnumerable<string> sources, IncludeType type, DateTime now)
 		{
 			var combinedContent = new StringBuilder();
 			foreach (var source in sources)

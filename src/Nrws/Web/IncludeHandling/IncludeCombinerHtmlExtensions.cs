@@ -10,12 +10,23 @@ namespace Nrws.Web.IncludeHandling
 		{
 			return helper.RenderIncludes(type, helper.IsInDebugMode());
 		}
+		
+		public static string RenderIncludes(this HtmlHelper helper, IList<string> includes, IncludeType type)
+		{
+			return helper.RenderIncludes(includes, type, helper.IsInDebugMode());
+		}
+
+		public static string RenderIncludes(this HtmlHelper helper, IList<string> includes, IncludeType type, bool isInDebugMode) 
+		{
+			var combiner = ServiceLocator.Current.GetInstance<IIncludeCombiner>();
+			var toRender = combiner.RenderIncludes(includes, type, isInDebugMode);
+			return toRender;
+		}
 
 		public static string RenderIncludes(this HtmlHelper helper, IncludeType type, bool isInDebugMode)
 		{
 			var sources = helper.ViewData[getViewDataKey(type)] as IList<string> ?? new List<string>();
-			var combiner = ServiceLocator.Current.GetInstance<IIncludeCombiner>();
-			var toRender = combiner.RenderIncludes(sources, type, isInDebugMode);
+			var toRender = helper.RenderIncludes(sources, type, isInDebugMode);
 			helper.ViewData[getViewDataKey(type)] = new List<string>();
 			return toRender;
 		}

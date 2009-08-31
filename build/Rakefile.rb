@@ -8,7 +8,7 @@ COMPANY_NAME = ENV['COMPANY_NAME'] ? ENV['COMPANY_NAME'] : 'NeverRunWithScissors
 
 Rake::AssemblyInfoTask.new
 
-bin_out = File.join(OUT_DIR, 'bin')
+bin_out = File.join(OUT_DIR, "bin-#{CONFIGURATION}-v#{RDNVERSION}")
 Rake::MsBuildTask.new({:verbosity=>MSBUILD_VERBOSITY, :deps=>[bin_out, :assembly_info]})
 
 Rake::HarvestOutputTask.new({:deps => [:compile]})
@@ -19,7 +19,7 @@ Rake::FxCopTask.new({:deps=>[:compile, :harvest_output]}) do |fxc|
 end
 Rake::NCoverTask.new({:deps=>[:compile, :harvest_output]})
 
-demo_site = File.join(OUT_DIR, 'Demo.Site')
+demo_site = File.join(OUT_DIR, "Demo.Site-#{CONFIGURATION}-v#{RDNVERSION}")
 Rake::HarvestWebApplicationTask.new({:deps=>[:compile]})
 
 Rake::RDNPackageTask.new(name='bin', version=RDNVERSION, {:deps=>[:harvest_output]}) do |p|
